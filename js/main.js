@@ -1,3 +1,5 @@
+import Level from "./level.js";
+
 let canvas;
 let engine;
 let scene;
@@ -29,15 +31,18 @@ function startGame() {
 
 function createScene() {
     let scene = new BABYLON.Scene(engine);
-    
-    scene.enablePhysics();
+    var gravityVector = new BABYLON.Vector3(0,-9.81, 0);
+    var physicsPlugin = new BABYLON.CannonJSPlugin();
+    scene.enablePhysics(gravityVector, physicsPlugin);
     
     let ground = createGround(scene);
     let freeCamera = createFreeCamera(scene);
 
     let ball = createSphere(scene);
 
-    let labyrinthe = createLabyrinthe(scene);
+    let level = new Level(1, scene);
+
+    //let labyrinthe = createLabyrinthe(scene);
     
     //let mirror = createMirror(scene, [ground, ball]);
     
@@ -68,10 +73,9 @@ function createGround(scene) {
     return ground;
 }
 
-
+/*
 function createLabyrinthe(scene) {
     const labyrintheOptions = { width:2000, height:2000, subdivisions:200, minHeight:0, maxHeight:100};
-    //scene is optional and defaults to the current scene
     const labyrinthe = BABYLON.MeshBuilder.CreateGroundFromHeightMap("gdhm", 'images/Labyrinthe.bmp', labyrintheOptions, scene);
     const labyrintheMaterial = new BABYLON.StandardMaterial("groundMaterial", scene);
     labyrintheMaterial.diffuseTexture = new BABYLON.Texture("images/woodFloor.jpg");
@@ -86,7 +90,7 @@ function createLabyrinthe(scene) {
     labyrinthe.physicsImpostor = new BABYLON.PhysicsImpostor(labyrinthe,
         BABYLON.PhysicsImpostor.MeshImpostor, { mass: 0 }, scene); 
     return labyrinthe;
-}
+}*/
 
 
 let zMovement = 5;
@@ -103,22 +107,28 @@ function createSphere(scene) {
         BABYLON.PhysicsImpostor.SphereImpostor, { mass: 1, nativeOptions: {linearDamping: 0.35, angularDamping: 0.35} }, scene);
 
     ball.move = () => {
+        let camera = scene.activeCamera;
+        ball.frontVector = camera.getDirection(new BABYLON.Vector3(0, 0, 1)).normalizeFromLength(0);
         let forceMagnitude = 50;
         let contactLocalRefPoint = BABYLON.Vector3.Zero();
         let forceDirection = BABYLON.Vector3.Zero();
 
         if(inputStates.up) {
-            forceDirection = new BABYLON.Vector3(0, 0, -1);
+            forceDirection = ball.frontVector;
         }    
         if(inputStates.down) {
-            forceDirection = new BABYLON.Vector3(0, 0, 1);
+            forceDirection = ball.frontVector.negate();
         }    
         if(inputStates.left) {
-            forceDirection = new BABYLON.Vector3(1, 0, 0);
+            forceDirection.x = -ball.frontVector.z;
+            forceDirection.z = ball.frontVector.x;
         }    
         if(inputStates.right) {
-            forceDirection = new BABYLON.Vector3(-1, 0, 0);
+            forceDirection.x = ball.frontVector.z;
+            forceDirection.z = -ball.frontVector.x;
         }
+        forceDirection.y = 0;
+        //console.log(ball.frontVector);
         ball.physicsImpostor.applyForce(forceDirection.scale(forceMagnitude), ball.getAbsolutePosition().add(contactLocalRefPoint));
 
     }
