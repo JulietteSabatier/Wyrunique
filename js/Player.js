@@ -5,7 +5,7 @@ export default class Player {
         this.playerMesh = playerMesh;
         this.id = id;
         this.scene = scene;
-        this.speed = 1;
+        this.speed = 0.5;
 
         playerMesh.Player = this;
 

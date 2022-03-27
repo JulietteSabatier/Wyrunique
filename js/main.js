@@ -5,64 +5,130 @@ let engine;
 let scene;
 let inputStates = {};
 let currentPlayer;
-let players = {};
-let nb_player;
-let cameras = {};
+let players;
+let cameras;
+
 window.onload = startGame;
 
 function startGame() {
     canvas = document.querySelector("#myCanvas");
     engine = new BABYLON.Engine(canvas, true);
-    scene = createScene();
-    currentPlayer = 0;
-    nb_player = 2;
 
-    let sphere = scene.getMeshByName("player");
+    players = [];
+    cameras = [];
+
+    scene = createScene(players, cameras);
+
     // prevent the pointer to go outside the game window
     modifySetting();
 
-
-    // main animation loop 60 times/s
-    engine.runRenderLoop(() => {
+    scene.toRender = () => {
         let deltaTime = engine.getDeltaTime();
-
+        console.log(currentPlayer);
         movePlayer(currentPlayer, scene, inputStates);
+       
+        mergePlayers(scene);
 
-        console.log("currentPlayer: "+currentPlayer);
         scene.render();
-    });
+    }
+
+    scene.assetManager.load();
+
 }
+
+
+function configureAssetManager(scene){
+    let assetsManager = new BABYLON.AssetsManager(scene);
+
+    assetsManager.onProgress = function(remainingCount, totalCount, lastFinishedTask){
+        engine.loadingUIText = " We are loading the scene. " + remainingCount + " out of " + totalCount + " items still need to be loaded";
+    };
+
+    assetsManager.onFinish = function(tasks) {
+        engine.runRenderLoop(function(){
+            scene.toRender();
+        });
+    };
+
+    return assetsManager;
+}
+
+function mergePlayers(scene){
+
+    for (let i=0; i < players.length; i=i+1){
+        if (i != currentPlayer){
+            let x = Object.values(players[i].getBoundingInfo()["boundingBox"]["centerWorld"])[1];
+            let y =Object.values(players[i].getBoundingInfo()["boundingBox"]["centerWorld"])[2];
+            let z = Object.values(players[i].getBoundingInfo()["boundingBox"]["centerWorld"])[3];
+            if (!(x==0 && y==0 && z==0)){       // weirdly at the begin of the game x,y,z are at 0,0,0 and it touch the first ball
+                if (players[currentPlayer].intersectsPoint({x,y,z}, true)){    
+                    
+                    players[i].dispose();
+                    cameras[i].dispose();
+                
+                    players.splice(i, 1);
+                    cameras.splice(i, 1);
+                    if (i < currentPlayer){
+                        currentPlayer = currentPlayer - 1;
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 /// Create environement
 function createScene() {
     let scene = new BABYLON.Scene(engine);
+    scene.assetManager = configureAssetManager(scene);
     // background
     scene.clearColor = new BABYLON.Color3(1, 0, 1);
     let ground = createGround(scene);
     let light = createLight(scene);
     let freeCamera = createFreeCamera(scene);
 
+    createAllSpheres(scene);
 
-    let sphereMesh1 = new BABYLON.MeshBuilder.CreateSphere("player1",{ diameter:2, segments:32}, scene);
-    let sphere1 = new Player(1, sphereMesh1,  scene);
-    sphereMesh1.position.y = 0.9;
-    sphereMesh1.position.x = 5;
-    sphereMesh1.frontVector = new BABYLON.Vector3(0, 0, 1);
-    players[0] = sphereMesh1;
-    let followCamera1 = createFollowCamera(scene, sphereMesh1);
-    cameras[0] = followCamera1;
-
-    let sphereMesh2 = new BABYLON.MeshBuilder.CreateSphere("player2",{ diameter:2, segments:32}, scene);
-    let sphere2 = new Player(2, sphereMesh2,  scene);
-    sphereMesh2.position.y = 0.9;
-    sphereMesh2.frontVector = new BABYLON.Vector3(0, 0, 1);
-    players[1] = sphereMesh2;
-    let followCamera2 = createFollowCamera(scene, sphereMesh2);
-    cameras[1] = followCamera2;
-
-    scene.activeCamera = followCamera1;
+    //scene.activeCamera = freeCamera;
+    scene.activeCamera = cameras[0];
+    currentPlayer = 0;
 
     return scene;
+}
+
+function createSphere(scene, players, cameras, name, nb, pos_y, pos_x, pos_z, diffuseColor){
+
+    let sphereMesh = new BABYLON.MeshBuilder.CreateSphere(name, {diameter:2, segments:32}, scene);
+    let sphere = new Player(nb, sphereMesh, scene);
+    sphereMesh.position.y = pos_y;
+    sphereMesh.position.x = pos_x;
+    sphereMesh.position.z = pos_z;
+    sphereMesh.frontVector = new BABYLON.Vector3(0, 0, 1);
+    
+    let sphereMaterial = new BABYLON.StandardMaterial("sphereMaterial", scene);
+    sphereMaterial.diffuseColor = diffuseColor;
+    sphereMesh.material = sphereMaterial;
+
+    players.push(sphereMesh);
+
+    let followCamera = createFollowCamera(scene, sphereMesh);
+    cameras.push(followCamera);
+
+    sphereMesh.showBoundingBox = true;
+}
+
+function createAllSpheres(scene){
+    // Sphere 1    
+    createSphere(scene, players, cameras, "player1", 0, 1, 5, 0, new BABYLON.Color3(1, 0, 0)); // rouge
+    // Sphere 2
+    createSphere(scene, players, cameras, "player2", 1, 1, 0, 0, new BABYLON.Color3(0, 1, 0));  // vert
+    // Sphere 3
+    createSphere(scene, players, cameras, "player3", 2, 1, -5, 0, new BABYLON.Color3(0, 0, 1)); // bleu
+    // Sphere 4
+    createSphere(scene, players, cameras, "player4", 3, 1, 5, 10, new BABYLON.Color3(1, 0, 1)); // violet
+    // Sphere 5
+    createSphere(scene, players, cameras, "player4", 5, 1, -5, -5, new BABYLON.Color3(0, 1, 1)); // cyan
 }
 
 function createGround(scene){
@@ -176,7 +242,7 @@ function modifySetting(){
             inputStates.space = true;
         } else if (event.key === "&") {
             inputStates.tab = true;
-            currentPlayer = (currentPlayer+1)%nb_player;
+            currentPlayer = (currentPlayer+1)%players.length;
             scene.activeCamera = cameras[currentPlayer];
         }
     }, false);
