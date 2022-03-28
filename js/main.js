@@ -1,56 +1,105 @@
 import Level from "./level.js";
+import Player from "./Player.js"
 
 let canvas;
 let engine;
 let scene;
-
-// vars for handling inputs
 let inputStates = {};
+let currentPlayer;
+let players;
+let cameras;
 
 window.onload = startGame;
 
 function startGame() {
     canvas = document.querySelector("#myCanvas");
     engine = new BABYLON.Engine(canvas, true);
-    scene = createScene();
 
-    // modify some default settings (i.e pointer events to prevent cursor to go 
-    // out of the game window)
-    modifySettings();
+    players = [];
+    cameras = [];
 
-    let ball = scene.getMeshByName("PlayerSphere");
+    scene = createScene(players, cameras);
 
-    engine.runRenderLoop(() => {
+    // prevent the pointer to go outside the game window
+    modifySetting();
+
+    scene.toRender = () => {
         let deltaTime = engine.getDeltaTime();
+        console.log(currentPlayer);
+        movePlayer(currentPlayer, scene, inputStates);
 
-        ball.move();
+        mergePlayers(scene);
 
         scene.render();
-    });
+    }
+
+    scene.assetManager.load();
+
 }
 
+
+function configureAssetManager(scene){
+    let assetsManager = new BABYLON.AssetsManager(scene);
+
+    assetsManager.onProgress = function(remainingCount, totalCount, lastFinishedTask){
+        engine.loadingUIText = " We are loading the scene. " + remainingCount + " out of " + totalCount + " items still need to be loaded";
+    };
+
+    assetsManager.onFinish = function(tasks) {
+        engine.runRenderLoop(function(){
+            scene.toRender();
+        });
+    };
+
+    return assetsManager;
+}
+
+function mergePlayers(scene){
+
+    for (let i=0; i < players.length; i=i+1){
+        if (i != currentPlayer){
+            let x = Object.values(players[i].getBoundingInfo()["boundingBox"]["centerWorld"])[1];
+            let y =Object.values(players[i].getBoundingInfo()["boundingBox"]["centerWorld"])[2];
+            let z = Object.values(players[i].getBoundingInfo()["boundingBox"]["centerWorld"])[3];
+            if (!(x==0 && y==0 && z==0)){       // weirdly at the begin of the game x,y,z are at 0,0,0 and it touch the first ball
+                if (players[currentPlayer].intersectsPoint({x,y,z}, true)){
+
+                    players[i].dispose();
+                    cameras[i].dispose();
+
+                    players.splice(i, 1);
+                    cameras.splice(i, 1);
+                    if (i < currentPlayer){
+                        currentPlayer = currentPlayer - 1;
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+/// Create environement
 function createScene() {
     let scene = new BABYLON.Scene(engine);
+    scene.assetManager = configureAssetManager(scene);
+    // background
+    scene.clearColor = new BABYLON.Color3(1, 0, 1);
+
     var gravityVector = new BABYLON.Vector3(0,-9.81, 0);
     var physicsPlugin = new BABYLON.CannonJSPlugin();
     scene.enablePhysics(gravityVector, physicsPlugin);
-    
+
     let ground = createGround(scene);
     let freeCamera = createFreeCamera(scene);
 
-    let ball = createSphere(scene);
+    createAllSpheres(scene);
 
-    let level = new Level(1, scene);
-
-    //let labyrinthe = createLabyrinthe(scene);
-    
-    //let mirror = createMirror(scene, [ground, ball]);
-    
-    // second parameter is the target to follow
-    scene.activeCamera = createFollowCamera(scene, ball);
-
+    //scene.activeCamera = freeCamera;
+    scene.activeCamera = cameras[0];
+    currentPlayer = 0;
     createLights(scene);
- 
+
    return scene;
 }
 
@@ -69,7 +118,7 @@ function createGround(scene) {
     //groundMaterial.wireframe=true;
     // for physic engine
     ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground,
-        BABYLON.PhysicsImpostor.HeightmapImpostor, { mass: 0 }, scene); 
+        BABYLON.PhysicsImpostor.HeightmapImpostor, { mass: 0 }, scene);
     return ground;
 }
 
@@ -88,7 +137,7 @@ function createLabyrinthe(scene) {
     //labyrintheMaterial.wireframe=true;
     // for physic engine
     labyrinthe.physicsImpostor = new BABYLON.PhysicsImpostor(labyrinthe,
-        BABYLON.PhysicsImpostor.MeshImpostor, { mass: 0 }, scene); 
+        BABYLON.PhysicsImpostor.MeshImpostor, { mass: 0 }, scene);
     return labyrinthe;
 }*/
 
@@ -102,7 +151,7 @@ function createSphere(scene) {
 
     ball.position.y = 3;
     ball.frontVector = new BABYLON.Vector3(0, 0, 1);
-    
+
     ball.physicsImpostor = new BABYLON.PhysicsImpostor(ball,
         BABYLON.PhysicsImpostor.SphereImpostor, { mass: 10, nativeOptions: {linearDamping: 0.35, angularDamping: 0.35} }, scene);
 
@@ -135,6 +184,48 @@ function createSphere(scene) {
     return ball;
 }
 
+function createSphere(scene, players, cameras, name, nb, pos_y, pos_x, pos_z, diffuseColor){
+
+    let sphereMesh = new BABYLON.MeshBuilder.CreateSphere(name, {diameter:2, segments:32}, scene);
+    let sphere = new Player(nb, sphereMesh, scene);
+    sphereMesh.position.y = pos_y;
+    sphereMesh.position.x = pos_x;
+    sphereMesh.position.z = pos_z;
+    sphereMesh.frontVector = new BABYLON.Vector3(0, 0, 1);
+
+    let sphereMaterial = new BABYLON.StandardMaterial("sphereMaterial", scene);
+    sphereMaterial.diffuseColor = diffuseColor;
+    sphereMesh.material = sphereMaterial;
+
+    players.push(sphereMesh);
+
+    let followCamera = createFollowCamera(scene, sphereMesh);
+    cameras.push(followCamera);
+
+    sphereMesh.showBoundingBox = true;
+}
+
+function createAllSpheres(scene){
+    // Sphere 1
+    createSphere(scene, players, cameras, "player1", 0, 1, 5, 0, new BABYLON.Color3(1, 0, 0)); // rouge
+    // Sphere 2
+    createSphere(scene, players, cameras, "player2", 1, 1, 0, 0, new BABYLON.Color3(0, 1, 0));  // vert
+    // Sphere 3
+    createSphere(scene, players, cameras, "player3", 2, 1, -5, 0, new BABYLON.Color3(0, 0, 1)); // bleu
+    // Sphere 4
+    createSphere(scene, players, cameras, "player4", 3, 1, 5, 10, new BABYLON.Color3(1, 0, 1)); // violet
+    // Sphere 5
+    createSphere(scene, players, cameras, "player4", 5, 1, -5, -5, new BABYLON.Color3(0, 1, 1)); // cyan
+}
+
+/// Gestion Player
+function movePlayer(numPlayer, scene, inputStates){
+    let player = players[numPlayer];
+    if (player){
+        player.Player.move(scene, inputStates);
+    }
+}
+
 
 function createMirror(scene, renderList) {
     var mirror = BABYLON.MeshBuilder.CreatePlane("mirror", {height: 30, width: 12}, scene);
@@ -145,7 +236,7 @@ function createMirror(scene, renderList) {
 
     // 1024 = size of the dynamically generated mirror texture
     mirrorMaterial.reflectionTexture = new BABYLON.MirrorTexture("mirrorTexture", 1024, scene, true);
-    
+
     //Following lines from https://playground.babylonjs.com/#1YAIO7#5
     //Ensure working with new values for mirror by computing and obtaining its worldMatrix
     mirror.computeWorldMatrix(true);
@@ -153,10 +244,10 @@ function createMirror(scene, renderList) {
 
     //Obtain normals for plane and assign one of them as the normal
     var mirror_vertexData = mirror.getVerticesData("normal");
-    var mirrorNormal = new BABYLON.Vector3(mirror_vertexData[0], mirror_vertexData[1], mirror_vertexData[2]);	
+    var mirrorNormal = new BABYLON.Vector3(mirror_vertexData[0], mirror_vertexData[1], mirror_vertexData[2]);
     //Use worldMatrix to transform normal into its current value
     mirrorNormal = new BABYLON.Vector3.TransformNormal(mirrorNormal, mirror_worldMatrix)
-	
+
     mirrorMaterial.reflectionTexture.mirrorPlane = new BABYLON.Plane.FromPositionAndNormal(mirror.position,
                                                                                             mirrorNormal.scale(-1));
 	mirror.material = mirrorMaterial;
@@ -178,7 +269,7 @@ function createFreeCamera(scene) {
     let camera = new BABYLON.FreeCamera("freeCamera", new BABYLON.Vector3(0, 50, 0), scene);
     camera.attachControl(canvas);
     // prevent camera to cross ground
-    camera.checkCollisions = true; 
+    camera.checkCollisions = true;
     // avoid flying with the camera
     camera.applyGravity = true;
 
@@ -217,70 +308,71 @@ function createFollowCamera(scene, target) {
 
 window.addEventListener("resize", () => {
     engine.resize()
-});
+})
 
-function modifySettings() {
-    // as soon as we click on the game window, the mouse pointer is "locked"
-    // you will have to press ESC to unlock it
-    /*scene.onPointerDown = () => {
-        if(!scene.alreadyLocked) {
+function modifySetting(){
+
+    // Lock the pointer
+    scene.onPointerDown = () => {
+        if (!scene.alreadyLocked) {
             console.log("requesting pointer lock");
             canvas.requestPointerLock();
-        } else {
+        }
+        else{
             console.log("Pointer already locked");
         }
     }
 
     document.addEventListener("pointerlockchange", () => {
         let element = document.pointerLockElement || null;
-        if(element) {
-            // lets create a custom attribute
+        if (element) {
             scene.alreadyLocked = true;
-        } else {
+        }
+        else{
             scene.alreadyLocked = false;
         }
-    })*/
+    })
 
-    // key listeners for the ball
+    // key listener
     inputStates.left = false;
     inputStates.right = false;
     inputStates.up = false;
     inputStates.down = false;
     inputStates.space = false;
-    inputStates.laser = false;
-    
+
     //add the listener to the main, window object, and update the states
     window.addEventListener('keydown', (event) => {
         if ((event.key === "ArrowLeft") || (event.key === "q")|| (event.key === "Q")) {
-           inputStates.left = true;
+            inputStates.left = true;
         } else if ((event.key === "ArrowUp") || (event.key === "z")|| (event.key === "Z")){
-           inputStates.up = true;
+            inputStates.up = true;
         } else if ((event.key === "ArrowRight") || (event.key === "d")|| (event.key === "D")){
-           inputStates.right = true;
+            inputStates.right = true;
         } else if ((event.key === "ArrowDown")|| (event.key === "s")|| (event.key === "S")) {
-           inputStates.down = true;
-        }  else if (event.key === " ") {
-           inputStates.space = true;
-        } else if ((event.key === "l") || (event.key === "L")) {
-            inputStates.laser = true;
-         }
+            inputStates.down = true;
+        } else if (event.key === " ") {
+            inputStates.space = true;
+        } else if (event.key === "&") {
+            inputStates.tab = true;
+            currentPlayer = (currentPlayer+1)%players.length;
+            scene.activeCamera = cameras[currentPlayer];
+        }
     }, false);
 
-    //if the key will be released, change the states object 
+    //if the key will be released, change the states object
     window.addEventListener('keyup', (event) => {
         if ((event.key === "ArrowLeft") || (event.key === "q")|| (event.key === "Q")) {
-           inputStates.left = false;
+            inputStates.left = false;
         } else if ((event.key === "ArrowUp") || (event.key === "z")|| (event.key === "Z")){
-           inputStates.up = false;
+            inputStates.up = false;
         } else if ((event.key === "ArrowRight") || (event.key === "d")|| (event.key === "D")){
-           inputStates.right = false;
+            inputStates.right = false;
         } else if ((event.key === "ArrowDown")|| (event.key === "s")|| (event.key === "S")) {
-           inputStates.down = false;
+            inputStates.down = false;
         }  else if (event.key === " ") {
-           inputStates.space = false;
-        } else if ((event.key === "l") || (event.key === "L")) {
-            inputStates.laser = false;
-         }
+            inputStates.space = false;
+        } else if (event.key === "&") {
+            inputStates.tab = false;
+        }
     }, false);
 }
-
