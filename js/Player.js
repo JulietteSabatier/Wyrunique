@@ -14,29 +14,29 @@ export default class Player {
 
     move(scene, inputStates){
 
-        let yMovement = 0;
-        let zMovement = 0;
-
-        if (this.playerMesh.position.y > 2){
-            zMovement = 0;
-            yMovement = -2;
-        }
+        let camera = scene.activeCamera;
+        this.playerMesh.frontVector = camera.getDirection(new BABYLON.Vector3(0, 0, 1)).normalizeFromLength(0);
+        let forceMagnitude = 500;
+        let contactLocalRefPoint = BABYLON.Vector3.Zero();
+        let forceDirection = BABYLON.Vector3.Zero();
 
         if(inputStates.up) {
-            this.playerMesh.moveWithCollisions(this.playerMesh.frontVector.multiplyByFloats(this.speed, this.speed, this.speed));
-        }    
-        if(inputStates.down) {
-            this.playerMesh.moveWithCollisions(this.playerMesh.frontVector.multiplyByFloats(-this.speed, -this.speed, -this.speed));
-        }  
-        if(inputStates.left) {
-            this.playerMesh.rotation.y -= 0.02;
-            this.playerMesh.frontVector = new BABYLON.Vector3(Math.sin(this.playerMesh.rotation.y), 0, Math.cos(this.playerMesh.rotation.y));
-        }    
-        if(inputStates.right) {
-            this.playerMesh.rotation.y += 0.02;
-            this.playerMesh.frontVector = new BABYLON.Vector3(Math.sin(this.playerMesh.rotation.y), 0, Math.cos(this.playerMesh.rotation.y));
+            forceDirection = this.playerMesh.frontVector;
         }
-        
+        if(inputStates.down) {
+            forceDirection = this.playerMesh.frontVector.negate();
+        }
+        if(inputStates.left) {
+            forceDirection.x = -this.playerMesh.frontVector.z;
+            forceDirection.z = this.playerMesh.frontVector.x;
+        }
+        if(inputStates.right) {
+            forceDirection.x = this.playerMesh.frontVector.z;
+            forceDirection.z = -this.playerMesh.frontVector.x;
+        }
+        forceDirection.y = 0;
+        //console.log(forceDirection);
+        this.playerMesh.physicsImpostor.applyForce(forceDirection.scale(forceMagnitude), this.playerMesh.getAbsolutePosition().add(contactLocalRefPoint));
 
     }
 

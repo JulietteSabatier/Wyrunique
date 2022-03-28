@@ -141,8 +141,7 @@ function createLabyrinthe(scene) {
     return labyrinthe;
 }*/
 
-
-let zMovement = 5;
+/*
 function createSphere(scene) {
     let ball = new BABYLON.MeshBuilder.CreateSphere("PlayerSphere", {diameter: 5}, scene);
     let sphereMaterial = new BABYLON.StandardMaterial("sphereMaterial", scene);
@@ -155,38 +154,12 @@ function createSphere(scene) {
     ball.physicsImpostor = new BABYLON.PhysicsImpostor(ball,
         BABYLON.PhysicsImpostor.SphereImpostor, { mass: 10, nativeOptions: {linearDamping: 0.35, angularDamping: 0.35} }, scene);
 
-    ball.move = () => {
-        let camera = scene.activeCamera;
-        ball.frontVector = camera.getDirection(new BABYLON.Vector3(0, 0, 1)).normalizeFromLength(0);
-        let forceMagnitude = 500;
-        let contactLocalRefPoint = BABYLON.Vector3.Zero();
-        let forceDirection = BABYLON.Vector3.Zero();
-
-        if(inputStates.up) {
-            forceDirection = ball.frontVector;
-        }
-        if(inputStates.down) {
-            forceDirection = ball.frontVector.negate();
-        }
-        if(inputStates.left) {
-            forceDirection.x = -ball.frontVector.z;
-            forceDirection.z = ball.frontVector.x;
-        }
-        if(inputStates.right) {
-            forceDirection.x = ball.frontVector.z;
-            forceDirection.z = -ball.frontVector.x;
-        }
-        forceDirection.y = 0;
-        //console.log(forceDirection);
-        ball.physicsImpostor.applyForce(forceDirection.scale(forceMagnitude), ball.getAbsolutePosition().add(contactLocalRefPoint));
-
-    }
     return ball;
-}
+}*/
 
 function createSphere(scene, players, cameras, name, nb, pos_y, pos_x, pos_z, diffuseColor){
 
-    let sphereMesh = new BABYLON.MeshBuilder.CreateSphere(name, {diameter:2, segments:32}, scene);
+    let sphereMesh = new BABYLON.MeshBuilder.CreateSphere("PlayerSphere", {diameter: 5}, scene);
     let sphere = new Player(nb, sphereMesh, scene);
     sphereMesh.position.y = pos_y;
     sphereMesh.position.x = pos_x;
@@ -194,8 +167,12 @@ function createSphere(scene, players, cameras, name, nb, pos_y, pos_x, pos_z, di
     sphereMesh.frontVector = new BABYLON.Vector3(0, 0, 1);
 
     let sphereMaterial = new BABYLON.StandardMaterial("sphereMaterial", scene);
+    sphereMaterial.diffuseTexture = new BABYLON.Texture("images/Ball.jpg", scene);
     sphereMaterial.diffuseColor = diffuseColor;
     sphereMesh.material = sphereMaterial;
+
+    sphereMesh.physicsImpostor = new BABYLON.PhysicsImpostor(sphereMesh,
+        BABYLON.PhysicsImpostor.SphereImpostor, { mass: 10, nativeOptions: {linearDamping: 0.35, angularDamping: 0.35} }, scene);
 
     players.push(sphereMesh);
 
@@ -207,15 +184,15 @@ function createSphere(scene, players, cameras, name, nb, pos_y, pos_x, pos_z, di
 
 function createAllSpheres(scene){
     // Sphere 1
-    createSphere(scene, players, cameras, "player1", 0, 1, 5, 0, new BABYLON.Color3(1, 0, 0)); // rouge
+    createSphere(scene, players, cameras, "player1", 0, 5, 5, 0, new BABYLON.Color3(1, 0, 0)); // rouge
     // Sphere 2
-    createSphere(scene, players, cameras, "player2", 1, 1, 0, 0, new BABYLON.Color3(0, 1, 0));  // vert
+    createSphere(scene, players, cameras, "player2", 1, 5, 0, 0, new BABYLON.Color3(0, 1, 0));  // vert
     // Sphere 3
-    createSphere(scene, players, cameras, "player3", 2, 1, -5, 0, new BABYLON.Color3(0, 0, 1)); // bleu
+    createSphere(scene, players, cameras, "player3", 2, 5, -5, 0, new BABYLON.Color3(0, 0, 1)); // bleu
     // Sphere 4
-    createSphere(scene, players, cameras, "player4", 3, 1, 5, 10, new BABYLON.Color3(1, 0, 1)); // violet
+    createSphere(scene, players, cameras, "player4", 3, 5, 5, 10, new BABYLON.Color3(1, 0, 1)); // violet
     // Sphere 5
-    createSphere(scene, players, cameras, "player4", 5, 1, -5, -5, new BABYLON.Color3(0, 1, 1)); // cyan
+    createSphere(scene, players, cameras, "player4", 5, 5, -5, -5, new BABYLON.Color3(0, 1, 1)); // cyan
 }
 
 /// Gestion Player
