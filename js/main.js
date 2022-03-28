@@ -104,31 +104,31 @@ function createSphere(scene) {
     ball.frontVector = new BABYLON.Vector3(0, 0, 1);
     
     ball.physicsImpostor = new BABYLON.PhysicsImpostor(ball,
-        BABYLON.PhysicsImpostor.SphereImpostor, { mass: 1, nativeOptions: {linearDamping: 0.35, angularDamping: 0.35} }, scene);
+        BABYLON.PhysicsImpostor.SphereImpostor, { mass: 10, nativeOptions: {linearDamping: 0.35, angularDamping: 0.35} }, scene);
 
     ball.move = () => {
         let camera = scene.activeCamera;
         ball.frontVector = camera.getDirection(new BABYLON.Vector3(0, 0, 1)).normalizeFromLength(0);
-        let forceMagnitude = 50;
+        let forceMagnitude = 500;
         let contactLocalRefPoint = BABYLON.Vector3.Zero();
         let forceDirection = BABYLON.Vector3.Zero();
 
         if(inputStates.up) {
             forceDirection = ball.frontVector;
-        }    
+        }
         if(inputStates.down) {
             forceDirection = ball.frontVector.negate();
-        }    
+        }
         if(inputStates.left) {
             forceDirection.x = -ball.frontVector.z;
             forceDirection.z = ball.frontVector.x;
-        }    
+        }
         if(inputStates.right) {
             forceDirection.x = ball.frontVector.z;
             forceDirection.z = -ball.frontVector.x;
         }
         forceDirection.y = 0;
-        //console.log(ball.frontVector);
+        //console.log(forceDirection);
         ball.physicsImpostor.applyForce(forceDirection.scale(forceMagnitude), ball.getAbsolutePosition().add(contactLocalRefPoint));
 
     }
