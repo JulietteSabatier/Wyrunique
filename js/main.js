@@ -25,7 +25,6 @@ function startGame() {
 
     scene.toRender = () => {
         let deltaTime = engine.getDeltaTime();
-        console.log(currentPlayer);
         movePlayer(currentPlayer, scene, inputStates);
 
         mergePlayers(scene);
@@ -57,7 +56,7 @@ function configureAssetManager(scene){
 function mergePlayers(scene){
 
     for (let i=0; i < players.length; i=i+1){
-        if (i != currentPlayer){
+        if (i !== currentPlayer){
             let x = Object.values(players[i].getBoundingInfo()["boundingBox"]["centerWorld"])[1];
             let y =Object.values(players[i].getBoundingInfo()["boundingBox"]["centerWorld"])[2];
             let z = Object.values(players[i].getBoundingInfo()["boundingBox"]["centerWorld"])[3];
@@ -159,7 +158,7 @@ function createSphere(scene) {
 
 function createSphere(scene, players, cameras, name, nb, pos_y, pos_x, pos_z, diffuseColor){
 
-    let sphereMesh = new BABYLON.MeshBuilder.CreateSphere("PlayerSphere", {diameter: 5}, scene);
+    let sphereMesh = new BABYLON.MeshBuilder.CreateSphere(name, {diameter: 5}, scene);
     let sphere = new Player(nb, sphereMesh, scene);
     sphereMesh.position.y = pos_y;
     sphereMesh.position.x = pos_x;
@@ -192,7 +191,7 @@ function createAllSpheres(scene){
     // Sphere 4
     createSphere(scene, players, cameras, "player4", 3, 5, 5, 10, new BABYLON.Color3(1, 0, 1)); // violet
     // Sphere 5
-    createSphere(scene, players, cameras, "player4", 5, 5, -5, -5, new BABYLON.Color3(0, 1, 1)); // cyan
+    createSphere(scene, players, cameras, "player5", 5, 5, -5, -5, new BABYLON.Color3(0, 1, 1)); // cyan
 }
 
 /// Gestion Player
@@ -203,7 +202,7 @@ function movePlayer(numPlayer, scene, inputStates){
     }
 }
 
-
+/*
 function createMirror(scene, renderList) {
     var mirror = BABYLON.MeshBuilder.CreatePlane("mirror", {height: 30, width: 12}, scene);
     mirror.position.z = 10;
@@ -233,7 +232,7 @@ function createMirror(scene, renderList) {
 
     return mirror;
 }
-
+*/
 
 function createLights(scene) {
     // i.e sun light with all light rays parallels, the vector is the direction.
@@ -269,13 +268,13 @@ function createFollowCamera(scene, target) {
                                                 BABYLON.Tools.ToRadians(-90),
                                                 BABYLON.Tools.ToRadians(20),
                                                 70,
-                                                scene.getMeshByName("PlayerSphere").position,
+                                                target.position,
                                                 scene);
 
 
     camera.attachControl(canvas, false, false, 0);
     camera.panningAxis = new BABYLON.Vector3(0, 0, 0);
-    camera.lockedTarget = scene.getMeshByName("PlayerSphere");
+    camera.lockedTarget = target;
 	camera.cameraAcceleration = 0.1; // how fast to move
 	camera.maxCameraSpeed = 5; // speed limit
 
@@ -288,27 +287,6 @@ window.addEventListener("resize", () => {
 })
 
 function modifySetting(){
-
-    // Lock the pointer
-    scene.onPointerDown = () => {
-        if (!scene.alreadyLocked) {
-            console.log("requesting pointer lock");
-            canvas.requestPointerLock();
-        }
-        else{
-            console.log("Pointer already locked");
-        }
-    }
-
-    document.addEventListener("pointerlockchange", () => {
-        let element = document.pointerLockElement || null;
-        if (element) {
-            scene.alreadyLocked = true;
-        }
-        else{
-            scene.alreadyLocked = false;
-        }
-    })
 
     // key listener
     inputStates.left = false;
