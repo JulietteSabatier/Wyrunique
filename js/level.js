@@ -41,10 +41,8 @@ export default class Level {
             BABYLON.PhysicsImpostor.SphereImpostor, { mass: 10, nativeOptions: {linearDamping: 0.35, angularDamping: 0.35} }, scene);
 
         players.push(sphereMesh);
-        console.log("Ajout d'un joueur, il y en a " + players.length);
 
         let followCamera = this.createFollowCamera(scene, sphereMesh);
-        console.log("Ajout d'une camera, il y en a " + cameras.length);
         sphereMesh.showBoundingBox = true;
     }
 
