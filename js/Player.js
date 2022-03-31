@@ -40,4 +40,22 @@ export default class Player {
 
     }
 
+    merge(scene, players, cameras, currentPlayer) {
+        for (let i=0; i < players.length; i=i+1){
+            if (i !== currentPlayer){
+                if (players[currentPlayer].intersectsMesh(players[i], true)){
+                    console.log("touch player: "+i);
+                    players[i].dispose();
+                    cameras[i].dispose();
+
+                    players.splice(i, 1);
+                    cameras.splice(i, 1);
+                    if (i < currentPlayer){
+                        currentPlayer = currentPlayer - 1;
+                    }
+                }
+
+            }
+        }
+    }
 }

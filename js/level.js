@@ -1,8 +1,9 @@
 export default class Level {
-    constructor(id, scene) {
+    constructor(id, scene, cameras, players) {
         this.id = id;
         this.scene = scene;
-
+        this.cameras = cameras;
+        this.players = players;
         this.buildWalls();
     }
 
