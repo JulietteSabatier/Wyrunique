@@ -64,7 +64,6 @@ function mergePlayers(scene){
                 if (players[currentPlayer].intersectsPoint({x,y,z}, true)){
 
                     players[i].dispose();
-                    //cameras[i].dispose();
 
                     players.splice(i, 1);
                     cameras.splice(i, 1);
@@ -74,6 +73,9 @@ function mergePlayers(scene){
                 }
             }
         }
+    }
+    if (players.length === 1) {
+        scene.currentLevel.createEnd(scene);
     }
 }
 
@@ -94,7 +96,7 @@ function createScene() {
     scene.players = players;
     scene.cameras = cameras;
 
-    let currentLevel = new Level(1, scene);
+    scene.currentLevel = new Level(1, scene);
 
     scene.activeCamera = cameras[0];
     currentPlayer = 0;
@@ -115,7 +117,7 @@ function createGround(scene) {
 
     // to be taken into account by collision detection
     ground.checkCollisions = true;
-    //groundMaterial.wireframe=true;
+
     // for physic engine
     ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground,
         BABYLON.PhysicsImpostor.HeightmapImpostor, { mass: 0 }, scene);

@@ -4,6 +4,7 @@ export default class Level {
     constructor(id, scene) {
         this.id = id;
         this.scene = scene;
+        this.canFinish = false;
 
         this.buildWalls();
         this.createAllSpheres(scene);
@@ -16,11 +17,23 @@ export default class Level {
         wall.physicsImpostor = new BABYLON.PhysicsImpostor(wall,
             BABYLON.PhysicsImpostor.BoxImpostor, {mass: 0});
 
-        var instance = wall.createInstance("wall2");
+        let instance = wall.createInstance("wall2");
         instance.position.x = -15;
         instance.checkCollisions = true;
         instance.physicsImpostor = new BABYLON.PhysicsImpostor(instance,
             BABYLON.PhysicsImpostor.BoxImpostor, {mass: 0});
+    }
+
+    createEnd(scene) {
+        if (!this.canFinish) {
+            let finishBox = new BABYLON.MeshBuilder.CreateSphere("finishSphere", {diameter: 25}, scene);
+            finishBox.position = new BABYLON.Vector3(0, 0, 300);
+
+            let sphereMaterial = new BABYLON.StandardMaterial("sphereMaterial", scene);
+            sphereMaterial.diffuseTexture = new BABYLON.Texture("images/finishCircle.png", scene);
+            finishBox.material = sphereMaterial;
+            this.canFinish = true;
+        }
     }
 
     createSphere(scene, players, cameras, name, nb, pos_y, pos_x, pos_z, diffuseColor){
