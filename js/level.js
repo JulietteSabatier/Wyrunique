@@ -52,13 +52,13 @@ export default class Level {
         // Sphere 1
         this.createSphere(scene, scene.players, scene.cameras, "player1", 0, 5, 0, 0, new BABYLON.Color3(1, 0, 0)); // rouge
         // Sphere 2
-        this.createSphere(scene, scene.players, scene.cameras, "player2", 1, 5, -2.5, 50, new BABYLON.Color3(0, 1, 0));  // vert
+        this.createSphere(scene, scene.players, scene.cameras, "player2", 1, 5, 0, 20, new BABYLON.Color3(0, 1, 0));  // vert
         // Sphere 3
-        this.createSphere(scene, scene.players, scene.cameras, "player3", 2, 5, -7.5, 50, new BABYLON.Color3(0, 0, 1)); // bleu
+        this.createSphere(scene, scene.players, scene.cameras, "player3", 2, 5, 0, 30, new BABYLON.Color3(0, 0, 1)); // bleu
         // Sphere 4
-        this.createSphere(scene, scene.players, scene.cameras, "player4", 3, 5, 2.5, 50, new BABYLON.Color3(1, 0, 1)); // violet
+        this.createSphere(scene, scene.players, scene.cameras, "player4", 3, 5, 0, 40, new BABYLON.Color3(1, 0, 1)); // violet
         // Sphere 5
-        this.createSphere(scene, scene.players, scene.cameras, "player5", 5, 5, 7.5, 50, new BABYLON.Color3(0, 1, 1)); // cyan
+        this.createSphere(scene, scene.players, scene.cameras, "player5", 5, 5, 0, 50, new BABYLON.Color3(0, 1, 1)); // cyan
     }
 
 

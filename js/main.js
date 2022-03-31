@@ -19,7 +19,9 @@ function startGame() {
     cameras = [];
 
     scene = createScene(players, cameras);
-
+    console.log("after create scene")
+    console.log(players);
+    console.log(cameras);
     // prevent the pointer to go outside the game window
     modifySetting();
 
@@ -27,7 +29,7 @@ function startGame() {
         let deltaTime = engine.getDeltaTime();
         movePlayer(currentPlayer, scene, inputStates);
 
-        players[currentPlayer].Player.merge(scene, players, cameras, currentPlayer)
+        mergePlayer();
         //mergePlayers(scene);
 
         scene.render();
@@ -105,6 +107,13 @@ function movePlayer(numPlayer, scene, inputStates){
     let player = players[numPlayer];
     if (player){
         player.Player.move(scene, inputStates);
+    }
+}
+
+function mergePlayer(){
+    let player = players[currentPlayer];
+    if (player){
+        player.Player.merge(scene, players, cameras, currentPlayer);
     }
 }
 
