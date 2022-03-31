@@ -14,7 +14,6 @@ window.onload = startGame;
 function startGame() {
     canvas = document.querySelector("#myCanvas");
     engine = new BABYLON.Engine(canvas, true);
-
     players = [];
     cameras = [];
 
@@ -97,6 +96,7 @@ function createGround(scene) {
         BABYLON.PhysicsImpostor.HeightmapImpostor, { mass: 0 }, scene);
     return ground;
 }
+
 
 /*
 function createLabyrinthe(scene) {
