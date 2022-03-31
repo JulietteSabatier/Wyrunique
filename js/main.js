@@ -28,7 +28,8 @@ function startGame() {
         console.log(currentPlayer);
         movePlayer(currentPlayer, scene, inputStates);
 
-        mergePlayers(scene);
+        players[currentPlayer].Player.merge(scene, players, cameras, currentPlayer)
+        //mergePlayers(scene);
 
         scene.render();
     }
@@ -53,31 +54,6 @@ function configureAssetManager(scene){
 
     return assetsManager;
 }
-
-function mergePlayers(scene){
-
-    for (let i=0; i < players.length; i=i+1){
-        if (i != currentPlayer){
-            let x = Object.values(players[i].getBoundingInfo()["boundingBox"]["centerWorld"])[1];
-            let y =Object.values(players[i].getBoundingInfo()["boundingBox"]["centerWorld"])[2];
-            let z = Object.values(players[i].getBoundingInfo()["boundingBox"]["centerWorld"])[3];
-            if (!(x==0 && y==0 && z==0)){       // weirdly at the begin of the game x,y,z are at 0,0,0 and it touch the first ball
-                if (players[currentPlayer].intersectsPoint({x,y,z}, true)){
-
-                    players[i].dispose();
-                    cameras[i].dispose();
-
-                    players.splice(i, 1);
-                    cameras.splice(i, 1);
-                    if (i < currentPlayer){
-                        currentPlayer = currentPlayer - 1;
-                    }
-                }
-            }
-        }
-    }
-}
-
 
 /// Create environement
 function createScene() {
@@ -184,15 +160,15 @@ function createSphere(scene, players, cameras, name, nb, pos_y, pos_x, pos_z, di
 
 function createAllSpheres(scene){
     // Sphere 1
-    createSphere(scene, players, cameras, "player1", 0, 5, 5, 0, new BABYLON.Color3(1, 0, 0)); // rouge
+    createSphere(scene, players, cameras, "player1", 0, 5, 0, 0, new BABYLON.Color3(1, 0, 0)); // rouge
     // Sphere 2
-    createSphere(scene, players, cameras, "player2", 1, 5, 0, 0, new BABYLON.Color3(0, 1, 0));  // vert
+    createSphere(scene, players, cameras, "player2", 1, 5, 10, 10, new BABYLON.Color3(0, 1, 0));  // vert
     // Sphere 3
-    createSphere(scene, players, cameras, "player3", 2, 5, -5, 0, new BABYLON.Color3(0, 0, 1)); // bleu
+    createSphere(scene, players, cameras, "player3", 2, 5, -10, -10, new BABYLON.Color3(0, 0, 1)); // bleu
     // Sphere 4
-    createSphere(scene, players, cameras, "player4", 3, 5, 5, 10, new BABYLON.Color3(1, 0, 1)); // violet
+    createSphere(scene, players, cameras, "player4", 3, 5, -10, 10, new BABYLON.Color3(1, 0, 1)); // violet
     // Sphere 5
-    createSphere(scene, players, cameras, "player4", 5, 5, -5, -5, new BABYLON.Color3(0, 1, 1)); // cyan
+    createSphere(scene, players, cameras, "player4", 5, 5, 10, -10, new BABYLON.Color3(0, 1, 1)); // cyan
 }
 
 /// Gestion Player
@@ -202,7 +178,6 @@ function movePlayer(numPlayer, scene, inputStates){
         player.Player.move(scene, inputStates);
     }
 }
-
 
 function createMirror(scene, renderList) {
     var mirror = BABYLON.MeshBuilder.CreatePlane("mirror", {height: 30, width: 12}, scene);
