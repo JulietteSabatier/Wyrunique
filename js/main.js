@@ -14,6 +14,7 @@ window.onload = startGame;
 function startGame() {
     canvas = document.querySelector("#myCanvas");
     engine = new BABYLON.Engine(canvas, true);
+
     players = [];
     cameras = [];
 
@@ -24,7 +25,6 @@ function startGame() {
 
     scene.toRender = () => {
         let deltaTime = engine.getDeltaTime();
-        console.log(currentPlayer);
         movePlayer(currentPlayer, scene, inputStates);
 
         players[currentPlayer].Player.merge(scene, players, cameras, currentPlayer)
@@ -61,14 +61,16 @@ function createScene() {
     // background
     scene.clearColor = new BABYLON.Color3(1, 0, 1);
 
-    var gravityVector = new BABYLON.Vector3(0,-9.81, 0);
-    var physicsPlugin = new BABYLON.CannonJSPlugin();
+    let gravityVector = new BABYLON.Vector3(0,-9.81, 0);
+    let physicsPlugin = new BABYLON.CannonJSPlugin();
     scene.enablePhysics(gravityVector, physicsPlugin);
 
     let ground = createGround(scene);
     let freeCamera = createFreeCamera(scene);
+    scene.players = players;
+    scene.cameras = cameras;
 
-    createAllSpheres(scene);
+    let currentLevel = new Level(1, scene);
 
     //scene.activeCamera = freeCamera;
     scene.activeCamera = cameras[0];
@@ -83,7 +85,7 @@ function createGround(scene) {
     //scene is optional and defaults to the current scene
     const ground = BABYLON.MeshBuilder.CreateGround("ground", groundOptions, scene);
     const groundMaterial = new BABYLON.StandardMaterial("groundMaterial", scene);
-    groundMaterial.diffuseTexture = new BABYLON.Texture("images/woodFloor.jpg");
+    groundMaterial.diffuseTexture = new BABYLON.Texture("images/woodFloor.jpg", scene);
     ground.material = groundMaterial;
     ground.material.diffuseTexture.uScale = 10;
     ground.material.diffuseTexture.vScale = 10;
@@ -95,6 +97,15 @@ function createGround(scene) {
     ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground,
         BABYLON.PhysicsImpostor.HeightmapImpostor, { mass: 0 }, scene);
     return ground;
+}
+
+
+/// Gestion Player
+function movePlayer(numPlayer, scene, inputStates){
+    let player = players[numPlayer];
+    if (player){
+        player.Player.move(scene, inputStates);
+    }
 }
 
 
@@ -118,67 +129,6 @@ function createLabyrinthe(scene) {
 }*/
 
 /*
-function createSphere(scene) {
-    let ball = new BABYLON.MeshBuilder.CreateSphere("PlayerSphere", {diameter: 5}, scene);
-    let sphereMaterial = new BABYLON.StandardMaterial("sphereMaterial", scene);
-    sphereMaterial.diffuseTexture = new BABYLON.Texture("images/Ball.jpg", scene);
-    ball.material = sphereMaterial;
-
-    ball.position.y = 3;
-    ball.frontVector = new BABYLON.Vector3(0, 0, 1);
-
-    ball.physicsImpostor = new BABYLON.PhysicsImpostor(ball,
-        BABYLON.PhysicsImpostor.SphereImpostor, { mass: 10, nativeOptions: {linearDamping: 0.35, angularDamping: 0.35} }, scene);
-
-    return ball;
-}*/
-
-function createSphere(scene, players, cameras, name, nb, pos_y, pos_x, pos_z, diffuseColor){
-
-    let sphereMesh = new BABYLON.MeshBuilder.CreateSphere("PlayerSphere", {diameter: 5}, scene);
-    let sphere = new Player(nb, sphereMesh, scene);
-    sphereMesh.position.y = pos_y;
-    sphereMesh.position.x = pos_x;
-    sphereMesh.position.z = pos_z;
-    sphereMesh.frontVector = new BABYLON.Vector3(0, 0, 1);
-
-    let sphereMaterial = new BABYLON.StandardMaterial("sphereMaterial", scene);
-    sphereMaterial.diffuseTexture = new BABYLON.Texture("images/Ball.jpg", scene);
-    sphereMaterial.diffuseColor = diffuseColor;
-    sphereMesh.material = sphereMaterial;
-
-    sphereMesh.physicsImpostor = new BABYLON.PhysicsImpostor(sphereMesh,
-        BABYLON.PhysicsImpostor.SphereImpostor, { mass: 10, nativeOptions: {linearDamping: 0.35, angularDamping: 0.35} }, scene);
-
-    players.push(sphereMesh);
-
-    let followCamera = createFollowCamera(scene, sphereMesh);
-    cameras.push(followCamera);
-
-    sphereMesh.showBoundingBox = true;
-}
-
-function createAllSpheres(scene){
-    // Sphere 1
-    createSphere(scene, players, cameras, "player1", 0, 5, 0, 0, new BABYLON.Color3(1, 0, 0)); // rouge
-    // Sphere 2
-    createSphere(scene, players, cameras, "player2", 1, 5, 10, 10, new BABYLON.Color3(0, 1, 0));  // vert
-    // Sphere 3
-    createSphere(scene, players, cameras, "player3", 2, 5, -10, -10, new BABYLON.Color3(0, 0, 1)); // bleu
-    // Sphere 4
-    createSphere(scene, players, cameras, "player4", 3, 5, -10, 10, new BABYLON.Color3(1, 0, 1)); // violet
-    // Sphere 5
-    createSphere(scene, players, cameras, "player4", 5, 5, 10, -10, new BABYLON.Color3(0, 1, 1)); // cyan
-}
-
-/// Gestion Player
-function movePlayer(numPlayer, scene, inputStates){
-    let player = players[numPlayer];
-    if (player){
-        player.Player.move(scene, inputStates);
-    }
-}
-
 function createMirror(scene, renderList) {
     var mirror = BABYLON.MeshBuilder.CreatePlane("mirror", {height: 30, width: 12}, scene);
     mirror.position.z = 10;
@@ -208,7 +158,7 @@ function createMirror(scene, renderList) {
 
     return mirror;
 }
-
+*/
 
 function createLights(scene) {
     // i.e sun light with all light rays parallels, the vector is the direction.
@@ -239,51 +189,12 @@ function createFreeCamera(scene) {
     return camera;
 }
 
-function createFollowCamera(scene, target) {
-    let camera = new BABYLON.ArcRotateCamera("playerFollowCamera",
-                                                BABYLON.Tools.ToRadians(-90),
-                                                BABYLON.Tools.ToRadians(20),
-                                                70,
-                                                scene.getMeshByName("PlayerSphere").position,
-                                                scene);
-
-
-    camera.attachControl(canvas, false, false, 0);
-    camera.panningAxis = new BABYLON.Vector3(0, 0, 0);
-    camera.lockedTarget = scene.getMeshByName("PlayerSphere");
-	camera.cameraAcceleration = 0.1; // how fast to move
-	camera.maxCameraSpeed = 5; // speed limit
-
-    return camera;
-}
-
 
 window.addEventListener("resize", () => {
     engine.resize()
 })
 
 function modifySetting(){
-
-    // Lock the pointer
-    scene.onPointerDown = () => {
-        if (!scene.alreadyLocked) {
-            console.log("requesting pointer lock");
-            canvas.requestPointerLock();
-        }
-        else{
-            console.log("Pointer already locked");
-        }
-    }
-
-    document.addEventListener("pointerlockchange", () => {
-        let element = document.pointerLockElement || null;
-        if (element) {
-            scene.alreadyLocked = true;
-        }
-        else{
-            scene.alreadyLocked = false;
-        }
-    })
 
     // key listener
     inputStates.left = false;
@@ -307,6 +218,7 @@ function modifySetting(){
         } else if (event.key === "&") {
             inputStates.tab = true;
             currentPlayer = (currentPlayer+1)%players.length;
+            console.log("Switching to camera " + currentPlayer);
             scene.activeCamera = cameras[currentPlayer];
         }
     }, false);
