@@ -45,7 +45,7 @@ export default class Level {
         players.push(sphereMesh);
 
         let followCamera = this.createFollowCamera(scene, sphereMesh);
-        sphereMesh.showBoundingBox = true;
+        sphereMesh.showBoundingBox = false;
     }
 
     createAllSpheres(scene){

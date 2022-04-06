@@ -8,8 +8,6 @@ export default class Player {
         this.speed = 0.5;
 
         playerMesh.Player = this;
-
-        
     }
 
     move(scene, inputStates){
