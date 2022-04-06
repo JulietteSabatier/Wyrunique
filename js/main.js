@@ -1,6 +1,6 @@
 import Level from "./level.js";
-import Player from "./Player.js"
-
+import Player from "./Player.js";
+import Menu from "./Menu";
 let canvas;
 let engine;
 let scene;
@@ -9,16 +9,18 @@ let currentPlayer;
 let players;
 let cameras;
 
+
 window.onload = startGame;
 
 function startGame() {
     canvas = document.querySelector("#myCanvas");
     engine = new BABYLON.Engine(canvas, true);
-
+    let menu = Menu.constructor(inputStates, canvas, engine);
     players = [];
     cameras = [];
 
-    scene = createScene(players, cameras);
+    //scene = createScene(players, cameras);
+    scene = menu.createMainMenu();
     console.log("after create scene")
     console.log(players);
     console.log(cameras);
