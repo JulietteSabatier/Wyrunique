@@ -10,6 +10,7 @@ let players;
 let cameras;
 let menu;
 let typeScene;
+let levels;
 
 
 window.onload = startGame;
@@ -20,10 +21,11 @@ function startGame() {
     menu = new Menu(inputStates, canvas, engine);
     players = [];
     cameras = [];
+    levels = ["1","2","3","1","2","3","1","2","3","1","2","3"];
     typeScene = 0;
 
     //scene = createScene(players, cameras);
-    scene= menu.createMainMenu();
+    scene= menu.createLevelMenu(levels);
     // prevent the pointer to go outside the game window
     modifySetting();
 

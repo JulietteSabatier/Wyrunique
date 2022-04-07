@@ -75,6 +75,86 @@ export default class Menu {
         return scene;
     }
 
+    createLevelMenu(levels){
+        let scene = new BABYLON.Scene(this.engine);
+        scene.assetManager = this.configureAssetManager(scene, this.engine);
+
+        // background
+        scene.clearColor = new BABYLON.Color3(0.2,0.2,0.2);
+
+        // Camera and light
+        let freeCamera = new BABYLON.FreeCamera("freeCamera", new BABYLON.Vector3(0, 50, 0), scene);
+        scene.activeCamera = freeCamera;
+        this.createLight(scene);
+
+        // Gui
+        let advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("mainMenuUi", true);
+
+        // Text name game
+        var text1 = new BABYLON.GUI.TextBlock();
+        text1.text = "Wyrunique";
+        text1.color = "white";
+        text1.fontSize = 100;
+        text1.top = "-400px";
+        text1.left = "0px";
+        advancedTexture.addControl(text1);
+
+        // Text choose level
+        let text2 = new BABYLON.GUI.TextBlock();
+        text2.text = "Choose your level:";
+        text2.color = "white";
+        text2.fontSize = 40;
+        text2.top = "-300px";
+        text2.left = "-350px";
+        advancedTexture.addControl(text2);
+
+        // Scroll level
+        let chooseLevel = new BABYLON.GUI.ScrollViewer("chosseLevel");
+        chooseLevel.width = "1000px";
+        chooseLevel.height = "500px";
+        chooseLevel.background = "black";
+
+        let gridLevel = new BABYLON.GUI.Grid()
+        for (let i=0; i<levels.length; i++){
+            let level = levels[i];
+            gridLevel.addRowDefinition(50, true);
+            let rect = new BABYLON.GUI.Rectangle();
+            if (i === 0){
+                rect.background = "blue";
+            }
+            else if (i === 1){
+                rect.background = "red";
+            }
+            else if (i === 2){
+                rect.background = "purple";
+            }
+
+            //let text = new BABYLON.GUI.TextBlock("level "+i);
+            //text.color = "white";
+            //text.background = "blue";
+            gridLevel.addControl(rect, i);
+        }
+        chooseLevel.addControl(gridLevel);
+        advancedTexture.addControl(chooseLevel);
+
+
+        // Button return
+        let button3 = BABYLON.GUI.Button.CreateSimpleButton("but3", "Return");
+        button3.width = "150px"
+        button3.height = "60px";
+        button3.color = "white";
+        button3.cornerRadius = 20;
+        button3.background = "green";
+        button3.top = "300px";
+        button3.left = "400px";
+        button3.onPointerUpObservable.add(function() {
+            alert("Change scene to Commands");
+        });
+        advancedTexture.addControl(button3);
+
+        return scene;
+    }
+
     createCamera(scene, canvas, engine){
         let camera = new BABYLON.FreeCamera("fixCamera", new BABYLON.Vector3(0, 50, 0), scene, scene);
         scene.activeCamera = camera;
