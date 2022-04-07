@@ -9,6 +9,7 @@ let currentPlayer;
 let players;
 let cameras;
 let menu;
+let typeScene;
 
 
 window.onload = startGame;
@@ -19,18 +20,24 @@ function startGame() {
     menu = new Menu(inputStates, canvas, engine);
     players = [];
     cameras = [];
+    typeScene = 0;
 
     //scene = createScene(players, cameras);
-    scene = menu.createMainMenu();
-    console.log(scene);
+    scene= menu.createMainMenu();
     // prevent the pointer to go outside the game window
     modifySetting();
 
     scene.toRender = () => {
         let deltaTime = engine.getDeltaTime();
-        movePlayer(currentPlayer, scene, inputStates);
-        mergePlayer();
-        //mergePlayers(scene);
+
+        if (typeScene === 0){
+
+        }
+        else if (typeScene === 1){
+            movePlayer(currentPlayer, scene, inputStates);
+            mergePlayer();
+        }
+
 
         scene.render();
     }
@@ -42,13 +49,12 @@ function startGame() {
 function createMainMenu(){
     scene = new BABYLON.Scene(engine);
     scene.assetManager = configureAssetManager(scene);
+    // background
+    scene.clearColor = new BABYLON.Color3(0.2,0.2,0.2);
 
-    scene.clearColor = new BABYLON.Color3(10, 10, 10);
+    let freeCamera = createFreeCamera(scene);
 
-
-    let freeeCamera = createFreeCamera(scene);
-    scene.activeCamera = freeeCamera;
-
+    scene.activeCamera = freeCamera;
     createLights(scene);
 
     return scene;
