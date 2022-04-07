@@ -1,4 +1,5 @@
 import Player from "./Player.js";
+import { loadNextLevel } from "./main.js";
 
 export default class Level {
     constructor(id, scene) {
@@ -40,10 +41,19 @@ export default class Level {
             let cylinderMaterial = new BABYLON.StandardMaterial("cylinderMaterial", scene);
             cylinderMaterial.diffuseTexture = new BABYLON.Texture("images/finishZone.png", scene);
 
-            let finishBox = new BABYLON.MeshBuilder.CreateCylinder("finishSphere", {height: 10, diameter: 25, faceUV: faceUV, faceColors: colors}, scene);
+            let finishBox = new BABYLON.MeshBuilder.CreateCylinder("finishZone", {height: 10, diameter: 25, faceUV: faceUV, faceColors: colors}, scene);
             finishBox.position = new BABYLON.Vector3(0, 5, 300);
             finishBox.material = cylinderMaterial;
             this.canFinish = true;
+        }
+    }
+
+    checkIfFinish() {
+        let finishZone = this.scene.getMeshByName("finishZone");
+        let player = this.scene.players[0];
+
+        if (player.intersectsPoint(finishZone.position)) {
+            loadNextLevel();
         }
     }
 
@@ -87,7 +97,7 @@ export default class Level {
     createFollowCamera(scene, target) {
         let camera = new BABYLON.ArcRotateCamera("playerFollowCamera",
             BABYLON.Tools.ToRadians(-90),
-            BABYLON.Tools.ToRadians(20),
+            BABYLON.Tools.ToRadians(70),
             70,
             target.position,
             scene);

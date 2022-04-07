@@ -18,7 +18,7 @@ function startGame() {
     players = [];
     cameras = [];
 
-    scene = createScene(players, cameras);
+    scene = createScene();
 
     // prevent the pointer to go outside the game window
     modifySetting();
@@ -28,7 +28,10 @@ function startGame() {
         movePlayer(currentPlayer, scene, inputStates);
 
         mergePlayer();
-        //mergePlayers(scene);
+
+        if (scene.currentLevel.canFinish) {
+            scene.currentLevel.checkIfFinish();
+        }
 
         scene.render();
     }
@@ -42,7 +45,7 @@ function configureAssetManager(scene){
     let assetsManager = new BABYLON.AssetsManager(scene);
 
     assetsManager.onProgress = function(remainingCount, totalCount, lastFinishedTask){
-        engine.loadingUIText = " We are loading the scene. " + remainingCount + " out of " + totalCount + " items still need to be loaded";
+        engine.loadingUIText = "We are loading the scene. " + remainingCount + " out of " + totalCount + " items still need to be loaded";
     };
 
     assetsManager.onFinish = function(tasks) {
@@ -115,56 +118,12 @@ function mergePlayer(){
 }
 
 
-/*
-function createLabyrinthe(scene) {
-    const labyrintheOptions = { width:2000, height:2000, subdivisions:200, minHeight:0, maxHeight:100};
-    const labyrinthe = BABYLON.MeshBuilder.CreateGroundFromHeightMap("gdhm", 'images/Labyrinthe.bmp', labyrintheOptions, scene);
-    const labyrintheMaterial = new BABYLON.StandardMaterial("groundMaterial", scene);
-    labyrintheMaterial.diffuseTexture = new BABYLON.Texture("images/woodFloor.jpg");
-    labyrinthe.material = labyrintheMaterial;
-    labyrinthe.material.diffuseTexture.uScale = 10;
-    labyrinthe.material.diffuseTexture.vScale = 10;
-
-    // to be taken into account by collision detection
-    labyrinthe.checkCollisions = true;
-    //labyrintheMaterial.wireframe=true;
-    // for physic engine
-    labyrinthe.physicsImpostor = new BABYLON.PhysicsImpostor(labyrinthe,
-        BABYLON.PhysicsImpostor.MeshImpostor, { mass: 0 }, scene);
-    return labyrinthe;
-}*/
-
-/*
-function createMirror(scene, renderList) {
-    var mirror = BABYLON.MeshBuilder.CreatePlane("mirror", {height: 30, width: 12}, scene);
-    mirror.position.z = 10;
-    mirror.position.y = 15;
-
-    let mirrorMaterial = new BABYLON.StandardMaterial("mirrorMaterial", scene);
-
-    // 1024 = size of the dynamically generated mirror texture
-    mirrorMaterial.reflectionTexture = new BABYLON.MirrorTexture("mirrorTexture", 1024, scene, true);
-
-    //Following lines from https://playground.babylonjs.com/#1YAIO7#5
-    //Ensure working with new values for mirror by computing and obtaining its worldMatrix
-    mirror.computeWorldMatrix(true);
-    var mirror_worldMatrix = mirror.getWorldMatrix();
-
-    //Obtain normals for plane and assign one of them as the normal
-    var mirror_vertexData = mirror.getVerticesData("normal");
-    var mirrorNormal = new BABYLON.Vector3(mirror_vertexData[0], mirror_vertexData[1], mirror_vertexData[2]);
-    //Use worldMatrix to transform normal into its current value
-    mirrorNormal = new BABYLON.Vector3.TransformNormal(mirrorNormal, mirror_worldMatrix)
-
-    mirrorMaterial.reflectionTexture.mirrorPlane = new BABYLON.Plane.FromPositionAndNormal(mirror.position,
-                                                                                            mirrorNormal.scale(-1));
-	mirror.material = mirrorMaterial;
-
-    mirror.material.reflectionTexture.renderList = renderList;
-
-    return mirror;
+export function loadNextLevel() {
+    players = [];
+    cameras = [];
+    scene = createScene()
 }
-*/
+
 
 function createLights(scene) {
     // i.e sun light with all light rays parallels, the vector is the direction.
