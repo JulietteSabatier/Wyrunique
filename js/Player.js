@@ -20,9 +20,8 @@ export default class Player {
         let forceMagnitude = 500;
         let contactLocalRefPoint = BABYLON.Vector3.Zero();
         let forceDirection = BABYLON.Vector3.Zero();
-
         if(inputStates.up) {
-            forceDirection = this.playerMesh.frontVector;
+            forceDirection = new BABYLON.Vector3(this.playerMesh.frontVector.x, 0, this.playerMesh.frontVector.z);
         }
         else if(inputStates.down) {
             forceDirection = this.playerMesh.frontVector.negate();
@@ -32,11 +31,9 @@ export default class Player {
             forceDirection.z = -this.playerMesh.frontVector.x;
         }
         else if(inputStates.left) {
-            //TODO voir pour inverser cosinus ou sinus
             forceDirection.x = -this.playerMesh.frontVector.z;
             forceDirection.z = this.playerMesh.frontVector.x;
         }
-        //console.log(forceDirection);
         this.playerMesh.physicsImpostor.applyForce(forceDirection.scale(forceMagnitude), this.playerMesh.getAbsolutePosition().add(contactLocalRefPoint));
 
     }
@@ -45,7 +42,6 @@ export default class Player {
         for (let i=0; i < players.length; i=i+1){
             if (i !== currentPlayer){
                 if (players[currentPlayer].intersectsMesh(players[i], true)){
-                    console.log("touch player: "+i);
                     let removedPlayer = players.splice(i,1);
                     let removedCamera = cameras.splice(i,1);
                     removedPlayer[0].dispose();
@@ -56,6 +52,9 @@ export default class Player {
                     break;
                 }
             }
+        }
+        if (players.length === 1) {
+            scene.currentLevel.createEnd(scene);
         }
     }
 }

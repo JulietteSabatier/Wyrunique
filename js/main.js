@@ -19,9 +19,7 @@ function startGame() {
     cameras = [];
 
     scene = createScene(players, cameras);
-    console.log("after create scene")
-    console.log(players);
-    console.log(cameras);
+
     // prevent the pointer to go outside the game window
     modifySetting();
 
@@ -72,9 +70,8 @@ function createScene() {
     scene.players = players;
     scene.cameras = cameras;
 
-    let currentLevel = new Level(1, scene);
+    scene.currentLevel = new Level(1, scene);
 
-    //scene.activeCamera = freeCamera;
     scene.activeCamera = cameras[0];
     currentPlayer = 0;
     createLights(scene);
