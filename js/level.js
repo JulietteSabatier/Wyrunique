@@ -26,12 +26,23 @@ export default class Level {
 
     createEnd(scene) {
         if (!this.canFinish) {
-            let finishBox = new BABYLON.MeshBuilder.CreateSphere("finishSphere", {diameter: 25}, scene);
-            finishBox.position = new BABYLON.Vector3(0, 0, 300);
 
-            let sphereMaterial = new BABYLON.StandardMaterial("sphereMaterial", scene);
-            sphereMaterial.diffuseTexture = new BABYLON.Texture("images/finishCircle.png", scene);
-            finishBox.material = sphereMaterial;
+            const faceUV = [];
+            faceUV[0] =	new BABYLON.Vector4(0, 0, 0, 0);
+            faceUV[1] =	new BABYLON.Vector4(1, 0, 0.25, 1); // x, z swapped to flip image
+            faceUV[2] = new BABYLON.Vector4(0, 0, 0.24, 1);
+
+            const colors = [];
+            colors[0] = new BABYLON.Vector4(0, 0, 0, 0);
+            colors[1] = new BABYLON.Vector4(0, 0, 0, 0);
+            colors[2] = new BABYLON.Vector4(0, 0, 0, 0);
+
+            let cylinderMaterial = new BABYLON.StandardMaterial("cylinderMaterial", scene);
+            cylinderMaterial.diffuseTexture = new BABYLON.Texture("images/finishZone.png", scene);
+
+            let finishBox = new BABYLON.MeshBuilder.CreateCylinder("finishSphere", {height: 10, diameter: 25, faceUV: faceUV, faceColors: colors}, scene);
+            finishBox.position = new BABYLON.Vector3(0, 5, 300);
+            finishBox.material = cylinderMaterial;
             this.canFinish = true;
         }
     }
@@ -63,13 +74,13 @@ export default class Level {
         // Sphere 1
         this.createSphere(scene, scene.players, scene.cameras, "player1", 0, 5, 0, 0, new BABYLON.Color3(1, 0, 0)); // rouge
         // Sphere 2
-        this.createSphere(scene, scene.players, scene.cameras, "player2", 1, 5, -2.5, 50, new BABYLON.Color3(0, 1, 0));  // vert
+        this.createSphere(scene, scene.players, scene.cameras, "player2", 1, 5, 0, 20, new BABYLON.Color3(0, 1, 0));  // vert
         // Sphere 3
-        this.createSphere(scene, scene.players, scene.cameras, "player3", 2, 5, -7.5, 50, new BABYLON.Color3(0, 0, 1)); // bleu
+        this.createSphere(scene, scene.players, scene.cameras, "player3", 2, 5, 0, 30, new BABYLON.Color3(0, 0, 1)); // bleu
         // Sphere 4
-        this.createSphere(scene, scene.players, scene.cameras, "player4", 3, 5, 2.5, 50, new BABYLON.Color3(1, 0, 1)); // violet
+        this.createSphere(scene, scene.players, scene.cameras, "player4", 3, 5, 0, 40, new BABYLON.Color3(1, 0, 1)); // violet
         // Sphere 5
-        this.createSphere(scene, scene.players, scene.cameras, "player5", 5, 5, 7.5, 50, new BABYLON.Color3(0, 1, 1)); // cyan
+        this.createSphere(scene, scene.players, scene.cameras, "player5", 5, 5, 0, 50, new BABYLON.Color3(0, 1, 1)); // cyan
     }
 
 
@@ -81,11 +92,15 @@ export default class Level {
             target.position,
             scene);
 
-        camera.attachControl(scene.canvas, false, false, 0);
+        camera.checkCollisions = true;
         camera.panningAxis = new BABYLON.Vector3(0, 0, 0);
         camera.lockedTarget = target;
         camera.cameraAcceleration = 0.1; // how fast to move
         camera.maxCameraSpeed = 5; // speed limit
+        camera.lowerRadiusLimit = 30;
+        camera.upperRadiusLimit = 100;
+        camera.upperBetaLimit = (Math.PI / 2);
+        camera.attachControl(scene.canvas, false, false, 0);
 
         return camera;
     }

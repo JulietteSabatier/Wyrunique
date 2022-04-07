@@ -27,7 +27,8 @@ function startGame() {
         let deltaTime = engine.getDeltaTime();
         movePlayer(currentPlayer, scene, inputStates);
 
-        mergePlayers(scene);
+        mergePlayer();
+        //mergePlayers(scene);
 
         scene.render();
     }
@@ -52,33 +53,6 @@ function configureAssetManager(scene){
 
     return assetsManager;
 }
-
-function mergePlayers(scene){
-
-    for (let i=0; i < players.length; i=i+1){
-        if (i !== currentPlayer){
-            let x = Object.values(players[i].getBoundingInfo()["boundingBox"]["centerWorld"])[1];
-            let y = Object.values(players[i].getBoundingInfo()["boundingBox"]["centerWorld"])[2];
-            let z = Object.values(players[i].getBoundingInfo()["boundingBox"]["centerWorld"])[3];
-            if (!(x === 0 && y === 0 && z === 0)){       // weirdly at the beginning of the game x,y,z are at 0,0,0 and it touches the first ball
-                if (players[currentPlayer].intersectsPoint({x,y,z}, true)){
-
-                    players[i].dispose();
-
-                    players.splice(i, 1);
-                    cameras.splice(i, 1);
-                    if (i < currentPlayer){
-                        currentPlayer = currentPlayer - 1;
-                    }
-                }
-            }
-        }
-    }
-    if (players.length === 1) {
-        scene.currentLevel.createEnd(scene);
-    }
-}
-
 
 /// Create environement
 function createScene() {
@@ -117,7 +91,7 @@ function createGround(scene) {
 
     // to be taken into account by collision detection
     ground.checkCollisions = true;
-
+    //groundMaterial.wireframe=true;
     // for physic engine
     ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground,
         BABYLON.PhysicsImpostor.HeightmapImpostor, { mass: 0 }, scene);
@@ -130,6 +104,13 @@ function movePlayer(numPlayer, scene, inputStates){
     let player = players[numPlayer];
     if (player){
         player.Player.move(scene, inputStates);
+    }
+}
+
+function mergePlayer(){
+    let player = players[currentPlayer];
+    if (player){
+        player.Player.merge(scene, players, cameras, currentPlayer);
     }
 }
 
