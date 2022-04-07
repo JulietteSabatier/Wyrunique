@@ -1,6 +1,6 @@
 import Level from "./level.js";
 import Player from "./Player.js";
-import Menu from "./Menu";
+import Menu from "./Menu.js";
 let canvas;
 let engine;
 let scene;
@@ -8,6 +8,7 @@ let inputStates = {};
 let currentPlayer;
 let players;
 let cameras;
+let menu;
 
 
 window.onload = startGame;
@@ -15,22 +16,19 @@ window.onload = startGame;
 function startGame() {
     canvas = document.querySelector("#myCanvas");
     engine = new BABYLON.Engine(canvas, true);
-    let menu = Menu.constructor(inputStates, canvas, engine);
+    menu = new Menu(inputStates, canvas, engine);
     players = [];
     cameras = [];
 
     //scene = createScene(players, cameras);
     scene = menu.createMainMenu();
-    console.log("after create scene")
-    console.log(players);
-    console.log(cameras);
+    console.log(scene);
     // prevent the pointer to go outside the game window
     modifySetting();
 
     scene.toRender = () => {
         let deltaTime = engine.getDeltaTime();
         movePlayer(currentPlayer, scene, inputStates);
-
         mergePlayer();
         //mergePlayers(scene);
 
@@ -39,6 +37,21 @@ function startGame() {
 
     scene.assetManager.load();
 
+}
+
+function createMainMenu(){
+    scene = new BABYLON.Scene(engine);
+    scene.assetManager = configureAssetManager(scene);
+
+    scene.clearColor = new BABYLON.Color3(10, 10, 10);
+
+
+    let freeeCamera = createFreeCamera(scene);
+    scene.activeCamera = freeeCamera;
+
+    createLights(scene);
+
+    return scene;
 }
 
 

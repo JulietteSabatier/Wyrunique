@@ -8,16 +8,19 @@ export default class Menu {
 
     createMainMenu(){
         let scene = new BABYLON.Scene(this.engine);
-        scene.clearColor = new BABYLON.Color3(10,10,10);
+        scene.assetManager = this.configureAssetManager(scene, this.engine);
+        scene.clearColor = new BABYLON.Color3(100,10,10);
 
-        this.createCamera(scene);
+        this.createCamera(scene, this.canvas, this.engine);
         this.createLight(scene);
 
         return scene;
     }
 
-    createCamera(scene){
-        scene.activeCamera = new BABYLON.Camera("fixCamera", new BABYLON.Vector3(0, 0, 0), scene, true);
+    createCamera(scene, canvas, engine){
+        let camera = new BABYLON.FreeCamera("fixCamera", new BABYLON.Vector3(0, 50, 0), scene, scene);
+        scene.activeCamera = camera;
+        camera.attachControl(canvas);
     }
 
     createLight(scene){
@@ -25,6 +28,21 @@ export default class Menu {
         light.position._y = -5;
     }
 
+    configureAssetManager(scene, engine){
+        let assetsManager = new BABYLON.AssetsManager(scene);
+
+        assetsManager.onProgress = function(remainingCount, totalCount, lastFinishedTask){
+            engine.loadingUIText = " We are loading the scene. " + remainingCount + " out of " + totalCount + " items still need to be loaded";
+        };
+
+        assetsManager.onFinish = function(tasks) {
+            engine.runRenderLoop(function(){
+                scene.toRender();
+            });
+        };
+
+        return assetsManager;
+    }
 
 }
 
