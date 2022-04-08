@@ -11,7 +11,8 @@ let cameras;
 let menu;
 let typeScene;
 let levels;
-
+let levelScene;
+let menuScene;
 
 window.onload = startGame;
 
@@ -21,8 +22,11 @@ function startGame() {
     menu = new Menu(inputStates, canvas, engine);
     players = [];
     cameras = [];
-    levels = ["1","2","3","1","2","3","1","2","3","1","2","3"];
+    levels = ["Bonjour","Test","Hello","World","Hola","Miaou","Choco","Balou","Mirage","Car","Soupe","Matin"];
     typeScene = 0;
+
+    levelScene = menu.createLevelMenu(levels);
+    menuScene = menu.createMainMenu();
 
     //scene = createScene(players, cameras);
     scene= menu.createLevelMenu(levels);

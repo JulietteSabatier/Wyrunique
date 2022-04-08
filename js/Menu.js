@@ -20,6 +20,7 @@ export default class Menu {
 
         // Gui
         let advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("mainMenuUi", true);
+        advancedTexture.idealWidth = 1500;
 
         // Name Game
         var text1 = new BABYLON.GUI.TextBlock();
@@ -89,6 +90,7 @@ export default class Menu {
 
         // Gui
         let advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("mainMenuUi", true);
+        advancedTexture.idealWidth = 2000;
 
         // Text name game
         var text1 = new BABYLON.GUI.TextBlock();
@@ -115,23 +117,37 @@ export default class Menu {
         chooseLevel.background = "black";
 
         let gridLevel = new BABYLON.GUI.Grid()
+        gridLevel.height = (levels.length * 80)+"px";
+
         for (let i=0; i<levels.length; i++){
             let level = levels[i];
-            gridLevel.addRowDefinition(50, true);
+            gridLevel.addRowDefinition(80, true);
             let rect = new BABYLON.GUI.Rectangle();
-            if (i === 0){
+            if (i%2 === 0){
                 rect.background = "blue";
+
             }
-            else if (i === 1){
+            else if (i%2 === 1){
                 rect.background = "red";
             }
-            else if (i === 2){
-                rect.background = "purple";
-            }
 
-            //let text = new BABYLON.GUI.TextBlock("level "+i);
-            //text.color = "white";
-            //text.background = "blue";
+            let grid = new BABYLON.GUI.Grid();
+            grid.addColumnDefinition(100, true);
+
+            // Num level
+            let numLevel = new BABYLON.GUI.Rectangle();
+            let textNumLevel = new BABYLON.GUI.TextBlock("numLevel", ""+i);
+            numLevel.addControl(textNumLevel);
+            grid.addControl(numLevel, 0, 0);
+
+            // Name level
+            grid.addColumnDefinition(700, true);
+            let nameLevel = new BABYLON.GUI.Rectangle();
+            let textNameLevel = new BABYLON.GUI.TextBlock("nameLevel", level);
+            nameLevel.addControl(textNameLevel);
+            grid.addControl(nameLevel, 0, 1);
+            rect.addControl(grid);
+
             gridLevel.addControl(rect, i);
         }
         chooseLevel.addControl(gridLevel);
@@ -148,12 +164,13 @@ export default class Menu {
         button3.top = "300px";
         button3.left = "400px";
         button3.onPointerUpObservable.add(function() {
-            alert("Change scene to Commands");
+            alert("Change scene to main menu");
         });
         advancedTexture.addControl(button3);
 
         return scene;
     }
+
 
     createCamera(scene, canvas, engine){
         let camera = new BABYLON.FreeCamera("fixCamera", new BABYLON.Vector3(0, 50, 0), scene, scene);
