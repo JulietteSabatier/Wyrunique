@@ -1,6 +1,6 @@
 import Level from "./level.js";
-import Player from "./Player.js";
 import Menu from "./Menu.js";
+
 let canvas;
 let engine;
 let scene;
@@ -8,59 +8,119 @@ let inputStates = {};
 let currentPlayer;
 let players;
 let cameras;
-let menu;
-let typeScene;
 let levels;
-let levelScene;
-let menuScene;
+
+
+let typeSceneShow;
+let typeSceneClick;
+let typeGuiShow;
+let typeGuiClick;
+let guiLevel;
+let menuScenes;
+let advancedTexture;
 
 window.onload = startGame;
 
 function startGame() {
     canvas = document.querySelector("#myCanvas");
     engine = new BABYLON.Engine(canvas, true);
-    menu = new Menu(inputStates, canvas, engine);
+
     players = [];
     cameras = [];
+    menuScenes = [];
+    advancedTexture = [];
     levels = ["Bonjour","Test","Hello","World","Hola","Miaou","Choco","Balou","Mirage","Car","Soupe","Matin"];
-    typeScene = 0;
 
-    levelScene = menu.createLevelMenu(levels);
-    menuScene = menu.createMainMenu();
 
-    //scene = createScene(players, cameras);
-    scene= menu.createLevelMenu(levels);
+    // Init to menu
+    typeSceneShow = 0;
+    typeSceneClick = 0;
+
+    // Init to main menu
+    typeGuiClick = 0;
+    typeGuiShow = 0;
+
+    menuScenes.push(createMainMenu());
+    menuScenes.push(createMainMenu());
+
+
+
+
     // prevent the pointer to go outside the game window
     modifySetting();
 
-    scene.toRender = () => {
+    advancedTexture[0] = Menu.createMainMenuGui(menuScenes[0], engine, canvas);
+    advancedTexture[1] = Menu.createLevelMenu(levels, menuScenes[1], engine, canvas);
+    setButtonGuiMenu();
+
+
+    menuScenes[0].render();
+
+    engine.runRenderLoop(function () {
         let deltaTime = engine.getDeltaTime();
 
-        if (typeScene === 0){
+        if (typeSceneShow !== typeSceneClick){ // changer scene
 
         }
-        else if (typeScene === 1){
+        else if (typeSceneShow === 0){  // scene menu
+            if (typeGuiShow !== typeGuiClick){  // change menu
+                menuScenes[typeGuiClick].render();
+                typeGuiShow = typeGuiClick;
+            }
+        }
+        else if (typeSceneShow === 1){  // scene level
+            /*
             movePlayer(currentPlayer, scene, inputStates);
             mergePlayer();
+            */
         }
 
+    })
 
-        scene.render();
-    }
+}
 
-    scene.assetManager.load();
+function setButtonGuiMenu(){
+    // Main menu
+    advancedTexture[0]["play"].onPointerUpObservable.add(function(){
+        typeGuiClick = 1;
+    })
 
+    advancedTexture[0]["commands"].onPointerUpObservable.add(function (){
+        typeSceneClick = 1;
+        console.log("test: change to level");
+    })
+
+    // Level menu
+    advancedTexture[1]["return"].onPointerUpObservable.add(function(){
+        typeGuiClick = 0;
+    })
+}
+
+
+function createMenuScene(){
+    let menuScene = new BABYLON.Scene(engine);
+    menuScene.assetManager = configureAssetManager(menuScene);
+
+    menuScene.clearColor = new BABYLON.Color3(0.2, 0.2, 0.2);
+
+    let freeCameraMenu = new BABYLON.FreeCamera("freeCameraMenu", new BABYLON.Vector3(0,50,0), menuScene);
+    menuScene.activeCamera = freeCameraMenu;
+
+    let light = new BABYLON.DirectionalLight("light", new BABYLON.Vector3(0,-5,0), menuScene);
+    light.position._y = -5;
+
+    return menuScene;
 }
 
 function createMainMenu(){
     scene = new BABYLON.Scene(engine);
-    scene.assetManager = configureAssetManager(scene);
     // background
     scene.clearColor = new BABYLON.Color3(0.2,0.2,0.2);
 
-    let freeCamera = createFreeCamera(scene);
+    let camera = new BABYLON.FreeCamera("fixCamera", new BABYLON.Vector3(0, 50, 0), scene, scene);
+    scene.activeCamera = camera;
+    camera.attachControl(canvas);
 
-    scene.activeCamera = freeCamera;
     createLights(scene);
 
     return scene;
