@@ -6,18 +6,20 @@ let engine;
 let scene;
 let inputStates = {};
 let currentPlayer;
-let players;
-let cameras;
-let levels;
+let players = [];
+let cameras = [];
 
+let levelScenes = [];
 
 let typeSceneShow;
 let typeSceneClick;
 let typeGuiShow;
 let typeGuiClick;
-let guiLevel;
-let menuScenes;
-let advancedTexture;
+let numLevelShow;
+let numLevelClick;
+
+let menuScenes = [];
+let advancedTexture = [];
 
 window.onload = startGame;
 
@@ -25,21 +27,21 @@ function startGame() {
     canvas = document.querySelector("#myCanvas");
     engine = new BABYLON.Engine(canvas, true);
 
-    players = [];
-    cameras = [];
-    menuScenes = [];
-    advancedTexture = [];
-    levels = ["Bonjour","Test","Hello","World","Hola","Miaou","Choco","Balou","Mirage","Car","Soupe","Matin"];
-
+    levelScenes.push(createScene1());
+    levelScenes.push(createScene2());
 
     // Init to menu
     typeSceneShow = 0;
     typeSceneClick = 0;
-
     // Init to main menu
     typeGuiClick = 0;
     typeGuiShow = 0;
+    // Init num level
+    numLevelClick = 0;
+    numLevelShow = 0;
 
+    menuScenes.push(createMainMenu());
+    menuScenes.push(createMainMenu());
     menuScenes.push(createMainMenu());
     menuScenes.push(createMainMenu());
 
@@ -49,10 +51,11 @@ function startGame() {
     // prevent the pointer to go outside the game window
     modifySetting();
 
-    advancedTexture[0] = Menu.createMainMenuGui(menuScenes[0], engine, canvas);
-    advancedTexture[1] = Menu.createLevelMenu(levels, menuScenes[1], engine, canvas);
+    advancedTexture[0] = Menu.createMainMenuGui(menuScenes[0]);
+    advancedTexture[1] = Menu.createLevelMenu(levelScenes, menuScenes[1]);
+    advancedTexture[2] = Menu.createCommandsMenu(menuScenes[2]);
+    advancedTexture[3] = Menu.createOptionsMenu(menuScenes[3]);
     setButtonGuiMenu();
-
 
     menuScenes[0].render();
 
@@ -60,7 +63,15 @@ function startGame() {
         let deltaTime = engine.getDeltaTime();
 
         if (typeSceneShow !== typeSceneClick){ // changer scene
-
+            if ((typeSceneClick === 0)){ // change to menu
+                menuScenes[1].render(); // print level menu
+                typeGuiShow = 1;
+                typeGuiClick = 1;
+            }
+            else if (typeGuiClick === 1){   // change to level
+                levelScenes[numLevelShow].render();     // current level
+            }
+            typeSceneShow = typeSceneClick;
         }
         else if (typeSceneShow === 0){  // scene menu
             if (typeGuiShow !== typeGuiClick){  // change menu
@@ -83,17 +94,39 @@ function setButtonGuiMenu(){
     // Main menu
     advancedTexture[0]["play"].onPointerUpObservable.add(function(){
         typeGuiClick = 1;
-    })
+    });
 
     advancedTexture[0]["commands"].onPointerUpObservable.add(function (){
-        typeSceneClick = 1;
-        console.log("test: change to level");
-    })
+        typeGuiClick = 2;
+        console.log("Change to commands");
+    });
+
+    advancedTexture[0]["options"].onPointerUpObservable.add(function (){
+        typeGuiClick = 3;
+        console.log("Change to options")
+    });
 
     // Level menu
     advancedTexture[1]["return"].onPointerUpObservable.add(function(){
         typeGuiClick = 0;
-    })
+    });
+
+    for (let i=0; i<levelScenes.length; i++){
+        advancedTexture[1]["levels"][i].onPointerUpObservable.add(function(){
+            numLevelShow = i;
+            typeSceneClick = 1;
+        })
+    }
+
+    // Command menu
+    advancedTexture[2]["return"].onPointerUpObservable.add(function(){
+        typeGuiClick = 0;
+    });
+
+    // Options menu
+    advancedTexture[3]["return"].onPointerUpObservable.add(function(){
+        typeGuiClick = 0;
+    });
 }
 
 
@@ -143,10 +176,10 @@ function configureAssetManager(scene){
     return assetsManager;
 }
 
-/// Create environement
+/// Create environment
 function createScene() {
     let scene = new BABYLON.Scene(engine);
-    scene.assetManager = configureAssetManager(scene);
+    //scene.assetManager = configureAssetManager(scene);
     // background
     scene.clearColor = new BABYLON.Color3(1, 0, 1);
 
@@ -167,6 +200,32 @@ function createScene() {
     createLights(scene);
 
    return scene;
+}
+
+function createScene1(){
+    let scene = new BABYLON.Scene(engine);
+    // background
+    scene.clearColor = new BABYLON.Color3(1, 0, 1);
+
+    let freeCamera = createFreeCamera(scene);
+
+    scene.activeCamera = freeCamera;
+    createLights(scene);
+
+    return scene;
+}
+
+function createScene2(){
+    let scene = new BABYLON.Scene(engine);
+    // background
+    scene.clearColor = new BABYLON.Color3(0, 0, 1);
+
+    let freeCamera = createFreeCamera(scene);
+
+    scene.activeCamera = freeCamera;
+    createLights(scene);
+
+    return scene;
 }
 
 function createGround(scene) {
