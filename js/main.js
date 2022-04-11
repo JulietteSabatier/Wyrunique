@@ -19,7 +19,7 @@ let numLevelShow;
 let numLevelClick;
 
 let menuScenes = [];
-let advancedTexture = [];
+let advancedTexture;
 
 window.onload = startGame;
 
@@ -51,30 +51,38 @@ function startGame() {
     // prevent the pointer to go outside the game window
     modifySetting();
 
-    advancedTexture[0] = Menu.createMainMenuGui(menuScenes[0]);
-    advancedTexture[1] = Menu.createLevelMenu(levelScenes, menuScenes[1]);
-    advancedTexture[2] = Menu.createCommandsMenu(menuScenes[2]);
-    advancedTexture[3] = Menu.createOptionsMenu(menuScenes[3]);
-    setButtonGuiMenu();
+    //advancedTexture[0] = Menu.createMainMenuGui(menuScenes[0]);
+    //advancedTexture[1] = Menu.createLevelMenu(levelScenes, menuScenes[1]);
+    //advancedTexture[2] = Menu.createCommandsMenu(menuScenes[2]);
+    //advancedTexture[3] = Menu.createOptionsMenu(menuScenes[3]);
 
+
+//    Menu.createMainMenuGui(menuScenes[0]);
+    advancedTexture = createGuiMenu(0);
+    setButtonGuiMenu();
     menuScenes[0].render();
+
 
     engine.runRenderLoop(function () {
         let deltaTime = engine.getDeltaTime();
 
         if (typeSceneShow !== typeSceneClick){ // changer scene
-            if ((typeSceneClick === 0)){ // change to menu
+            //alert("Type scene show: "+typeSceneShow + "\n" + "Type scene click: "+typeSceneClick + "\n");
+            if ((typeSceneClick === 0) && (typeSceneShow === 1)){ // change from level to menu
                 menuScenes[1].render(); // print level menu
                 typeGuiShow = 1;
                 typeGuiClick = 1;
             }
-            else if (typeGuiClick === 1){   // change to level
+            else if ((typeSceneClick === 1) && (typeSceneShow === 0)){   // change from menu to level
                 levelScenes[numLevelShow].render();     // current level
             }
             typeSceneShow = typeSceneClick;
         }
         else if (typeSceneShow === 0){  // scene menu
             if (typeGuiShow !== typeGuiClick){  // change menu
+                advancedTexture["gui"].dispose();
+                advancedTexture = createGuiMenu(typeGuiClick);
+                setButtonGuiMenu()
                 menuScenes[typeGuiClick].render();
                 typeGuiShow = typeGuiClick;
             }
@@ -86,47 +94,72 @@ function startGame() {
             */
         }
 
+
+
     })
 
 }
 
-function setButtonGuiMenu(){
-    // Main menu
-    advancedTexture[0]["play"].onPointerUpObservable.add(function(){
-        typeGuiClick = 1;
-    });
-
-    advancedTexture[0]["commands"].onPointerUpObservable.add(function (){
-        typeGuiClick = 2;
-        console.log("Change to commands");
-    });
-
-    advancedTexture[0]["options"].onPointerUpObservable.add(function (){
-        typeGuiClick = 3;
-        console.log("Change to options")
-    });
-
-    // Level menu
-    advancedTexture[1]["return"].onPointerUpObservable.add(function(){
-        typeGuiClick = 0;
-    });
-
-    for (let i=0; i<levelScenes.length; i++){
-        advancedTexture[1]["levels"][i].onPointerUpObservable.add(function(){
-            numLevelShow = i;
-            typeSceneClick = 1;
-        })
+function createGuiMenu(numScene){
+    switch (numScene){
+        case 0:
+            return Menu.createMainMenuGui(menuScenes[numScene]);
+        case 1:
+            return Menu.createLevelMenu(levelScenes, menuScenes[numScene]);
+        case 2:
+            return Menu.createOptionsMenu(menuScenes[numScene]);
+        case 3:
+            return Menu.createCommandsMenu(menuScenes[numScene]);
     }
+}
 
-    // Command menu
-    advancedTexture[2]["return"].onPointerUpObservable.add(function(){
-        typeGuiClick = 0;
-    });
+function setButtonGuiMenu(){
 
-    // Options menu
-    advancedTexture[3]["return"].onPointerUpObservable.add(function(){
-        typeGuiClick = 0;
-    });
+    if (typeGuiClick === 0){    // Main menu
+        advancedTexture["play"].onPointerUpObservable.add(function(){
+            typeGuiClick = 1;
+            console.log("change to level menu");
+        });
+
+        advancedTexture["commands"].onPointerUpObservable.add(function (){
+            typeGuiClick = 2;
+            typeSceneShow = 0;
+            console.log("Change to commands");
+        });
+
+        advancedTexture["options"].onPointerUpObservable.add(function (){
+            typeGuiClick = 3;
+            typeSceneShow = 0;
+            console.log("Change to options");
+        });
+    }
+    else if (typeGuiClick === 1){   // Level menu
+        advancedTexture["return"].onPointerUpObservable.add(function(){
+            typeGuiClick = 0;
+            typeSceneClick = 0;
+            console.log("Return level");
+        });
+
+        for (let i=0; i<levelScenes.length; i++){
+            advancedTexture["levels"][i].onPointerUpObservable.add(function(){
+                numLevelShow = i;
+                typeSceneClick = 1;
+
+            })
+        }
+    }
+    else if (typeGuiClick === 2){   // Command menu
+        advancedTexture["return"].onPointerUpObservable.add(function(){
+            typeGuiClick = 0;
+            console.log("Return command");
+        });
+    }
+    else if (typeGuiClick === 3){   // Options menu
+        advancedTexture["return"].onPointerUpObservable.add(function(){
+            typeGuiClick = 0;
+            console.log("Return options");
+        });
+    }
 }
 
 
