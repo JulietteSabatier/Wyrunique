@@ -1,9 +1,11 @@
 import Player from "./Player.js";
 
 export default class Level {
-    constructor(id, scene) {
+    constructor(id, scene, name) {
         this.id = id;
         this.scene = scene;
+        this.name = name;
+        this.currentPlayer = 0;
 
         this.buildWalls();
         this.createAllSpheres(scene, id);
@@ -68,7 +70,6 @@ export default class Level {
         }
 
     }
-
 
     createFollowCamera(scene, target) {
         let camera = new BABYLON.ArcRotateCamera("playerFollowCamera",
