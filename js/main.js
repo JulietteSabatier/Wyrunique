@@ -63,21 +63,23 @@ function createScene() {
     scene.assetManager = configureAssetManager(scene);
     // background
     scene.clearColor = new BABYLON.Color3(1, 0, 1);
+    scene.shadowsEnabled = true;
+
 
     let gravityVector = new BABYLON.Vector3(0,-9.81, 0);
     let physicsPlugin = new BABYLON.CannonJSPlugin();
     scene.enablePhysics(gravityVector, physicsPlugin);
 
+    createLights(scene);
     let ground = createGround(scene);
     let freeCamera = createFreeCamera(scene);
     scene.players = players;
+
     scene.cameras = cameras;
 
     scene.currentLevel = new Level(1, scene);
-
     scene.activeCamera = cameras[0];
     currentPlayer = 0;
-    createLights(scene);
 
    return scene;
 }
@@ -98,6 +100,8 @@ function createGround(scene) {
     // for physic engine
     ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground,
         BABYLON.PhysicsImpostor.HeightmapImpostor, { mass: 0 }, scene);
+
+    ground.receiveShadows = true;
     return ground;
 }
 
@@ -127,9 +131,11 @@ export function loadNextLevel() {
 
 function createLights(scene) {
     // i.e sun light with all light rays parallels, the vector is the direction.
-    let light0 = new BABYLON.DirectionalLight("dir0", new BABYLON.Vector3(-1, -1, 0), scene);
-    light0.position.z = 2;
+    let light = new BABYLON.DirectionalLight("dir0", new BABYLON.Vector3(-1, -1, 0), scene);
+    light.position.z = 2;
 
+    scene.shadowGenerator = new BABYLON.ShadowGenerator(1024, light);
+    scene.shadowGenerator.useBlurExponentialShadowMap = true;
 }
 
 function createFreeCamera(scene) {

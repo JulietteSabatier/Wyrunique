@@ -13,6 +13,14 @@ export default class Level {
 
     buildWalls() {
         let wall = new BABYLON.MeshBuilder.CreateBox("wall", {height: 20, width: 2, depth: 300}, this.scene);
+
+        let wallMaterial = new BABYLON.StandardMaterial("boxMaterial", this.scene);
+        wallMaterial.diffuseTexture = new BABYLON.Texture("images/Wall.jpg", this.scene);
+        wallMaterial.diffuseTexture.vScale = 3.0;
+        wallMaterial.diffuseTexture.uScale = 3.0;
+        wallMaterial.emissiveColor = new BABYLON.Color3(0.2, 0.2, 0.2);
+        wall.material = wallMaterial;
+
         wall.position = new BABYLON.Vector3(15, 10, 140);
         wall.checkCollisions = true;
         wall.physicsImpostor = new BABYLON.PhysicsImpostor(wall,
@@ -23,36 +31,38 @@ export default class Level {
         instance.checkCollisions = true;
         instance.physicsImpostor = new BABYLON.PhysicsImpostor(instance,
             BABYLON.PhysicsImpostor.BoxImpostor, {mass: 0});
+
+        this.scene.shadowGenerator.addShadowCaster(wall);
+        this.scene.shadowGenerator.addShadowCaster(instance);
     }
 
     createEnd(scene) {
         if (!this.canFinish) {
 
-            const faceUV = [];
-            faceUV[0] =	new BABYLON.Vector4(0, 0, 0, 0);
-            faceUV[1] =	new BABYLON.Vector4(1, 0, 0.25, 1); // x, z swapped to flip image
-            faceUV[2] = new BABYLON.Vector4(0, 0, 0.24, 1);
+            let particleSystem = new BABYLON.ParticleSystem("particles", 500); // on construction
+            particleSystem.particleTexture = new BABYLON.Texture("images/Particle.jpg", scene);
+            particleSystem.emitter = new BABYLON.Vector3(0, 15, 300);
+            particleSystem.emitRate = 200;
 
-            const colors = [];
-            colors[0] = new BABYLON.Vector4(0, 0, 0, 0);
-            colors[1] = new BABYLON.Vector4(0, 0, 0, 0);
-            colors[2] = new BABYLON.Vector4(0, 0, 0, 0);
+            particleSystem.direction1 = new BABYLON.Vector3(-7, -5, 10);
+            particleSystem.direction2 = new BABYLON.Vector3(7, -5, -10);
 
-            let cylinderMaterial = new BABYLON.StandardMaterial("cylinderMaterial", scene);
-            cylinderMaterial.diffuseTexture = new BABYLON.Texture("images/finishZone.png", scene);
+            particleSystem.minLifeTime = 0.3;
+            particleSystem.maxLifeTime = 1.5;
 
-            let finishBox = new BABYLON.MeshBuilder.CreateCylinder("finishZone", {height: 10, diameter: 25, faceUV: faceUV, faceColors: colors}, scene);
-            finishBox.position = new BABYLON.Vector3(0, 5, 300);
-            finishBox.material = cylinderMaterial;
+            particleSystem.color1 = new BABYLON.Color4(0.7, 0.8, 1.0, 1.0);
+            particleSystem.color2 = new BABYLON.Color4(0.2, 0.5, 1.0, 1.0);
+            particleSystem.colorDead = new BABYLON.Color4(0, 0, 0.2, 0.0);
+
+            particleSystem.start();
             this.canFinish = true;
         }
     }
 
     checkIfFinish() {
-        let finishZone = this.scene.getMeshByName("finishZone");
         let player = this.scene.players[0];
 
-        if (player.intersectsPoint(finishZone.position)) {
+        if (player.intersectsPoint(new BABYLON.Vector3(0, 0, 300))) {
             loadNextLevel();
         }
     }
@@ -78,6 +88,8 @@ export default class Level {
 
         let followCamera = this.createFollowCamera(scene, sphereMesh);
         sphereMesh.showBoundingBox = true;
+
+        this.scene.shadowGenerator.addShadowCaster(sphereMesh);
     }
 
     createAllSpheres(scene){
