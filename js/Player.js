@@ -11,7 +11,6 @@ export default class Player {
     }
 
     move(scene, inputStates){
-
         this.playerMesh.frontVector = scene.activeCamera.getDirection(new BABYLON.Vector3(0, 0, 1));
         this.playerMesh.frontVector.y = 0;
         this.playerMesh.frontVector.normalize();
@@ -20,6 +19,7 @@ export default class Player {
         let forceDirection = BABYLON.Vector3.Zero();
 
         if(inputStates.up) {
+            console.log("up");
             forceDirection = this.playerMesh.frontVector;
         }
         else if(inputStates.down) {
@@ -34,15 +34,13 @@ export default class Player {
             forceDirection.x = -this.playerMesh.frontVector.z;
             forceDirection.z = this.playerMesh.frontVector.x;
         }
-        //console.log(forceDirection);
         this.playerMesh.physicsImpostor.applyForce(forceDirection.scale(forceMagnitude), this.playerMesh.getAbsolutePosition().add(contactLocalRefPoint));
-
     }
 
     merge(scene, players, cameras, currentPlayer) {
         for (let i=0; i < players.length; i=i+1){
             if (i !== currentPlayer){
-                if (players[currentPlayer].intersectsMesh(players[i], true)){
+                if (players[currentPlayer].playerMesh.intersectsMesh(players[i], true)){
                     console.log("touch player: "+i);
                     let removedPlayer = players.splice(i,1);
                     let removedCamera = cameras.splice(i,1);
@@ -56,4 +54,6 @@ export default class Player {
             }
         }
     }
+
+
 }

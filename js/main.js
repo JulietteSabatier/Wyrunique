@@ -12,7 +12,7 @@ let typeGuiClick;
 let numLevelShow;
 let numLevelClick;
 
-let levelScenes = [];
+let levels = [];
 let menuScenes = [];
 let advancedTexture;
 
@@ -22,8 +22,11 @@ function startGame() {
     canvas = document.querySelector("#myCanvas");
     engine = new BABYLON.Engine(canvas, true);
 
-    levelScenes.push(createScene(0,"The beginning"));
-    levelScenes.push(createScene(1, "The following"));
+    levels.push(new Level(0,engine, "The beginning"));
+    modifySetting(levels[0].scene);
+    levels.push(new Level(1, engine, "The following"));
+    modifySetting(levels[1].scene);
+
 
     // Init to menu
     typeSceneShow = 0;
@@ -41,17 +44,16 @@ function startGame() {
     menuScenes.push(createMainMenu());
     menuScenes.push(createMainMenu());
 
-    // prevent the pointer to go outside the game window
-    modifySetting();
 
     advancedTexture = createGuiMenu(0);
     setButtonGuiMenu();
     menuScenes[0].render();
 
+    //createFreeCamera();
+
 
     engine.runRenderLoop(function () {
         let deltaTime = engine.getDeltaTime();
-
         if (typeSceneShow !== typeSceneClick){ // changer scene
             if ((typeSceneClick === 0) && (typeSceneShow === 1)){ // change from level to menu
                 menuScenes[1].render(); // print level menu
@@ -59,7 +61,7 @@ function startGame() {
                 typeGuiClick = 1;
             }
             else if ((typeSceneClick === 1) && (typeSceneShow === 0)){   // change from menu to level
-                levelScenes[numLevelShow].render();     // current level
+                levels[numLevelShow].scene.render();     // current level
             }
             typeSceneShow = typeSceneClick;
         }
@@ -73,14 +75,11 @@ function startGame() {
             }
         }
         else if (typeSceneShow === 1){  // scene level
-            movePlayer(currentPlayer, levelScenes[numLevelShow], inputStates)
+            movePlayer(levels[typeSceneShow].currentPlayer, levels[numLevelShow], inputStates)
             //movePlayer(scene.currentPlayer, scene, inputStates);
             mergePlayer();
 
         }
-
-
-
     })
 
 }
@@ -90,7 +89,7 @@ function createGuiMenu(numScene){
         case 0:
             return Menu.createMainMenuGui(menuScenes[numScene]);
         case 1:
-            return Menu.createLevelMenu(levelScenes, menuScenes[numScene]);
+            return Menu.createLevelMenu(levels, menuScenes[numScene]);
         case 2:
             return Menu.createOptionsMenu(menuScenes[numScene]);
         case 3:
@@ -125,7 +124,7 @@ function setButtonGuiMenu(){
             console.log("Return level");
         });
 
-        for (let i=0; i<levelScenes.length; i++){
+        for (let i=0; i<levels.length; i++){
             advancedTexture["levels"][i].onPointerUpObservable.add(function(){
                 numLevelShow = i;
                 typeSceneClick = 1;
@@ -178,6 +177,7 @@ function configureAssetManager(scene){
     return assetsManager;
 }
 
+
 /// Create environment
 function createScene(id, name) {
     let scene = new BABYLON.Scene(engine);
@@ -191,22 +191,21 @@ function createScene(id, name) {
         scene.clearColor = new BABYLON.Color3(1, 0, 0);
     }
 
-
     let gravityVector = new BABYLON.Vector3(0,-9.81, 0);
     let physicsPlugin = new BABYLON.CannonJSPlugin();
-    scene.enablePhysics(gravityVector, physicsPlugin);
+    levels[id].scene.enablePhysics(gravityVector, physicsPlugin);
+
 
     let ground = createGround(scene);
     let freeCamera = createFreeCamera(scene);
-    scene.players = players;
-    scene.cameras = cameras;
 
-    let currentLevel = new Level(id, scene, name);
+    levels[id] =  new Level(id, engine, name);
+
 
     //scene.activeCamera = freeCamera;
-    scene.activeCamera = levelScenes[numLevelShow].cameras[0];
-    levelScenes[numLevelShow].currentPlayer = 0;
-    createLights(scene);
+    levels[id].currentPlayer = 0;
+    levels[id].scene.activeCamera = levels[id].cameras[0];
+    createLights(levels[id].scene);
 
    return scene;
 }
@@ -235,16 +234,19 @@ function createGround(scene) {
 
 /// Gestion Player
 function movePlayer(numPlayer, scene, inputStates){
-    let player = players[numPlayer];
+    let player = levels[numLevelShow].players[levels[numLevelShow].currentPlayer];
     if (player){
-        player.Player.move(scene, inputStates);
+        player.move(levels[numLevelShow].scene, inputStates);
     }
 }
 
 function mergePlayer(){
-    let player = players[currentPlayer];
+    let player = levels[numLevelShow].players[levels[numLevelShow].currentPlayer];
     if (player){
-        player.Player.merge(scene, players, cameras, currentPlayer);
+        player.merge(levels[numLevelShow].scene,
+            levels[numLevelShow].players,
+            levels[numLevelShow].cameras,
+            levels[numLevelShow].currentPlayer);
     }
 }
 
@@ -317,14 +319,14 @@ function createFreeCamera(scene) {
 
     // Add extra keys for camera movements
     // Need the ascii code of the extra key(s). We use a string method here to get the ascii code
-    camera.keysUp.push('z'.charCodeAt(0));
-    camera.keysDown.push('s'.charCodeAt(0));
-    camera.keysLeft.push('q'.charCodeAt(0));
-    camera.keysRight.push('d'.charCodeAt(0));
-    camera.keysUp.push('Z'.charCodeAt(0));
-    camera.keysDown.push('S'.charCodeAt(0));
-    camera.keysLeft.push('Q'.charCodeAt(0));
-    camera.keysRight.push('D'.charCodeAt(0));
+    camera.keysUp.push('o'.charCodeAt(0));
+    camera.keysDown.push('l'.charCodeAt(0));
+    camera.keysLeft.push('k'.charCodeAt(0));
+    camera.keysRight.push('m'.charCodeAt(0));
+    camera.keysUp.push('O'.charCodeAt(0));
+    camera.keysDown.push('L'.charCodeAt(0));
+    camera.keysLeft.push('K'.charCodeAt(0));
+    camera.keysRight.push('M'.charCodeAt(0));
 
     return camera;
 }
@@ -357,9 +359,9 @@ function modifySetting(scene){
             inputStates.space = true;
         } else if (event.key === "&") {
             inputStates.tab = true;
-            currentPlayer = (currentPlayer+1)%players.length;
-            console.log("Switching to camera " + currentPlayer);
-            scene.activeCamera = cameras[currentPlayer];
+            levels[numLevelShow].currentPlayer = (levels[numLevelShow].currentPlayer + 1) % levels[numLevelShow].players.length;
+            console.log("Switching to camera " + levels[numLevelShow].currentPlayer);
+            scene.activeCamera = levels[numLevelShow].cameras[levels[numLevelShow].currentPlayer];
         }
     }, false);
 
