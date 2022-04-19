@@ -23,13 +23,16 @@ export default class Player {
             forceDirection = this.playerMesh.frontVector;
         }
         else if(inputStates.down) {
+            console.log("down");
             forceDirection = this.playerMesh.frontVector.negate();
         }
         if(inputStates.right) {
+            console.log("right");
             forceDirection.x = this.playerMesh.frontVector.z;
             forceDirection.z = -this.playerMesh.frontVector.x;
         }
         else if(inputStates.left) {
+            console.log("left");
             //TODO voir pour inverser cosinus ou sinus
             forceDirection.x = -this.playerMesh.frontVector.z;
             forceDirection.z = this.playerMesh.frontVector.x;

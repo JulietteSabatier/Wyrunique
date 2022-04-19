@@ -75,6 +75,7 @@ function startGame() {
             }
         }
         else if (typeSceneShow === 1){  // scene level
+            levels[numLevelShow].scene.render();
             movePlayer(levels[typeSceneShow].currentPlayer, levels[numLevelShow], inputStates)
             //movePlayer(scene.currentPlayer, scene, inputStates);
             mergePlayer();
@@ -361,7 +362,8 @@ function modifySetting(scene){
             inputStates.tab = true;
             levels[numLevelShow].currentPlayer = (levels[numLevelShow].currentPlayer + 1) % levels[numLevelShow].players.length;
             console.log("Switching to camera " + levels[numLevelShow].currentPlayer);
-            scene.activeCamera = levels[numLevelShow].cameras[levels[numLevelShow].currentPlayer];
+            levels[numLevelShow].scene.activeCamera = levels[numLevelShow].cameras[levels[numLevelShow].currentPlayer];
+
         }
     }, false);
 

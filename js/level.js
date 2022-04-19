@@ -25,8 +25,8 @@ export default class Level {
 
         let gravityVector = new BABYLON.Vector3(0,-9.81, 0);
         let physicsPlugin = new BABYLON.CannonJSPlugin();
-        let test = this.scene.enablePhysics(gravityVector, physicsPlugin);
-        let ground = this.createGround(this.scene);
+        this.scene.enablePhysics(gravityVector, physicsPlugin);
+        this.createGround(this.scene);
 
         this.currentPlayer = 0;
         this.scene.activeCamera = this.cameras[0];
@@ -118,12 +118,12 @@ export default class Level {
     createGround(scene) {
         const groundOptions = { width:2000, height:2000, subdivisions:20, minHeight:0, maxHeight:100};
         //scene is optional and defaults to the current scene
-        const ground = BABYLON.MeshBuilder.CreateGround("ground", groundOptions, scene);
-        const groundMaterial = new BABYLON.StandardMaterial("groundMaterial", scene);
+        let ground = BABYLON.MeshBuilder.CreateGround("ground", groundOptions, scene);
+        let groundMaterial = new BABYLON.StandardMaterial("groundMaterial", scene);
         groundMaterial.diffuseTexture = new BABYLON.Texture("images/woodFloor.jpg", scene);
+        groundMaterial.diffuseTexture.uScale = 10;
+        groundMaterial.diffuseTexture.vScale = 10;
         ground.material = groundMaterial;
-        ground.material.diffuseTexture.uScale = 10;
-        ground.material.diffuseTexture.vScale = 10;
 
         // to be taken into account by collision detection
         ground.checkCollisions = true;
