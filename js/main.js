@@ -73,6 +73,9 @@ function startGame() {
                 menuScenes[typeGuiClick].render();
                 typeGuiShow = typeGuiClick;
             }
+            else{
+                menuScenes[typeGuiShow].render();
+            }
         }
         else if (typeSceneShow === 1){  // scene level
             levels[numLevelShow].scene.render();

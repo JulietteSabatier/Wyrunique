@@ -19,20 +19,16 @@ export default class Player {
         let forceDirection = BABYLON.Vector3.Zero();
 
         if(inputStates.up) {
-            console.log("up");
             forceDirection = this.playerMesh.frontVector;
         }
         else if(inputStates.down) {
-            console.log("down");
             forceDirection = this.playerMesh.frontVector.negate();
         }
         if(inputStates.right) {
-            console.log("right");
             forceDirection.x = this.playerMesh.frontVector.z;
             forceDirection.z = -this.playerMesh.frontVector.x;
         }
         else if(inputStates.left) {
-            console.log("left");
             //TODO voir pour inverser cosinus ou sinus
             forceDirection.x = -this.playerMesh.frontVector.z;
             forceDirection.z = this.playerMesh.frontVector.x;
@@ -43,11 +39,12 @@ export default class Player {
     merge(scene, players, cameras, currentPlayer) {
         for (let i=0; i < players.length; i=i+1){
             if (i !== currentPlayer){
-                if (players[currentPlayer].playerMesh.intersectsMesh(players[i], true)){
+                if (players[currentPlayer].playerMesh.intersectsMesh(players[i].playerMesh, true)){
                     console.log("touch player: "+i);
                     let removedPlayer = players.splice(i,1);
                     let removedCamera = cameras.splice(i,1);
-                    removedPlayer[0].dispose();
+                    console.log(removedPlayer);
+                    removedPlayer[0].playerMesh.dispose();
                     removedCamera[0].dispose();
                     if (i < currentPlayer){
                         currentPlayer = currentPlayer - 1;
