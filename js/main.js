@@ -49,6 +49,8 @@ function startGame() {
             else if ((typeSceneClick === 1) && (typeSceneShow === 0)){   // change from menu to level
                 levels[numLevelShow].scene.render();     // current level
                 advancedTexture = Menu.createLevelGui(levels[numLevelShow]);
+
+                setButtonGuiLevel();
             }
             typeSceneShow = typeSceneClick;
         }
@@ -133,6 +135,22 @@ function setButtonGuiMenu(){
             typeGuiClick = 0;
             console.log("Return options");
         });
+    }
+}
+
+function setButtonGuiLevel(){
+    if (typeSceneClick === 1 || typeSceneShow === 1){
+        advancedTexture["restartButton"].onPointerClickObservable.add(function (){
+            console.log("click restart doesn't work");
+        })
+        advancedTexture["save"].onPointerClickObservable.add(function (){
+            console.log("click save doesn't work");
+        })
+        advancedTexture["quit"].onPointerClickObservable.add(function (){
+            typeGuiClick = 0;
+            typeSceneClick = 0;
+            console.log("click quit");
+        })
     }
 }
 
