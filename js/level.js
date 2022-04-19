@@ -8,6 +8,7 @@ export default class Level {
         this.currentPlayer = 0;
         this.players = [];
         this.cameras = [];
+        this.canFinish = false;
 
         this.createScene( id);
         this.buildWalls();
@@ -49,7 +50,30 @@ export default class Level {
             BABYLON.PhysicsImpostor.BoxImpostor, {mass: 0});
     }
 
-    createSphere(scene, name, nb, pos_y, pos_x, pos_z, diffuseColor) {
+    createEnd(scene) {
+        if (!this.canFinish) {
+
+            const faceUV = [];
+            faceUV[0] =	new BABYLON.Vector4(0, 0, 0, 0);
+            faceUV[1] =	new BABYLON.Vector4(1, 0, 0.25, 1); // x, z swapped to flip image
+            faceUV[2] = new BABYLON.Vector4(0, 0, 0.24, 1);
+
+            const colors = [];
+            colors[0] = new BABYLON.Vector4(0, 0, 0, 0);
+            colors[1] = new BABYLON.Vector4(0, 0, 0, 0);
+            colors[2] = new BABYLON.Vector4(0, 0, 0, 0);
+
+            let cylinderMaterial = new BABYLON.StandardMaterial("cylinderMaterial", scene);
+            cylinderMaterial.diffuseTexture = new BABYLON.Texture("images/finishZone.png", scene);
+
+            let finishBox = new BABYLON.MeshBuilder.CreateCylinder("finishSphere", {height: 10, diameter: 25, faceUV: faceUV, faceColors: colors}, scene);
+            finishBox.position = new BABYLON.Vector3(0, 5, 300);
+            finishBox.material = cylinderMaterial;
+            this.canFinish = true;
+        }
+    }
+
+    createSphere(scene, players, cameras, name, nb, pos_y, pos_x, pos_z, diffuseColor){
 
         let sphereMesh = new BABYLON.MeshBuilder.CreateSphere(name, {diameter: 5}, scene);
 
@@ -104,11 +128,15 @@ export default class Level {
             target.position,
             scene);
 
-        camera.attachControl(false, false, 0);
+        camera.checkCollisions = true;
         camera.panningAxis = new BABYLON.Vector3(0, 0, 0);
         camera.lockedTarget = target;
         camera.cameraAcceleration = 0.1; // how fast to move
         camera.maxCameraSpeed = 5; // speed limit
+        camera.lowerRadiusLimit = 30;
+        camera.upperRadiusLimit = 100;
+        camera.upperBetaLimit = (Math.PI / 2);
+        camera.attachControl(scene.canvas, false, false, 0);
 
         this.cameras.push(camera);
         return camera;

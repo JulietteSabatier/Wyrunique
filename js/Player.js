@@ -17,9 +17,8 @@ export default class Player {
         let forceMagnitude = 500;
         let contactLocalRefPoint = BABYLON.Vector3.Zero();
         let forceDirection = BABYLON.Vector3.Zero();
-
         if(inputStates.up) {
-            forceDirection = this.playerMesh.frontVector;
+            forceDirection = new BABYLON.Vector3(this.playerMesh.frontVector.x, 0, this.playerMesh.frontVector.z);
         }
         else if(inputStates.down) {
             forceDirection = this.playerMesh.frontVector.negate();
@@ -29,7 +28,6 @@ export default class Player {
             forceDirection.z = -this.playerMesh.frontVector.x;
         }
         else if(inputStates.left) {
-            //TODO voir pour inverser cosinus ou sinus
             forceDirection.x = -this.playerMesh.frontVector.z;
             forceDirection.z = this.playerMesh.frontVector.x;
         }
@@ -52,6 +50,9 @@ export default class Player {
                     return true;
                 }
             }
+        }
+        if (players.length === 1) {
+            scene.currentLevel.createEnd(scene);
         }
     }
 

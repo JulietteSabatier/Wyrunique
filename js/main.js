@@ -327,14 +327,14 @@ function createFreeCamera(scene) {
 
     // Add extra keys for camera movements
     // Need the ascii code of the extra key(s). We use a string method here to get the ascii code
-    camera.keysUp.push('o'.charCodeAt(0));
-    camera.keysDown.push('l'.charCodeAt(0));
-    camera.keysLeft.push('k'.charCodeAt(0));
-    camera.keysRight.push('m'.charCodeAt(0));
-    camera.keysUp.push('O'.charCodeAt(0));
-    camera.keysDown.push('L'.charCodeAt(0));
-    camera.keysLeft.push('K'.charCodeAt(0));
-    camera.keysRight.push('M'.charCodeAt(0));
+    camera.keysUp.push('z'.charCodeAt(0));
+    camera.keysDown.push('s'.charCodeAt(0));
+    camera.keysLeft.push('q'.charCodeAt(0));
+    camera.keysRight.push('d'.charCodeAt(0));
+    camera.keysUp.push('Z'.charCodeAt(0));
+    camera.keysDown.push('S'.charCodeAt(0));
+    camera.keysLeft.push('Q'.charCodeAt(0));
+    camera.keysRight.push('D'.charCodeAt(0));
 
     return camera;
 }
