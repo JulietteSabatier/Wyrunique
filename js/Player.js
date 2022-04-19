@@ -34,7 +34,7 @@ export default class Player {
         this.playerMesh.physicsImpostor.applyForce(forceDirection.scale(forceMagnitude), this.playerMesh.getAbsolutePosition().add(contactLocalRefPoint));
     }
 
-    merge(scene, players, cameras, currentPlayer) {
+    merge(level, players, cameras, currentPlayer) {
         for (let i=0; i < players.length; i=i+1){
             if (i !== currentPlayer){
                 if (players[currentPlayer].playerMesh.intersectsMesh(players[i].playerMesh, true)){
@@ -52,7 +52,7 @@ export default class Player {
             }
         }
         if (players.length === 1) {
-            scene.currentLevel.createEnd(scene);
+            level.createEnd();
         }
     }
 

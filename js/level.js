@@ -50,7 +50,7 @@ export default class Level {
             BABYLON.PhysicsImpostor.BoxImpostor, {mass: 0});
     }
 
-    createEnd(scene) {
+    createEnd() {
         if (!this.canFinish) {
 
             const faceUV = [];
@@ -63,10 +63,10 @@ export default class Level {
             colors[1] = new BABYLON.Vector4(0, 0, 0, 0);
             colors[2] = new BABYLON.Vector4(0, 0, 0, 0);
 
-            let cylinderMaterial = new BABYLON.StandardMaterial("cylinderMaterial", scene);
-            cylinderMaterial.diffuseTexture = new BABYLON.Texture("images/finishZone.png", scene);
+            let cylinderMaterial = new BABYLON.StandardMaterial("cylinderMaterial", this.scene);
+            cylinderMaterial.diffuseTexture = new BABYLON.Texture("images/finishZone.png", this.scene);
 
-            let finishBox = new BABYLON.MeshBuilder.CreateCylinder("finishSphere", {height: 10, diameter: 25, faceUV: faceUV, faceColors: colors}, scene);
+            let finishBox = new BABYLON.MeshBuilder.CreateCylinder("finishSphere", {height: 10, diameter: 25, faceUV: faceUV, faceColors: colors}, this.scene);
             finishBox.position = new BABYLON.Vector3(0, 5, 300);
             finishBox.material = cylinderMaterial;
             this.canFinish = true;
