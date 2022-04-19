@@ -217,5 +217,54 @@ export default class Menu {
         return optionsMenu;
     }
 
+    static createLevelGui(level){
+        let levelGui = {};
+
+        levelGui["gui"] = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("commandMenuUi", true, level.scene);
+
+        levelGui["remainBalls"] = new BABYLON.GUI.TextBlock();
+        levelGui["remainBalls"].text = "Remaining balls: "+level.players.length;
+        levelGui["remainBalls"].color = "white";
+        levelGui["remainBalls"].fontSize = 40;
+        levelGui["remainBalls"].top = "-500px";
+        levelGui["remainBalls"].left = "-550px"
+        levelGui["gui"].addControl(levelGui["remainBalls"]);
+
+        levelGui["levelOption"] = new BABYLON.GUI.StackPanel();
+        levelGui["levelOption"].top = "-450px";
+        levelGui["levelOption"].left = "250px";
+
+        levelGui["restart"] = BABYLON.GUI.Button.CreateSimpleButton("restart", "Restart");
+        levelGui["restart"].width = "150px"
+        levelGui["restart"].height = "60px";
+        levelGui["restart"].color = "white";
+        levelGui["restart"].background = "green";
+        levelGui["restart"].top = "300px";
+        levelGui["restart"].left = "400px";
+        levelGui["levelOption"].addControl(levelGui["restart"]);
+
+        levelGui["save"] = BABYLON.GUI.Button.CreateSimpleButton("save", "Save");
+        levelGui["save"].width = "150px"
+        levelGui["save"].height = "60px";
+        levelGui["save"].color = "white";
+        levelGui["save"].background = "green";
+        levelGui["save"].top = "300px";
+        levelGui["save"].left = "400px";
+        levelGui["levelOption"].addControl(levelGui["save"]);
+
+        levelGui["quit"] = BABYLON.GUI.Button.CreateSimpleButton("quit", "Quit");
+        levelGui["quit"].width = "150px"
+        levelGui["quit"].height = "60px";
+        levelGui["quit"].color = "white";
+        levelGui["quit"].background = "green";
+        levelGui["quit"].top = "300px";
+        levelGui["quit"].left = "400px";
+        levelGui["levelOption"].addControl(levelGui["quit"]);
+
+        levelGui["gui"].addControl(levelGui["levelOption"]);
+
+        return levelGui;
+    }
+
 }
 

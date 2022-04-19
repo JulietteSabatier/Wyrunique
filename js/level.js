@@ -12,10 +12,10 @@ export default class Level {
         this.createScene( id);
         this.buildWalls();
         this.createAllSpheres(this.scene, id);
-
     }
 
     createScene(engine, id) {
+
         if (id === 0) {
             this.scene.clearColor = new BABYLON.Color3(1, 0, 1);
         }

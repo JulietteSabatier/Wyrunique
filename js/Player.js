@@ -49,7 +49,7 @@ export default class Player {
                     if (i < currentPlayer){
                         currentPlayer = currentPlayer - 1;
                     }
-                    break;
+                    return true;
                 }
             }
         }

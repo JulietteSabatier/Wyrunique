@@ -5,12 +5,12 @@ let canvas;
 let engine;
 let inputStates = {};
 
-let typeSceneShow;
-let typeSceneClick;
-let typeGuiShow;
-let typeGuiClick;
-let numLevelShow;
-let numLevelClick;
+let typeSceneShow = 0;
+let typeSceneClick = 0;
+let typeGuiShow = 0;
+let typeGuiClick = 0;
+let numLevelShow = 0;
+let numLevelClick = 0;
 
 let levels = [];
 let menuScenes = [];
@@ -27,18 +27,6 @@ function startGame() {
     levels.push(new Level(1, engine, "The following"));
     modifySetting(levels[1].scene);
 
-
-    // Init to menu
-    typeSceneShow = 0;
-    typeSceneClick = 0;
-    // Init to main menu
-    typeGuiClick = 0;
-    typeGuiShow = 0;
-    // Init num level
-    numLevelClick = 0;
-    numLevelShow = 0;
-
-
     menuScenes.push(createMainMenu());
     menuScenes.push(createMainMenu());
     menuScenes.push(createMainMenu());
@@ -48,8 +36,6 @@ function startGame() {
     advancedTexture = createGuiMenu(0);
     setButtonGuiMenu();
     menuScenes[0].render();
-
-    //createFreeCamera();
 
 
     engine.runRenderLoop(function () {
@@ -62,6 +48,7 @@ function startGame() {
             }
             else if ((typeSceneClick === 1) && (typeSceneShow === 0)){   // change from menu to level
                 levels[numLevelShow].scene.render();     // current level
+                advancedTexture = Menu.createLevelGui(levels[numLevelShow]);
             }
             typeSceneShow = typeSceneClick;
         }
@@ -82,7 +69,6 @@ function startGame() {
             movePlayer(levels[typeSceneShow].currentPlayer, levels[numLevelShow], inputStates)
             //movePlayer(scene.currentPlayer, scene, inputStates);
             mergePlayer();
-
         }
     })
 
@@ -362,11 +348,7 @@ function modifySetting(scene){
         } else if (event.key === " ") {
             inputStates.space = true;
         } else if (event.key === "&") {
-            inputStates.tab = true;
-            levels[numLevelShow].currentPlayer = (levels[numLevelShow].currentPlayer + 1) % levels[numLevelShow].players.length;
-            console.log("Switching to camera " + levels[numLevelShow].currentPlayer);
-            levels[numLevelShow].scene.activeCamera = levels[numLevelShow].cameras[levels[numLevelShow].currentPlayer];
-
+            inputStates.one = true;
         }
     }, false);
 
@@ -383,7 +365,12 @@ function modifySetting(scene){
         }  else if (event.key === " ") {
             inputStates.space = false;
         } else if (event.key === "&") {
-            inputStates.tab = false;
+            if (inputStates.one === true){
+                levels[numLevelShow].currentPlayer = (levels[numLevelShow].currentPlayer + 1) % levels[numLevelShow].players.length;
+                console.log("Switching to player/camera " + levels[numLevelShow].currentPlayer);
+                levels[numLevelShow].scene.activeCamera = levels[numLevelShow].cameras[levels[numLevelShow].currentPlayer];
+            }
+            inputStates.one = false;
         }
     }, false);
 }
