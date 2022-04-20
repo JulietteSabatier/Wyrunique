@@ -31,6 +31,7 @@ export default class Level {
         this.createAllSpheres(this.scene, id);
         this.currentPlayer = 0;
         this.scene.activeCamera = this.cameras[0];
+        //this.scene.activeCamera = this.createFreeCamera(this.scene);
     }
 
 
@@ -71,29 +72,27 @@ export default class Level {
         }
     }
 
-    createSphere(scene, players, cameras, name, nb, pos_y, pos_x, pos_z, diffuseColor){
-
-        let sphereMesh = new BABYLON.MeshBuilder.CreateSphere(name, {diameter: 5}, scene);
+    createSphere(name, nb, pos_y, pos_x, pos_z, diffuseColor){
+        let sphereMesh = new BABYLON.MeshBuilder.CreateSphere(name, {diameter: 5}, this.scene);
 
         sphereMesh.position.y = pos_y;
         sphereMesh.position.x = pos_x;
         sphereMesh.position.z = pos_z;
         sphereMesh.frontVector = new BABYLON.Vector3(0, 0, 1);
 
-        let sphereMaterial = new BABYLON.StandardMaterial("sphereMaterial", scene);
-        sphereMaterial.diffuseTexture = new BABYLON.Texture("images/Ball.jpg", scene);
-        //sphereMaterial.diffuseColor = diffuseColor;
+        let sphereMaterial = new BABYLON.StandardMaterial("sphereMaterial", this.scene);
+        sphereMaterial.diffuseTexture = new BABYLON.Texture("images/Ball.jpg", this.scene);
         sphereMesh.material = sphereMaterial;
 
         sphereMesh.physicsImpostor = new BABYLON.PhysicsImpostor(sphereMesh,
             BABYLON.PhysicsImpostor.SphereImpostor, {
                 mass: 10,
                 nativeOptions: {linearDamping: 0.35, angularDamping: 0.35}
-            }, scene);
+            }, this.scene);
 
-        let sphere = new Player(nb, sphereMesh, scene);
+        let sphere = new Player(nb, sphereMesh, this.scene);
         this.players.push(sphere);
-        let followCamera = this.createFollowCamera(scene, sphereMesh);
+        let followCamera = this.createFollowCamera(this.scene, sphereMesh);
 
         sphereMesh.showBoundingBox = false;
     }
@@ -101,27 +100,51 @@ export default class Level {
     createAllSpheres(scene, id) {
         if (id === 0) {
             // Sphere 1
-            this.createSphere(scene, "player1", 0, 5, 0, 0, new BABYLON.Color3(1, 0, 0)); // rouge
+            this.createSphere("player1", 0, 5, 0, 0, new BABYLON.Color3(0, 0, 0)); // rouge
             // Sphere 2
-            this.createSphere(scene, "player2", 1, 5, 0, 20, new BABYLON.Color3(0, 1, 0));  // vert
+            this.createSphere("player2", 1, 5, 0, 20, new BABYLON.Color3(0, 1, 0));  // vert
             // Sphere 3
-            this.createSphere(scene, "player3", 2, 5, 0, 30, new BABYLON.Color3(0, 0, 1)); // bleu
+            this.createSphere("player3", 2, 5, 0, 30, new BABYLON.Color3(0, 0, 1)); // bleu
             // Sphere 4
-            this.createSphere(scene, "player4", 3, 5, 0, 40, new BABYLON.Color3(1, 0, 1)); // violet
+            this.createSphere("player4", 3, 5, 0, 40, new BABYLON.Color3(1, 0, 1)); // violet
             // Sphere 5
-            this.createSphere(scene, "player5", 5, 5, 0, 50, new BABYLON.Color3(0, 1, 1)); // cyan
+            this.createSphere("player5", 5, 5, 0, 50, new BABYLON.Color3(0, 1, 1)); // cyan
         } else {
-            this.createSphere(scene, "player1", 0, 5, 0, 0, new BABYLON.Color3(1, 0, 0)); // rouge
+            this.createSphere("player6", 0, 5, 0, 0, new BABYLON.Color3(1, 0, 0)); // rouge
             // Sphere 2
-            this.createSphere(scene, "player2", 1, 5, 0, 20, new BABYLON.Color3(0, 1, 0));  // vert
+            this.createSphere("player7", 1, 5, 0, 20, new BABYLON.Color3(0, 1, 0));  // vert
         }
 
     }
 
+    createFreeCamera(scene) {
+        let camera = new BABYLON.FreeCamera("freeCamera", new BABYLON.Vector3(0, 50, 0), scene);
+        camera.attachControl(scene.canvas);
+        // prevent camera to cross ground
+        camera.checkCollisions = true;
+        // avoid flying with the camera
+        camera.applyGravity = true;
+
+        // Add extra keys for camera movements
+        // Need the ascii code of the extra key(s). We use a string method here to get the ascii code
+        camera.keysUp.push('z'.charCodeAt(0));
+        camera.keysDown.push('s'.charCodeAt(0));
+        camera.keysLeft.push('q'.charCodeAt(0));
+        camera.keysRight.push('d'.charCodeAt(0));
+        camera.keysUp.push('Z'.charCodeAt(0));
+        camera.keysDown.push('S'.charCodeAt(0));
+        camera.keysLeft.push('Q'.charCodeAt(0));
+        camera.keysRight.push('D'.charCodeAt(0));
+
+        return camera;
+    }
+
+
+
     createFollowCamera(scene, target) {
         let camera = new BABYLON.ArcRotateCamera("playerFollowCamera",
             BABYLON.Tools.ToRadians(-90), // -90
-            BABYLON.Tools.ToRadians(20),
+            BABYLON.Tools.ToRadians(70),    // 20
             70, // 70
             target.position,
             this.scene);

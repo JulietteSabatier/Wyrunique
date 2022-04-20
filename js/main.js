@@ -251,7 +251,7 @@ function movePlayer(numPlayer, scene, inputStates){
 function mergePlayer(){
     let player = levels[numLevelShow].players[levels[numLevelShow].currentPlayer];
     if (player){
-        player.merge(levels[numLevelShow].scene,
+        player.merge(levels[numLevelShow],
             levels[numLevelShow].players,
             levels[numLevelShow].cameras,
             levels[numLevelShow].currentPlayer);

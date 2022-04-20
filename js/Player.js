@@ -41,7 +41,6 @@ export default class Player {
                     console.log("touch player: "+i);
                     let removedPlayer = players.splice(i,1);
                     let removedCamera = cameras.splice(i,1);
-                    console.log(removedPlayer);
                     removedPlayer[0].playerMesh.dispose();
                     removedCamera[0].dispose();
                     if (i < currentPlayer){
