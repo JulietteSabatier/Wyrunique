@@ -235,7 +235,6 @@ export default class Menu {
         levelGui["levelOption"].width = "180px";
         levelGui["levelOption"].top = "20px";
         levelGui["levelOption"].left = "600px";
-        //levelGui["levelOption"].verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
         levelGui["levelOption"].isHitTestVisible = false;
 
         // Primary button

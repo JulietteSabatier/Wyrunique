@@ -10,13 +10,10 @@ export default class Level {
         this.cameras = [];
         this.canFinish = false;
 
-        this.createScene( id);
-        this.buildWalls();
-        this.createAllSpheres(this.scene, id);
+        this.createScene(id);
     }
 
-    createScene(engine, id) {
-
+    createScene(id) {
         if (id === 0) {
             this.scene.clearColor = new BABYLON.Color3(1, 0, 1);
         }
@@ -27,12 +24,13 @@ export default class Level {
         let gravityVector = new BABYLON.Vector3(0,-9.81, 0);
         let physicsPlugin = new BABYLON.CannonJSPlugin();
         this.scene.enablePhysics(gravityVector, physicsPlugin);
-        this.createGround(this.scene);
 
+        let ground = this.createGround();
+        this.createLights(this.scene);
+        this.buildWalls();
+        this.createAllSpheres(this.scene, id);
         this.currentPlayer = 0;
         this.scene.activeCamera = this.cameras[0];
-
-        this.createLights(this.scene);
     }
 
 
@@ -84,7 +82,7 @@ export default class Level {
 
         let sphereMaterial = new BABYLON.StandardMaterial("sphereMaterial", scene);
         sphereMaterial.diffuseTexture = new BABYLON.Texture("images/Ball.jpg", scene);
-        sphereMaterial.diffuseColor = diffuseColor;
+        //sphereMaterial.diffuseColor = diffuseColor;
         sphereMesh.material = sphereMaterial;
 
         sphereMesh.physicsImpostor = new BABYLON.PhysicsImpostor(sphereMesh,
@@ -126,7 +124,7 @@ export default class Level {
             BABYLON.Tools.ToRadians(20),
             70, // 70
             target.position,
-            scene);
+            this.scene);
 
         camera.checkCollisions = true;
         camera.panningAxis = new BABYLON.Vector3(0, 0, 0);
@@ -136,19 +134,19 @@ export default class Level {
         camera.lowerRadiusLimit = 30;
         camera.upperRadiusLimit = 100;
         camera.upperBetaLimit = (Math.PI / 2);
-        camera.attachControl(scene.canvas, false, false, 0);
+        camera.attachControl(this.scene.canvas, false, false, 0);
 
         this.cameras.push(camera);
         return camera;
     }
 
 
-    createGround(scene) {
+    createGround() {
         const groundOptions = { width:2000, height:2000, subdivisions:20, minHeight:0, maxHeight:100};
         //scene is optional and defaults to the current scene
-        let ground = BABYLON.MeshBuilder.CreateGround("ground", groundOptions, scene);
-        let groundMaterial = new BABYLON.StandardMaterial("groundMaterial", scene);
-        groundMaterial.diffuseTexture = new BABYLON.Texture("images/woodFloor.jpg", scene);
+        let ground = BABYLON.MeshBuilder.CreateGround("ground", groundOptions, this.scene);
+        let groundMaterial = new BABYLON.StandardMaterial("groundMaterial", this.scene);
+        groundMaterial.diffuseTexture = new BABYLON.Texture("images/woodFloor.jpg", this.scene);
         groundMaterial.diffuseTexture.uScale = 10;
         groundMaterial.diffuseTexture.vScale = 10;
         ground.material = groundMaterial;
@@ -158,13 +156,13 @@ export default class Level {
         //groundMaterial.wireframe=true;
         // for physic engine
         ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground,
-            BABYLON.PhysicsImpostor.HeightmapImpostor, { mass: 0 }, scene);
+            BABYLON.PhysicsImpostor.HeightmapImpostor, { mass: 0 }, this.scene);
         return ground;
     }
 
     createLights(scene) {
         // i.e sun light with all light rays parallels, the vector is the direction.
-        let light0 = new BABYLON.DirectionalLight("dir0", new BABYLON.Vector3(-1, -1, 0), scene);
+        let light0 = new BABYLON.DirectionalLight("dir0", new BABYLON.Vector3(-1, -1, 0), this.scene);
         light0.position.z = 2;
 
     }
