@@ -10,7 +10,8 @@ let typeSceneClick = 0;
 let typeGuiShow = 0;
 let typeGuiClick = 0;
 let numLevelShow = 0;
-let numLevelClick = 0;
+let saveLevel = false;
+let restartLevel = false;
 
 let levels = [];
 let menuScenes = [];
@@ -42,6 +43,10 @@ function startGame() {
         let deltaTime = engine.getDeltaTime();
         if (typeSceneShow !== typeSceneClick){ // changer scene
             if ((typeSceneClick === 0) && (typeSceneShow === 1)){ // change from level to menu
+                if (!saveLevel){
+                    levels[numLevelShow].createScene(numLevelShow);
+                    levels[numLevelShow].scene.render();
+                }
                 menuScenes[1].render(); // print level menu
                 typeGuiShow = 1;
                 typeGuiClick = 1;
@@ -49,7 +54,6 @@ function startGame() {
             else if ((typeSceneClick === 1) && (typeSceneShow === 0)){   // change from menu to level
                 levels[numLevelShow].scene.render();     // current level
                 advancedTexture = Menu.createLevelGui(levels[numLevelShow]);
-
                 setButtonGuiLevel();
             }
             typeSceneShow = typeSceneClick;
@@ -67,6 +71,13 @@ function startGame() {
             }
         }
         else if (typeSceneShow === 1){  // scene level
+            if (restartLevel){
+                levels[numLevelShow].createScene(numLevelShow, engine);
+                advancedTexture = Menu.createLevelGui(levels[numLevelShow]);
+                setButtonGuiLevel();
+                restartLevel = false;
+            }
+
             levels[numLevelShow].scene.render();
             movePlayer(levels[typeSceneShow].currentPlayer, levels[numLevelShow], inputStates)
             //movePlayer(scene.currentPlayer, scene, inputStates);
@@ -141,12 +152,17 @@ function setButtonGuiMenu(){
 function setButtonGuiLevel(){
     if (typeSceneClick === 1 || typeSceneShow === 1){
         advancedTexture["restartButton"].onPointerClickObservable.add(function (){
+            restartLevel = true;
             console.log("click restart doesn't work");
         })
         advancedTexture["save"].onPointerClickObservable.add(function (){
+            saveLevel = true;
+            typeGuiClick = 0;
+            typeSceneClick = 0;
             console.log("click save doesn't work");
         })
         advancedTexture["quit"].onPointerClickObservable.add(function (){
+            saveLevel = false;
             typeGuiClick = 0;
             typeSceneClick = 0;
             console.log("click quit");

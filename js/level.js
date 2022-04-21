@@ -10,10 +10,14 @@ export default class Level {
         this.cameras = [];
         this.canFinish = false;
 
-        this.createScene(id);
+        this.createScene(id,engine);
     }
 
-    createScene(id) {
+    createScene(id, engine) {
+        this.scene.dispose();
+        this.players = [];
+        this.cameras = [];
+        this.scene = new BABYLON.Scene(engine)
         if (id === 0) {
             this.scene.clearColor = new BABYLON.Color3(1, 0, 1);
         }
