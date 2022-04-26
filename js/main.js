@@ -356,12 +356,12 @@ function createFreeCamera(scene) {
 }
 
 
-window.addEventListener("resize", () => {
-    engine.resize()
-})
+
 
 function modifySetting(scene){
-
+    window.addEventListener("resize", () => {
+        engine.resize()
+    })
     // key listener
     inputStates.left = false;
     inputStates.right = false;
