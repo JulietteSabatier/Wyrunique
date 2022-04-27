@@ -6,7 +6,6 @@ export default class Level1 extends AbstractLevel{
         super(engine, canvas);
 
         this.createScene()
-
     }
 
     createScene() {

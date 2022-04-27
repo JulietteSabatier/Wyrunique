@@ -18,6 +18,8 @@ window.onload = startGame;
 
 function startGame(){
 
+
+
     canvas = document.querySelector("#myCanvas");
     engine = new BABYLON.Engine(canvas, true);
 
@@ -65,17 +67,38 @@ function startGame(){
                     }
                 break;
             }
+            modifySetting(scene);
         }
 
-
+        if (GameState.GameState === GameState.Level){
+            movePlayer();
+            mergePlayer();
+        }
         scene.render();
     })
 }
 
+function movePlayer(){
+    let player = scene.players[scene.currentPlayer];
+    if (player){
+        player.move(scene, inputStates);
+    }
+}
+
+function mergePlayer(){
+    let player = scene.players[scene.currentPlayer];
+    if (player){
+        player.merge(scene);
+    }
+}
+
+
 function modifySetting(scene){
+
     window.addEventListener("resize", () => {
         engine.resize()
     })
+
     // key listener
     inputStates.left = false;
     inputStates.right = false;

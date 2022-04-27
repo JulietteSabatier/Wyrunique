@@ -86,7 +86,6 @@ export default class AbstractLevel extends BABYLON.Scene{
         camera.upperBetaLimit = (Math.PI / 2);
         camera.attachControl(this.canvas, false, false, 0);
 
-        this.cameras.push(camera);
         return camera;
     }
 
