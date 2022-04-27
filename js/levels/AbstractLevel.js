@@ -3,13 +3,14 @@ import GameState from "../GameState.js";
 
 export default class AbstractLevel extends BABYLON.Scene{
 
-    constructor(engine, canvas){
+    constructor(engine, canvas, id){
         super(engine, canvas);
 
         if (this.constructor === AbstractLevel){
             throw new TypeError('Abstract class "AbstractMenu" cannot be instanced directly');
         }
 
+        this.id = id;
         this.name = null;
         this.players = [];
         this.cameras = [];
@@ -17,6 +18,7 @@ export default class AbstractLevel extends BABYLON.Scene{
         this.canFinish = false;
 
         let finished = this.createAdvancedTexture("gui/guiTextureLevel.json", "guiLevel");
+
     }
 
     async createAdvancedTexture(path, name){
@@ -25,7 +27,9 @@ export default class AbstractLevel extends BABYLON.Scene{
 
         this.quitButton = this.advancedTexture.getControlByName("quitButton");
         this.restartButton = this.advancedTexture.getControlByName("restartButton");
+        this.nbBallText = this.advancedTexture.getControlByName("textNbBall");
 
+        this.nbBallText.text = this.players.length;
         this.quitButton.onPointerUpObservable.add(function (){
             GameState.GameState = GameState.LevelMenu;
             console.log("level to level menu");

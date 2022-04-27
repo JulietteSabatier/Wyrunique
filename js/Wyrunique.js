@@ -12,23 +12,15 @@ let inputStates = {};
 
 let scene;
 
-let levels;
-
 window.onload = startGame;
 
 function startGame(){
 
-
-
     canvas = document.querySelector("#myCanvas");
     engine = new BABYLON.Engine(canvas, true);
 
-//   levels[0] = new LevelMenu(engine, canvas, 0)
-//   modifySetting(levels[0].scene);
-//   levels[1] = new LevelMenu(engine, canvas, 1)
-//   modifySetting(levels[1].scene);
-
     scene = new MainMenu(engine, canvas);
+    modifySetting(scene);
 
     engine.runRenderLoop(function() {
         let deltaTime = engine.getDeltaTime();
@@ -57,11 +49,11 @@ function startGame(){
                 case GameState.Level:
                     switch (GameState.numLevel){
                         case 0:
-                            scene = new Level1(engine, canvas);
+                            scene = new Level1(engine, canvas, 0);
                             GameState.precGameState = GameState.Level;
                         break;
                         case 1:
-                            scene = new Level2(engine, canvas);
+                            scene = new Level2(engine, canvas, 1);
                             GameState.precGameState = GameState.Level;
                         break;
                     }
@@ -73,17 +65,21 @@ function startGame(){
         if (GameState.GameState === GameState.Level){
 
             if (GameState.restartLevel){
+                scene.dispose();
+                scene.advancedTexture.dispose();
+
                 switch (GameState.numLevel){
                     case 0:
-                        scene = new Level1(engine, canvas);
+                        scene = new Level1(engine, canvas, 0);
                     break;
                     case 1:
-                        scene = new Level2(engine, canvas);
+                        scene = new Level2(engine, canvas, 1);
                     break;
                 }
+
+                modifySetting(scene);
                 GameState.restartLevel = false;
             }
-
             movePlayer();
             mergePlayer();
         }
@@ -97,7 +93,6 @@ function movePlayer(){
         player.move(scene, inputStates);
     }
 }
-
 function mergePlayer(){
     let player = scene.players[scene.currentPlayer];
     if (player){
