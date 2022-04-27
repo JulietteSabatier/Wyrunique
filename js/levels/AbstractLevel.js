@@ -1,4 +1,5 @@
 import Player from "../Player.js";
+import GameState from "../GameState.js";
 
 export default class AbstractLevel extends BABYLON.Scene{
 
@@ -14,6 +15,26 @@ export default class AbstractLevel extends BABYLON.Scene{
         this.cameras = [];
         this.currentPlayer = 0;
         this.canFinish = false;
+
+        let finished = this.createAdvancedTexture("gui/guiTextureLevel.json", "guiLevel");
+    }
+
+    async createAdvancedTexture(path, name){
+        this.advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI(name, true, this);
+        let loadedGui = await this.advancedTexture.parseFromURLAsync(path);
+
+        this.quitButton = this.advancedTexture.getControlByName("quitButton");
+        this.restartButton = this.advancedTexture.getControlByName("restartButton");
+
+        this.quitButton.onPointerUpObservable.add(function (){
+            GameState.GameState = GameState.LevelMenu;
+            console.log("level to level menu");
+        })
+        this.restartButton.onPointerUpObservable.add(function (){
+            GameState.restartLevel = true;
+            console.log("restart level");
+        })
+
     }
 
 

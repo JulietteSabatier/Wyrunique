@@ -9,4 +9,5 @@ export default class GameState{
     static precGameState = this.MainMenu;
     static GameState = this.MainMenu;
     static numLevel = 0;
+    static restartLevel = false;
 }

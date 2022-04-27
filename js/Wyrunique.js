@@ -71,6 +71,19 @@ function startGame(){
         }
 
         if (GameState.GameState === GameState.Level){
+
+            if (GameState.restartLevel){
+                switch (GameState.numLevel){
+                    case 0:
+                        scene = new Level1(engine, canvas);
+                    break;
+                    case 1:
+                        scene = new Level2(engine, canvas);
+                    break;
+                }
+                GameState.restartLevel = false;
+            }
+
             movePlayer();
             mergePlayer();
         }
