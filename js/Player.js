@@ -46,6 +46,8 @@ export default class Player {
                     if (i < scene.currentPlayer){
                         scene.currentPlayer = scene.currentPlayer - 1;
                     }
+                    scene.advancedTexture.dispose();
+                    let finished = scene.createAdvancedTexture("gui/guiTextureLevel.json", "guiLevel");
                     return true;
                 }
             }
@@ -53,8 +55,7 @@ export default class Player {
         if (scene.players.length === 1) {
             scene.createEnd();
         }
-        scene.advancedTexture.dispose();
-        let finished = scene.createAdvancedTexture("gui/guiTextureLevel.json", "guiLevel");
+
     }
 
 
