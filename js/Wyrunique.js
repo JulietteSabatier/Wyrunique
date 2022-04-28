@@ -15,6 +15,9 @@ let scene;
 
 window.onload = startGame;
 
+
+//// ui color : #C97B04FF
+
 function startGame(){
 
     canvas = document.querySelector("#myCanvas");
@@ -163,9 +166,9 @@ function modifySetting(scene){
             inputStates.space = false;
         } else if (event.key === "&") {
             if (inputStates.one === true){
-                //levels[GnumLevelShow].currentPlayer = (levels[numLevelShow].currentPlayer + 1) % levels[numLevelShow].players.length;
-                //console.log("Switching to player/camera " + levels[numLevelShow].currentPlayer);
-                //levels[numLevelShow].scene.activeCamera = levels[numLevelShow].cameras[levels[numLevelShow].currentPlayer];
+                scene.currentPlayer = (scene.currentPlayer +1) % scene.players.length;
+                console.log("Switching to player/camera "+ scene.currentPlayer);
+                scene.activeCamera = scene.cameras[scene.currentPlayer];
             }
             inputStates.one = false;
         }

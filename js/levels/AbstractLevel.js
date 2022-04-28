@@ -25,6 +25,7 @@ export default class AbstractLevel extends BABYLON.Scene{
         this.advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI(name, true, this);
         let loadedGui = await this.advancedTexture.parseFromURLAsync(path);
 
+
         this.quitButton = this.advancedTexture.getControlByName("quitButton");
         this.restartButton = this.advancedTexture.getControlByName("restartButton");
 
