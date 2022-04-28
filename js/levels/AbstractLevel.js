@@ -178,4 +178,11 @@ export default class AbstractLevel extends BABYLON.Scene{
         return camera;
     }
 
+    changePlayer(){
+        this.currentPlayer = (this.currentPlayer + 1) % this.players.length;
+        console.log("Switching to player/camera " + this.currentPlayer);
+        this.activeCamera = this.cameras[this.currentPlayer];
+        return true;
+    }
+
 }

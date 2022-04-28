@@ -36,6 +36,4 @@ export default class Level1 extends AbstractLevel{
 
 
     }
-
-
 }

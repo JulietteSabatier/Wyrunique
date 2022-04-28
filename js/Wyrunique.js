@@ -16,15 +16,15 @@ let scene;
 window.onload = startGame;
 
 
-//// ui color : #C97B04FF
+//// ui orange color : #C97B04FF
 
 function startGame(){
 
     canvas = document.querySelector("#myCanvas");
     engine = new BABYLON.Engine(canvas, true);
+    modifySetting();
 
     scene = new MainMenu(engine, canvas);
-    modifySetting(scene);
 
     engine.runRenderLoop(function() {
         let deltaTime = engine.getDeltaTime();
@@ -67,7 +67,6 @@ function startGame(){
                     }
                 break;
             }
-            modifySetting(scene);
         }
 
         if (GameState.GameState === GameState.Level){
@@ -85,7 +84,6 @@ function startGame(){
                     break;
                 }
 
-                modifySetting(scene);
                 GameState.restartLevel = false;
             }
 
@@ -121,9 +119,9 @@ function mergePlayer(){
     }
 }
 
+function modifySetting(){
 
-function modifySetting(scene){
-
+    // resize
     window.addEventListener("resize", () => {
         engine.resize()
     })
@@ -166,9 +164,7 @@ function modifySetting(scene){
             inputStates.space = false;
         } else if (event.key === "&") {
             if (inputStates.one === true){
-                scene.currentPlayer = (scene.currentPlayer +1) % scene.players.length;
-                console.log("Switching to player/camera "+ scene.currentPlayer);
-                scene.activeCamera = scene.cameras[scene.currentPlayer];
+                    scene.changePlayer();
             }
             inputStates.one = false;
         }
