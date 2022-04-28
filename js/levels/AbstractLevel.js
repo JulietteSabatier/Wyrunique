@@ -27,9 +27,12 @@ export default class AbstractLevel extends BABYLON.Scene{
 
         this.quitButton = this.advancedTexture.getControlByName("quitButton");
         this.restartButton = this.advancedTexture.getControlByName("restartButton");
-        this.nbBallText = this.advancedTexture.getControlByName("textNbBall");
 
-        this.nbBallText.text = this.players.length;
+        if (name === "guiLevel"){
+            this.nbBallText = this.advancedTexture.getControlByName("textNbBall");
+            this.nbBallText.text = this.players.length;
+        }
+
         this.quitButton.onPointerUpObservable.add(function (){
             GameState.GameState = GameState.LevelMenu;
             console.log("level to level menu");
