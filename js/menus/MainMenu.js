@@ -28,7 +28,6 @@ export default class MainMenu extends AbstractMenu{
             GameState.GameState = GameState.OptionMenu;
             console.log("main to options");
         });
-
     }
 
 }

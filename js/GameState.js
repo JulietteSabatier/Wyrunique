@@ -11,4 +11,5 @@ export default class GameState{
     static GameState = this.MainMenu;
     static numLevel = 0;
     static restartLevel = false;
+    static maxNumLevel = 2;
 }
