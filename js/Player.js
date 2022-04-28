@@ -60,7 +60,6 @@ export default class Player {
                 }
             }
         }
-        //if (scene.players.length === 1)
 
     }
 

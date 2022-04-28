@@ -133,9 +133,9 @@ export default class AbstractLevel extends BABYLON.Scene{
             let cylinderMaterial = new BABYLON.StandardMaterial("cylinderMaterial", this);
             cylinderMaterial.diffuseTexture = new BABYLON.Texture("images/finishZone.png", this);
 
-            let finishBox = new BABYLON.MeshBuilder.CreateCylinder("finishSphere", {height: 10, diameter: 25, faceUV: faceUV, faceColors: colors}, this);
-            finishBox.position = new BABYLON.Vector3(0, 5, 300);
-            finishBox.material = cylinderMaterial;
+            this.finishBox = new BABYLON.MeshBuilder.CreateCylinder("finishSphere", {height: 10, diameter: 25, faceUV: faceUV, faceColors: colors}, this);
+            this.finishBox.position = new BABYLON.Vector3(0, 5, 300);
+            this.finishBox.material = cylinderMaterial;
             this.canFinish = true;
         }
     }

@@ -5,6 +5,7 @@ export default class GameState{
     static CommandMenu = 2;
     static OptionMenu = 3;
     static Level = 4;
+    static Congratulation = 5;
 
     static precGameState = this.MainMenu;
     static GameState = this.MainMenu;

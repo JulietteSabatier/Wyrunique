@@ -5,6 +5,7 @@ import OptionMenu from "./menus/OptionMenu.js";
 import CommandMenu from "./menus/CommandMenu.js";
 import Level1 from "./levels/Level1.js";
 import Level2 from "./levels/Level2.js";
+import CongratulationMenu from "./menus/CongratulationMenu.js";
 
 let canvas;
 let engine;
@@ -46,6 +47,10 @@ function startGame(){
                     scene = new OptionMenu(engine, canvas);
                     GameState.precGameState = GameState.OptionMenu;
                 break;
+                case GameState.Congratulation:
+                    scene = new CongratulationMenu(engine, canvas);
+                    GameState.precGameState = GameState.Congratulation;
+                break;
                 case GameState.Level:
                     switch (GameState.numLevel){
                         case 0:
@@ -80,11 +85,24 @@ function startGame(){
                 modifySetting(scene);
                 GameState.restartLevel = false;
             }
+
             movePlayer();
             mergePlayer();
+            playerFinishLevel();
         }
         scene.render();
     })
+}
+
+function playerFinishLevel(){
+    let player = scene.players[scene.currentPlayer];
+    if (scene.canFinish){
+        if (player){
+            if (player.playerMesh.intersectsPoint(scene.finishBox.position)){
+                GameState.GameState = GameState.Congratulation;
+            }
+        }
+    }
 }
 
 function movePlayer(){
