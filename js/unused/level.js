@@ -1,4 +1,4 @@
-import Player from "./Player.js";
+import Player from "../Player.js";
 
 export default class Level {
     constructor(id, engine, name) {
