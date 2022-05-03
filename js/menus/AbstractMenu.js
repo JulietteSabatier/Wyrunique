@@ -14,6 +14,36 @@ export default class AbstractMenu extends BABYLON.Scene{
         let light = new BABYLON.DirectionalLight("light", new BABYLON.Vector3(-1,-1,0), this);
         light.position.z = 2;
 
+        let music = new BABYLON.Sound("menuMusic", "musics/Papillon.mp3", this, null,
+            {
+                loop: true,
+                autoplay:true
+            });
+    }
+
+    createSceneBackground(){
+        setTimeout(() => {
+
+            this.createBall(0,0,0);
+        }, 200);
+    }
+
+    createBall(x, y, z, color){
+
+        let ball = BABYLON.MeshBuilder.CreateSphere("ball", {diameter:2, segments: 32}, this);
+
+        // set the color
+
+        ball.position = new BABYLON.Vector3(x, y, z);
+
+        ball.physicsImpostor = new BABYLON.PhysicsImpostor(ball,
+            BABYLON.PhysicsImpostor.SphereImpostor, {mass: 1}, this);
+
+
+        //disappear after 2s
+        setTimeout(() => {
+            ball.dispose();
+        },100);
     }
 }
 

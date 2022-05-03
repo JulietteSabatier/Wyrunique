@@ -19,6 +19,12 @@ export default class AbstractLevel extends BABYLON.Scene{
 
         let finished = this.createAdvancedTexture("gui/guiTextureLevel.json", "guiLevel");
 
+        let music = new BABYLON.Sound("menuMusic", "musics/Funambule1.mp3", this, null,
+            {
+                loop: true,
+                autoplay:true
+            });
+
     }
 
     async createAdvancedTexture(path, name){
