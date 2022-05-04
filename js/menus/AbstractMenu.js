@@ -14,7 +14,7 @@ export default class AbstractMenu extends BABYLON.Scene{
         let light = new BABYLON.DirectionalLight("light", new BABYLON.Vector3(-1,-1,0), this);
         light.position.z = 2;
 
-        let music = new BABYLON.Sound("menuMusic", "musics/Papillon.mp3", this, null,
+        this.music = new BABYLON.Sound("menuMusic", "musics/Papillon.mp3", this, null,
             {
                 loop: true,
                 autoplay:true
