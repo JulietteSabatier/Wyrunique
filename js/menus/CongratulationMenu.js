@@ -6,6 +6,14 @@ export default class CongratulationMenu extends AbstractMenu{
     constructor(engine, canvas) {
         super(engine, canvas);
         let finished = this.createAdvancedTexture("gui/guiTextureCongratulation.json", "congratulationMenu");
+
+        this.music.dispose();
+        this.music = new BABYLON.Sound("congratulationSound", "musics/Solo-nazz.mp3", this, null,
+            {
+                loop:true,
+                autoplay: true,
+                offset: 8
+            })
     }
 
     async createAdvancedTexture(path, name){

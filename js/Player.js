@@ -55,6 +55,7 @@ export default class Player {
                     else{
                         let finished = scene.createAdvancedTexture("gui/guiTextureLevel.json", "guiLevel");
                     }
+                    scene.mergeSound.play();
                     return true;
 
                 }

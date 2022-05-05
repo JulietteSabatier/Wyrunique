@@ -12,7 +12,6 @@ let engine;
 let inputStates = {};
 
 let scene;
-
 window.onload = startGame;
 
 
