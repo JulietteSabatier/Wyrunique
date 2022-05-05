@@ -1,11 +1,11 @@
 import GameState from "../GameState.js";
+import Options from "../Options.js";
 
 export default class Menu extends BABYLON.Scene{
 
     constructor(engine, canvas) {
         super(engine, canvas);
 
-        //
         this.clearColor = new BABYLON.Color4(0.2, 0.2, 0.2, 1);
         let camera = new BABYLON.FreeCamera("fixCamera", new BABYLON.Vector3(0,50,0), this);
         this.activeCamera = camera;
@@ -16,7 +16,8 @@ export default class Menu extends BABYLON.Scene{
         this.music = new BABYLON.Sound("menuMusic", "musics/Papillon.mp3", this, null,
             {
                 loop: true,
-                autoplay:true
+                autoplay: true,
+                volume: Options.levelMusic
             });
     }
 
@@ -73,10 +74,21 @@ export default class Menu extends BABYLON.Scene{
     let loadedGui = await this.advancedTexture.parseFromURLAsync("gui/guiTextureOptionMenu.json");
 
     this.advancedTexture.returnButton = this.advancedTexture.getControlByName("returnButton");
+    this.advancedTexture.sliderMusicVolume = this.advancedTexture.getControlByName("sliderMusicVolume");
+    this.advancedTexture.sliderEffectVolume = this.advancedTexture.getControlByName("sliderEffectVolume");
 
     this.advancedTexture.returnButton.onPointerUpObservable.add( function () {
         GameState.GameState = GameState.MainMenu;
         console.log("option to main");
+    });
+    this.advancedTexture.sliderMusicVolume.onValueChangedObservable.add(function(value) {
+        Options.levelMusic = value;
+    });
+    this.advancedTexture.sliderEffectVolume.onPointerUpObservable.add( function (){
+        Options.soundEffectChanged = true;
+    })
+    this.advancedTexture.sliderEffectVolume.onValueChangedObservable.add(function(value){
+        Options.levelSoundEffect = value;
     });
     }
 

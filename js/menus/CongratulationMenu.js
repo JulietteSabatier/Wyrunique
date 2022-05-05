@@ -1,4 +1,5 @@
 import GameState from "../GameState.js";
+import Options from "../Options.js";
 
 export default class CongratulationMenu extends BABYLON.Scene{
 
@@ -10,7 +11,8 @@ export default class CongratulationMenu extends BABYLON.Scene{
             {
                 loop:true,
                 autoplay: true,
-                offset: 8
+                offset: 8,
+                volume: Options.levelMusic
             })
 
         this.clearColor = new BABYLON.Color4(0.2, 0.2, 0.2, 1);

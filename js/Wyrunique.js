@@ -3,6 +3,7 @@ import Level1 from "./levels/Level1.js";
 import Level2 from "./levels/Level2.js";
 import CongratulationMenu from "./menus/CongratulationMenu.js";
 import Menu from "./menus/Menu.js";
+import Options from "./Options.js";
 
 let canvas;
 let engine;
@@ -92,6 +93,23 @@ function startGame(){
                         break;
                     }
                 break;
+            }
+        }
+
+        if (GameState.GameState === GameState.OptionMenu){
+            scene.music.setVolume(Options.levelMusic);
+
+            if (Options.soundEffectChanged){
+                scene.soundEffect = new BABYLON.Sound("testSound", "musics/mixkit-retro-game-notification-212.wav", scene, null,
+                    {volume: Options.levelSoundEffect}
+                );
+                console.log(scene);
+                //scene.music.pause();
+                scene.soundEffect.play();
+                console.log(scene);
+                //soundEffect.stop(1);
+                //scene.music.play();
+                Options.soundEffectChanged = false;
             }
         }
 

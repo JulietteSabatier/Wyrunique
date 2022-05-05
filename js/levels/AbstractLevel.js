@@ -1,5 +1,6 @@
 import Player from "../Player.js";
 import GameState from "../GameState.js";
+import Options from "../Options.js";
 
 export default class AbstractLevel extends BABYLON.Scene{
 
@@ -24,13 +25,17 @@ export default class AbstractLevel extends BABYLON.Scene{
         let music = new BABYLON.Sound("menuMusic", "musics/Funambule1.mp3", this, null,
             {
                 loop: true,
-                autoplay:true
+                autoplay:true,
+                volume: Options.levelMusic
             });
 
         this.mergeSound = new BABYLON.Sound("mergeSound",
             "musics/mixkit-fast-small-sweep-transition-166.wav",
             this,
-        null
+        null,
+            {
+                volume: Options.levelSoundEffect
+            }
             );
         this.effectSoundTrack.addSound(this.mergeSound);
         this.mergeSound.setVolume(0.1);
