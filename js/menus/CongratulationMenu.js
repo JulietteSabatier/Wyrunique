@@ -1,19 +1,25 @@
-import AbstractMenu from "./AbstractMenu.js";
 import GameState from "../GameState.js";
 
-export default class CongratulationMenu extends AbstractMenu{
+export default class CongratulationMenu extends BABYLON.Scene{
 
     constructor(engine, canvas) {
         super(engine, canvas);
         let finished = this.createAdvancedTexture("gui/guiTextureCongratulation.json", "congratulationMenu");
 
-        this.music.dispose();
         this.music = new BABYLON.Sound("congratulationSound", "musics/Solo-nazz.mp3", this, null,
             {
                 loop:true,
                 autoplay: true,
                 offset: 8
             })
+
+        this.clearColor = new BABYLON.Color4(0.2, 0.2, 0.2, 1);
+        let camera = new BABYLON.FreeCamera("fixCamera", new BABYLON.Vector3(0,50,0), this);
+        this.activeCamera = camera;
+        camera.attachControl(canvas);
+        let light = new BABYLON.DirectionalLight("light", new BABYLON.Vector3(-1,-1,0), this);
+        light.position.z = 2;
+
     }
 
     async createAdvancedTexture(path, name){
