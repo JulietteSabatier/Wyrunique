@@ -103,10 +103,8 @@ function startGame(){
                 scene.soundEffect = new BABYLON.Sound("testSound", "musics/mixkit-retro-game-notification-212.wav", scene, null,
                     {volume: Options.levelSoundEffect}
                 );
-                console.log(scene);
                 //scene.music.pause();
                 scene.soundEffect.play();
-                console.log(scene);
                 //soundEffect.stop(1);
                 //scene.music.play();
                 Options.soundEffectChanged = false;

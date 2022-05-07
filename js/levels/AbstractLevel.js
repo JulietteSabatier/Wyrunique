@@ -29,6 +29,7 @@ export default class AbstractLevel extends BABYLON.Scene{
                 volume: Options.levelMusic
             });
 
+        console.log(Options.levelSoundEffect)
         this.mergeSound = new BABYLON.Sound("mergeSound",
             "musics/mixkit-fast-small-sweep-transition-166.wav",
             this,
@@ -38,7 +39,6 @@ export default class AbstractLevel extends BABYLON.Scene{
             }
             );
         this.effectSoundTrack.addSound(this.mergeSound);
-        this.mergeSound.setVolume(0.1);
     }
 
     async createAdvancedTexture(path, name){
