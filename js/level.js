@@ -1,5 +1,4 @@
 import Player from "./Player.js";
-import { loadNextLevel } from "./main.js";
 
 export default class Level {
     constructor(id, engine, name) {
@@ -19,26 +18,48 @@ export default class Level {
         this.players = [];
         this.cameras = [];
         this.scene = new BABYLON.Scene(engine)
-        if (id === 0) {
-            this.scene.clearColor = new BABYLON.Color3(1, 0, 1);
-        }
-        else{
-            this.scene.clearColor = new BABYLON.Color3(1, 0, 0);
-        }
 
-        let gravityVector = new BABYLON.Vector3(0,-9.81, 0);
+        let gravityVector = new BABYLON.Vector3(0, -9.81, 0);
         let physicsPlugin = new BABYLON.CannonJSPlugin();
         this.scene.enablePhysics(gravityVector, physicsPlugin);
+        this.scene.assetsManager = new BABYLON.AssetsManager(this.scene);
 
-        let ground = this.createGround();
-        this.createLights(this.scene);
-        this.buildWalls();
+        if (id === 0) {
+            let ground = this.createGround();
+            this.scene.clearColor = new BABYLON.Color3(1, 0, 1);
+            this.buildWalls();
+        } else {
+            this.scene.clearColor = new BABYLON.Color3(1, 0, 0);
+
+            let labTask = this.scene.assetsManager.addMeshTask("maze task", "", "assets/", "Level2.babylon");
+            labTask.onSuccess = function (task) {
+
+                let mazeMesh = task.loadedMeshes[0];
+                //let mazeMaterial = new BABYLON.StandardMaterial("mazeMaterial", this.scene);
+                // mazeMaterial.diffuseTexture = new BABYLON.Texture("assets/Labyrinthe_baked_DIFFUSE.jpg", this.scene);
+                // mazeMesh.material.bumpTexture = new BABYLON.Texture("images/Maze_normal_4k.png");
+                // mazeMesh.material = mazeMaterial;
+
+                mazeMesh.position = new BABYLON.Vector3.Zero();
+                mazeMesh.scaling = new BABYLON.Vector3(100, 100, 100);
+
+                mazeMesh.physicsImpostor = new BABYLON.PhysicsImpostor(mazeMesh,
+                    BABYLON.PhysicsImpostor.MeshImpostor, {mass: 0});
+            }
+            labTask.onError = function (task, message, exception) {
+                console.log(message, exception);
+
+            }
+            this.scene.assetsManager.load();
+        }
+
+        this.scene.particlesEnabled = true;
+        this.createLights();
         this.createAllSpheres(this.scene, id);
         this.currentPlayer = 0;
         this.scene.activeCamera = this.cameras[0];
-        //this.scene.activeCamera = this.createFreeCamera(this.scene);
-    }
 
+    }
 
     buildWalls() {
         let wall = new BABYLON.MeshBuilder.CreateBox("wall", {height: 20, width: 2, depth: 300}, this.scene);
@@ -60,43 +81,40 @@ export default class Level {
         instance.checkCollisions = true;
         instance.physicsImpostor = new BABYLON.PhysicsImpostor(instance,
             BABYLON.PhysicsImpostor.BoxImpostor, {mass: 0});
-
-        this.scene.shadowGenerator.addShadowCaster(wall);
-        this.scene.shadowGenerator.addShadowCaster(instance);
     }
 
     createEnd() {
         if (!this.canFinish) {
 
-            let particleSystem = new BABYLON.ParticleSystem("particles", 500); // on construction
-            particleSystem.particleTexture = new BABYLON.Texture("images/Particle.jpg", this.scene);
-            particleSystem.emitter = new BABYLON.Vector3(0, 15, 300);
-            particleSystem.emitRate = 200;
+            this.particleSystem = new BABYLON.ParticleSystem("particles", 500); // on construction
+            this.particleSystem.particleTexture = new BABYLON.Texture("images/Particle.jpg", this.scene);
+            this.particleSystem.emitter = new BABYLON.Vector3(0, 15, 300);
+            this.particleSystem.emitRate = 200;
 
-            particleSystem.direction1 = new BABYLON.Vector3(-7, -5, 10);
-            particleSystem.direction2 = new BABYLON.Vector3(7, -5, -10);
+            this.particleSystem.direction1 = new BABYLON.Vector3(-7, -5, 10);
+            this.particleSystem.direction2 = new BABYLON.Vector3(7, -5, -10);
 
-            particleSystem.minLifeTime = 0.3;
-            particleSystem.maxLifeTime = 1.5;
+            this.particleSystem.minLifeTime = 0.3;
+            this.particleSystem.maxLifeTime = 1.5;
 
-            particleSystem.color1 = new BABYLON.Color4(0.7, 0.8, 1.0, 1.0);
-            particleSystem.color2 = new BABYLON.Color4(0.2, 0.5, 1.0, 1.0);
-            particleSystem.colorDead = new BABYLON.Color4(0, 0, 0.2, 0.0);
+            this.particleSystem.color1 = new BABYLON.Color4(0.7, 0.8, 1.0, 1.0);
+            this.particleSystem.color2 = new BABYLON.Color4(0.2, 0.5, 1.0, 1.0);
+            this.particleSystem.colorDead = new BABYLON.Color4(0, 0, 0.2, 0.0);
 
-            particleSystem.start();
+            this.particleSystem.start();
             this.canFinish = true;
         }
     }
 
     checkIfFinish() {
-        let player = this.scene.players[0];
-
-        if (player.intersectsPoint(new BABYLON.Vector3(0, 0, 300))) {
-            loadNextLevel();
+        let emitterProjection = new BABYLON.Vector3(this.particleSystem.emitter.x, 0, this.particleSystem.emitter.z);
+        if (this.players[0].playerMesh.intersectsPoint(emitterProjection)) {
+            console.log("touché");
         }
     }
 
-    createSphere(name, nb, pos_y, pos_x, pos_z, diffuseColor){
+
+    createSphere(name, nb, pos_y, pos_x, pos_z, diffuseColor) {
         let sphereMesh = new BABYLON.MeshBuilder.CreateSphere(name, {diameter: 5}, this.scene);
 
         sphereMesh.position.y = pos_y;
@@ -119,8 +137,6 @@ export default class Level {
         let followCamera = this.createFollowCamera(this.scene, sphereMesh);
 
         sphereMesh.showBoundingBox = false;
-
-        this.scene.shadowGenerator.addShadowCaster(sphereMesh);
     }
 
     createAllSpheres(scene, id) {
@@ -186,6 +202,7 @@ export default class Level {
         camera.attachControl(this.scene.canvas, false, false, 0);
 
         this.cameras.push(camera);
+
         return camera;
     }
 
@@ -209,10 +226,8 @@ export default class Level {
         return ground;
     }
 
-    createLights(scene) {
-        // i.e sun light with all light rays parallels, the vector is the direction.
-        let light0 = new BABYLON.DirectionalLight("dir0", new BABYLON.Vector3(-1, -1, 0), this.scene);
-        light0.position.z = 2;
-
+    createLights() {
+        let light = new BABYLON.DirectionalLight("dir0", new BABYLON.Vector3(-1, -1, 0), this.scene);
+        light.position.z = 2;
     }
 }

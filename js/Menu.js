@@ -18,7 +18,7 @@ export default class Menu {
         mainMenu["gui"].addControl(text1);
 
         // Play
-        mainMenu["play"] = new BABYLON.GUI.Button.CreateSimpleButton("play", "Play");
+        mainMenu["play"] = BABYLON.GUI.Button.CreateSimpleButton("play", "Play");
         mainMenu["play"].width = "150px"
         mainMenu["play"].height = "40px";
         mainMenu["play"].color = "white";
@@ -292,7 +292,7 @@ export default class Menu {
     }
 
 
-    // dropdown find on playground
+    // dropdown found on playground
     // https://www.babylonjs-playground.com/#H10NI4#3
 
 

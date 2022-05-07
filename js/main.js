@@ -78,10 +78,15 @@ function startGame() {
                 restartLevel = false;
             }
 
+            levels[numLevelShow].scene.assetsManager.load();
             levels[numLevelShow].scene.render();
             movePlayer(levels[typeSceneShow].currentPlayer, levels[numLevelShow], inputStates)
             //movePlayer(scene.currentPlayer, scene, inputStates);
             mergePlayer();
+
+            if (levels[numLevelShow].canFinish) {
+                levels[numLevelShow].checkIfFinish();
+            }
         }
     })
 
@@ -185,28 +190,12 @@ function createMainMenu(){
 }
 
 
-function configureAssetManager(scene){
-    let assetsManager = new BABYLON.AssetsManager(scene);
-
-    assetsManager.onProgress = function(remainingCount, totalCount, lastFinishedTask){
-        engine.loadingUIText = "We are loading the scene. " + remainingCount + " out of " + totalCount + " items still need to be loaded";
-    };
-
-    assetsManager.onFinish = function(tasks) {
-        engine.runRenderLoop(function(){
-            scene.toRender();
-        });
-    };
-
-    return assetsManager;
-}
-
 
 /// Create environment
 function createScene(id, name) {
     let scene = new BABYLON.Scene(engine);
     modifySetting(scene);
-    //scene.assetManager = configureAssetManager(scene);
+    //scene.assetsManager = configureAssetManager(scene);
     // background
     if (id === 0){
         scene.clearColor = new BABYLON.Color3(1, 0, 1);
@@ -214,7 +203,6 @@ function createScene(id, name) {
     else{
         scene.clearColor = new BABYLON.Color3(1, 0, 0);
     }
-    scene.shadowsEnabled = true;
 
     let gravityVector = new BABYLON.Vector3(0,-9.81, 0);
     let physicsPlugin = new BABYLON.CannonJSPlugin();
@@ -255,7 +243,6 @@ function createGround(scene) {
     ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground,
         BABYLON.PhysicsImpostor.HeightmapImpostor, { mass: 0 }, scene);
 
-    ground.receiveShadows = true;
     return ground;
 }
 
@@ -285,9 +272,6 @@ function createLights(scene) {
     // i.e sun light with all light rays parallels, the vector is the direction.
     let light = new BABYLON.DirectionalLight("dir0", new BABYLON.Vector3(-1, -1, 0), scene);
     light.position.z = 2;
-
-    scene.shadowGenerator = new BABYLON.ShadowGenerator(1024, light);
-    scene.shadowGenerator.useBlurExponentialShadowMap = true;
 }
 
 function createFreeCamera(scene) {
@@ -328,13 +312,13 @@ function modifySetting(scene){
 
     //add the listener to the main, window object, and update the states
     window.addEventListener('keydown', (event) => {
-        if ((event.key === "ArrowLeft") || (event.key === "q")|| (event.key === "Q")) {
+        if ((event.key === "q")|| (event.key === "Q")) {
             inputStates.left = true;
-        } else if ((event.key === "ArrowUp") || (event.key === "z")|| (event.key === "Z")){
+        } else if ((event.key === "z")|| (event.key === "Z")){
             inputStates.up = true;
-        } else if ((event.key === "ArrowRight") || (event.key === "d")|| (event.key === "D")){
+        } else if ((event.key === "d")|| (event.key === "D")){
             inputStates.right = true;
-        } else if ((event.key === "ArrowDown")|| (event.key === "s")|| (event.key === "S")) {
+        } else if ((event.key === "s")|| (event.key === "S")) {
             inputStates.down = true;
         } else if (event.key === " ") {
             inputStates.space = true;
@@ -345,13 +329,13 @@ function modifySetting(scene){
 
     //if the key will be released, change the states object
     window.addEventListener('keyup', (event) => {
-        if ((event.key === "ArrowLeft") || (event.key === "q")|| (event.key === "Q")) {
+        if ((event.key === "q")|| (event.key === "Q")) {
             inputStates.left = false;
-        } else if ((event.key === "ArrowUp") || (event.key === "z")|| (event.key === "Z")){
+        } else if ((event.key === "z")|| (event.key === "Z")){
             inputStates.up = false;
-        } else if ((event.key === "ArrowRight") || (event.key === "d")|| (event.key === "D")){
+        } else if ((event.key === "d")|| (event.key === "D")){
             inputStates.right = false;
-        } else if ((event.key === "ArrowDown")|| (event.key === "s")|| (event.key === "S")) {
+        } else if ((event.key === "s")|| (event.key === "S")) {
             inputStates.down = false;
         }  else if (event.key === " ") {
             inputStates.space = false;
