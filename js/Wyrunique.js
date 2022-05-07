@@ -22,7 +22,7 @@ function startGame(){
     modifySetting();
 
     scene = new Menu(engine, canvas);
-    scene.createGuiMainMenu().then(r => true);
+    scene.createGuiStartMenu().then(r => true);
 
     engine.runRenderLoop(function() {
         let deltaTime = engine.getDeltaTime();
@@ -30,6 +30,40 @@ function startGame(){
         if (GameState.precGameState !== GameState.GameState){
 
             switch (GameState.GameState){
+
+                case GameState.StartMenu:
+                    if (GameState.precGameState === GameState.Level || GameState.precGameState === GameState.Congratulation){
+                        scene.dispose();
+                        scene = new Menu(engine, canvas);
+                    }
+                    else{
+                        scene.advancedTexture.dispose();
+                    }
+                    scene.createGuiStartMenu().then(r => true);
+                    GameState.precGameState = GameState.StartMenu;
+                break;
+                case GameState.CinematicMenu:
+                    if (GameState.precGameState === GameState.Level || GameState.precGameState === GameState.Congratulation){
+                        scene.dispose();
+                        scene = new Menu(engine, canvas);
+                    }
+                    else{
+                        scene.advancedTexture.dispose();
+                    }
+                    GameState.precGameState = GameState.TextMenu;
+                    scene.beginAnimation(scene.rotateCamera, 0, scene.frameRate, true);
+                break;
+                case GameState.TextMenu:
+                    if (GameState.precGameState === GameState.Level || GameState.precGameState === GameState.Congratulation){
+                        scene.dispose();
+                        scene = new Menu(engine, canvas);
+                    }
+                    else{
+                        scene.advancedTexture.dispose();
+                    }
+                    scene.createGuiExplicationMenu().then(r => true);
+                    GameState.precGameState = GameState.TextMenu;
+                break;
                 case GameState.MainMenu:
                     if (GameState.precGameState === GameState.Level || GameState.precGameState === GameState.Congratulation){
                         scene.dispose();
@@ -95,6 +129,17 @@ function startGame(){
                 break;
             }
         }
+
+        if (GameState.GameState === GameState.StartMenu
+            || GameState.GameState === GameState.TextMenu
+            || GameState.GameState === GameState.CinematicMenu
+            || GameState.GameState === GameState.MainMenu
+            || GameState.GameState === GameState.LevelMenu
+            || GameState.GameState === GameState.OptionMenu
+            || GameState.GameState === GameState.CommandMenu){
+            scene.rotateCamera.alpha = scene.rotateCamera.alpha + 0.02 %(Math.PI);
+        }
+
 
         if (GameState.GameState === GameState.OptionMenu){
             scene.music.setVolume(Options.levelMusic);

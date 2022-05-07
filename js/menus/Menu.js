@@ -6,20 +6,75 @@ export default class Menu extends BABYLON.Scene{
     constructor(engine, canvas) {
         super(engine, canvas);
 
+        // Background
         this.clearColor = new BABYLON.Color4(0.2, 0.2, 0.2, 1);
-        let camera = new BABYLON.FreeCamera("fixCamera", new BABYLON.Vector3(0,50,0), this);
-        this.activeCamera = camera;
-        camera.attachControl(canvas);
+
+        // Camera
+        //let camera = new BABYLON.FreeCamera("fixCamera", new BABYLON.Vector3(0,2,-20), this);
+        //this.activeCamera = camera;
+        //camera.attachControl(canvas);
+
+        // Ball
+        this.bigBall = new BABYLON.MeshBuilder.CreateSphere("bigBall",
+            {
+                segments:32,
+                diameter:10,
+                updatable:true
+            }, this);
+        this.bigBall.position.x = 0;
+        this.bigBall.position.y = 0;
+        this.bigBall.position.z = 0;
+
+        this.bigBallMaterial = new BABYLON.StandardMaterial("ballMaterial", this);
+        this.bigBallMaterial.diffuseTexture = new BABYLON.Texture("IMG_test.jpg", this);
+        this.bigBall.material = this.bigBallMaterial;
+
+        this.rotateCamera = new BABYLON.ArcRotateCamera("rotateCamera", Math.PI/2,Math.PI/2,20, new BABYLON.Vector3(0,0,0),this)
+        this.activeCamera = this.rotateCamera;
+        this.rotateCamera.attachControl(canvas);
+
+        // Light
         let light = new BABYLON.DirectionalLight("light", new BABYLON.Vector3(-1,-1,0), this);
         light.position.z = 2;
 
+        // Music
         this.music = new BABYLON.Sound("menuMusic", "musics/Papillon.mp3", this, null,
             {
                 loop: true,
                 autoplay: true,
                 volume: Options.levelMusic
             });
+
+
+
     }
+
+    /////// Animation ///////
+
+    animationZoom(){
+        this.startFrame = 0;
+        this.endFrame = 100;
+
+        this.zoomSlide = new BABYLON.Animation("zoomSlide", "radius", frameRate,
+            BABYLON.Animation.ANIMATIONTYPE_FLOAT);
+
+        let keyFrameP = [];
+
+        keyFrameP.push({
+            frame:0,
+            value:0
+        });
+
+        keyFrameP.push({
+            frame:this.frameRate,
+            value:13
+        });
+
+        this.zoomSlide.setKeys(keyFrameP);
+        this.rotateCamera.animations.push(this.zoomSlide);
+    }
+
+    //////// GUI //////////
 
     async createGuiMainMenu(){
         this.advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI(name, true, this);
@@ -110,5 +165,26 @@ export default class Menu extends BABYLON.Scene{
         });
     }
 
+    async createGuiStartMenu(){
+        this.advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("guiStartMenu", true, this);
+        let loadedGui = await this.advancedTexture.parseFromURLAsync("gui/guiTextureStartScene.json");
+        this.advancedTexture.startButton = this.advancedTexture.getControlByName("buttonStart");
+
+        this.advancedTexture.startButton.onPointerUpObservable.add( function(){
+            GameState.GameState = GameState.CinematicMenu;
+            console.log("start to cinematic");
+        })
+    }
+
+    async createGuiExplicationMenu(){
+        this.advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("guiExplicationMenu", true, this);
+        let loadedGui = await this.advancedTexture.parseFromURLAsync("gui/guiTextureExplication.json");
+        this.advancedTexture.startButton = this.advancedTexture.getControlByName("playButton");
+
+        this.advancedTexture.startButton.onPointerUpObservable.add(function(){
+            GameState.GameState = GameState.MainMenu;
+            console.log("explication to main menu");
+        })
+    }
 }
 
