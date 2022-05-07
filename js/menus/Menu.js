@@ -73,9 +73,16 @@ export default class Menu extends BABYLON.Scene{
     this.advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI(name, true, this);
     let loadedGui = await this.advancedTexture.parseFromURLAsync("gui/guiTextureOptionMenu.json");
 
+
     this.advancedTexture.returnButton = this.advancedTexture.getControlByName("returnButton");
     this.advancedTexture.sliderMusicVolume = this.advancedTexture.getControlByName("sliderMusicVolume");
     this.advancedTexture.sliderEffectVolume = this.advancedTexture.getControlByName("sliderEffectVolume");
+
+    this.advancedTexture.sliderMusicVolume.isThumbClamped= true;
+    this.advancedTexture.sliderMusicVolume.value = Options.levelMusic;
+
+    this.advancedTexture.sliderEffectVolume.isThumbClamped= true;
+    this.advancedTexture.sliderEffectVolume.value = Options.levelSoundEffect;
 
     this.advancedTexture.returnButton.onPointerUpObservable.add( function () {
         GameState.GameState = GameState.MainMenu;
