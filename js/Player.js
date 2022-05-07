@@ -34,25 +34,34 @@ export default class Player {
         this.playerMesh.physicsImpostor.applyForce(forceDirection.scale(forceMagnitude), this.playerMesh.getAbsolutePosition().add(contactLocalRefPoint));
     }
 
-    merge(level, players, cameras, currentPlayer) {
-        for (let i=0; i < players.length; i=i+1){
-            if (i !== currentPlayer){
-                if (players[currentPlayer].playerMesh.intersectsMesh(players[i].playerMesh, true)){
+    merge(scene) {
+        for (let i=0; i < scene.players.length; i=i+1){
+            if (i !== scene.currentPlayer){
+                if (scene.players[scene.currentPlayer].playerMesh.intersectsMesh(scene.players[i].playerMesh, true)){
                     console.log("touch player: "+i);
-                    let removedPlayer = players.splice(i,1);
-                    let removedCamera = cameras.splice(i,1);
+                    let removedPlayer = scene.players.splice(i,1);
+                    let removedCamera = scene.cameras.splice(i,1);
                     removedPlayer[0].playerMesh.dispose();
                     removedCamera[0].dispose();
-                    if (i < currentPlayer){
-                        currentPlayer = currentPlayer - 1;
+                    if (i < scene.currentPlayer){
+                        scene.currentPlayer = scene.currentPlayer - 1;
                     }
+                    scene.advancedTexture.dispose();
+
+                    if (scene.players.length === 1){
+                        scene.createEnd();
+                        let finished = scene.createAdvancedTexture("gui/guiTextureLevelFinish.json", "guiLevelFinish");
+                    }
+                    else{
+                        let finished = scene.createAdvancedTexture("gui/guiTextureLevel.json", "guiLevel");
+                    }
+                    scene.mergeSound.play();
                     return true;
+
                 }
             }
         }
-        if (players.length === 1) {
-            level.createEnd();
-        }
+
     }
 
 
