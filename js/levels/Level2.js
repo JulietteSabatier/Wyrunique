@@ -14,9 +14,10 @@ export default class Level2 extends AbstractLevel{
         let gravityVector = new BABYLON.Vector3(0,-9.81, 0);
         let physicsPlugin = new BABYLON.CannonJSPlugin();
         this.enablePhysics(gravityVector, physicsPlugin);
+        this.assetsManager = new BABYLON.AssetsManager(this);
 
-        let ground = this.createGround();
-        this.createLights(this.scene);
+        // let ground = this.createGround();
+        this.createLights();
         this.buildWalls();
         this.currentPlayer = 0;
 
@@ -31,4 +32,26 @@ export default class Level2 extends AbstractLevel{
 
     }
 
+    buildWalls() {
+        let labTask = this.assetsManager.addMeshTask("maze task", "", "assets/", "Level2.babylon");
+        labTask.onSuccess = function (task) {
+
+            let mazeMesh = task.loadedMeshes[0];
+            //let mazeMaterial = new BABYLON.StandardMaterial("mazeMaterial", this.scene);
+            // mazeMaterial.diffuseTexture = new BABYLON.Texture("assets/Labyrinthe_baked_DIFFUSE.jpg", this.scene);
+            mazeMesh.material.bumpTexture = new BABYLON.Texture("images/Maze_normal_4k.png");
+            // mazeMesh.material = mazeMaterial;
+
+            mazeMesh.position = new BABYLON.Vector3.Zero();
+            mazeMesh.scaling = new BABYLON.Vector3(100, 100, 100);
+
+            mazeMesh.physicsImpostor = new BABYLON.PhysicsImpostor(mazeMesh,
+                BABYLON.PhysicsImpostor.MeshImpostor, {mass: 0});
+        }
+        labTask.onError = function (task, message, exception) {
+            console.log(message, exception);
+
+        }
+        this.assetsManager.load();
+    }
 }

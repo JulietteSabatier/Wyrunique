@@ -16,7 +16,7 @@ export default class Level1 extends AbstractLevel{
         this.enablePhysics(gravityVector, physicsPlugin);
 
         let ground = this.createGround();
-        this.createLights(this.scene);
+        this.createLights();
         this.buildWalls();
 
         // Sphere 1
@@ -35,5 +35,27 @@ export default class Level1 extends AbstractLevel{
         //this.scene.activeCamera = this.createFreeCamera(this.scene);
 
 
+    }
+
+    buildWalls() {
+        let wall = new BABYLON.MeshBuilder.CreateBox("wall", {height: 20, width: 2, depth: 300}, this.scene);
+
+        let wallMaterial = new BABYLON.StandardMaterial("boxMaterial", this.scene);
+        wallMaterial.diffuseTexture = new BABYLON.Texture("images/Wall.jpg", this.scene);
+        wallMaterial.diffuseTexture.vScale = 3.0;
+        wallMaterial.diffuseTexture.uScale = 3.0;
+        wallMaterial.emissiveColor = new BABYLON.Color3(0.2, 0.2, 0.2);
+        wall.material = wallMaterial;
+
+        wall.position = new BABYLON.Vector3(15, 10, 140);
+        wall.checkCollisions = true;
+        wall.physicsImpostor = new BABYLON.PhysicsImpostor(wall,
+            BABYLON.PhysicsImpostor.BoxImpostor, {mass: 0});
+
+        let instance = wall.createInstance("wall2");
+        instance.position.x = -15;
+        instance.checkCollisions = true;
+        instance.physicsImpostor = new BABYLON.PhysicsImpostor(instance,
+            BABYLON.PhysicsImpostor.BoxImpostor, {mass: 0});
     }
 }

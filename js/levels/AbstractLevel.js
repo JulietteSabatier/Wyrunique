@@ -7,7 +7,7 @@ export default class AbstractLevel extends BABYLON.Scene{
         super(engine, canvas);
 
         if (this.constructor === AbstractLevel){
-            throw new TypeError('Abstract class "AbstractMenu" cannot be instanced directly');
+            throw new TypeError('Abstract class "AbstractMenu" cannot be instanciated directly');
         }
 
         this.id = id;
@@ -77,11 +77,11 @@ export default class AbstractLevel extends BABYLON.Scene{
             BABYLON.PhysicsImpostor.SphereImpostor, {
                 mass: 10,
                 nativeOptions: {linearDamping: 0.35, angularDamping: 0.35}
-            }, this.scene);
+            }, this);
 
-        let sphere = new Player(nb, sphereMesh, this.scene);
+        let sphere = new Player(nb, sphereMesh, this);
         this.players.push(sphere);
-        let followCamera = this.createFollowCamera(this.scene, sphereMesh);
+        let followCamera = this.createFollowCamera(this, sphereMesh);
 
         sphereMesh.showBoundingBox = false;
     }
@@ -105,7 +105,7 @@ export default class AbstractLevel extends BABYLON.Scene{
         return ground;
     }
 
-    createLights(scene) {
+    createLights() {
         // i.e sun light with all light rays parallels, the vector is the direction.
         let light0 = new BABYLON.DirectionalLight("dir0", new BABYLON.Vector3(-1, -1, 0), this);
         light0.position.z = 2;
@@ -136,62 +136,26 @@ export default class AbstractLevel extends BABYLON.Scene{
     createEnd() {
         if (!this.canFinish) {
 
-            const faceUV = [];
-            faceUV[0] =	new BABYLON.Vector4(0, 0, 0, 0);
-            faceUV[1] =	new BABYLON.Vector4(1, 0, 0.25, 1); // x, z swapped to flip image
-            faceUV[2] = new BABYLON.Vector4(0, 0, 0.24, 1);
+            this.particleSystem = new BABYLON.ParticleSystem("particles", 500, this); // on construction
+            this.particleSystem.particleTexture = new BABYLON.Texture("images/Particle.jpg", this);
+            this.particleSystem.emitter = new BABYLON.Vector3(0, 15, 300);
+            this.particleSystem.emitRate = 200;
 
-            const colors = [];
-            colors[0] = new BABYLON.Vector4(0, 0, 0, 0);
-            colors[1] = new BABYLON.Vector4(0, 0, 0, 0);
-            colors[2] = new BABYLON.Vector4(0, 0, 0, 0);
+            this.particleSystem.direction1 = new BABYLON.Vector3(-7, -5, 10);
+            this.particleSystem.direction2 = new BABYLON.Vector3(7, -5, -10);
 
-            let cylinderMaterial = new BABYLON.StandardMaterial("cylinderMaterial", this);
-            cylinderMaterial.diffuseTexture = new BABYLON.Texture("images/finishZone.png", this);
+            this.particleSystem.minLifeTime = 0.3;
+            this.particleSystem.maxLifeTime = 1.5;
 
-            this.finishBox = new BABYLON.MeshBuilder.CreateCylinder("finishSphere", {height: 10, diameter: 25, faceUV: faceUV, faceColors: colors}, this);
-            this.finishBox.position = new BABYLON.Vector3(0, 5, 300);
-            this.finishBox.material = cylinderMaterial;
+            this.particleSystem.color1 = new BABYLON.Color4(0.7, 0.8, 1.0, 1.0);
+            this.particleSystem.color2 = new BABYLON.Color4(0.2, 0.5, 1.0, 1.0);
+            this.particleSystem.colorDead = new BABYLON.Color4(0, 0, 0.2, 0.0);
+
+            this.particleSystem.start();
             this.canFinish = true;
         }
     }
 
-
-    buildWalls() {
-        let wall = new BABYLON.MeshBuilder.CreateBox("wall", {height: 20, width: 2, depth: 300}, this);
-        wall.position = new BABYLON.Vector3(15, 10, 140);
-        wall.checkCollisions = true;
-        wall.physicsImpostor = new BABYLON.PhysicsImpostor(wall,
-            BABYLON.PhysicsImpostor.BoxImpostor, {mass: 0});
-
-        let instance = wall.createInstance("wall2");
-        instance.position.x = -15;
-        instance.checkCollisions = true;
-        instance.physicsImpostor = new BABYLON.PhysicsImpostor(instance,
-            BABYLON.PhysicsImpostor.BoxImpostor, {mass: 0});
-    }
-
-    createFreeCamera(scene) {
-        let camera = new BABYLON.FreeCamera("freeCamera", new BABYLON.Vector3(0, 50, 0), scene);
-        camera.attachControl(scene.canvas);
-        // prevent camera to cross ground
-        camera.checkCollisions = true;
-        // avoid flying with the camera
-        camera.applyGravity = true;
-
-        // Add extra keys for camera movements
-        // Need the ascii code of the extra key(s). We use a string method here to get the ascii code
-        camera.keysUp.push('z'.charCodeAt(0));
-        camera.keysDown.push('s'.charCodeAt(0));
-        camera.keysLeft.push('q'.charCodeAt(0));
-        camera.keysRight.push('d'.charCodeAt(0));
-        camera.keysUp.push('Z'.charCodeAt(0));
-        camera.keysDown.push('S'.charCodeAt(0));
-        camera.keysLeft.push('Q'.charCodeAt(0));
-        camera.keysRight.push('D'.charCodeAt(0));
-
-        return camera;
-    }
 
     changePlayer(){
         this.currentPlayer = (this.currentPlayer + 1) % this.players.length;
