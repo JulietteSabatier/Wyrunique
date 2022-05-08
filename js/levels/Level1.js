@@ -32,16 +32,15 @@ export default class Level1 extends AbstractLevel{
 
 
         this.activeCamera = this.cameras[0];
-        //this.scene.activeCamera = this.createFreeCamera(this.scene);
 
 
     }
 
     buildWalls() {
-        let wall = new BABYLON.MeshBuilder.CreateBox("wall", {height: 20, width: 2, depth: 300}, this.scene);
+        let wall = new BABYLON.MeshBuilder.CreateBox("wall", {height: 20, width: 2, depth: 300}, this);
 
-        let wallMaterial = new BABYLON.StandardMaterial("boxMaterial", this.scene);
-        wallMaterial.diffuseTexture = new BABYLON.Texture("images/Wall.jpg", this.scene);
+        let wallMaterial = new BABYLON.StandardMaterial("boxMaterial", this);
+        wallMaterial.diffuseTexture = new BABYLON.Texture("images/Wall.jpg", this);
         wallMaterial.diffuseTexture.vScale = 3.0;
         wallMaterial.diffuseTexture.uScale = 3.0;
         wallMaterial.emissiveColor = new BABYLON.Color3(0.2, 0.2, 0.2);

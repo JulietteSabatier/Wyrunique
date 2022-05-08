@@ -27,7 +27,6 @@ export default class Level2 extends AbstractLevel{
 
 
         this.activeCamera = this.cameras[0];
-        //this.scene.activeCamera = this.createFreeCamera(this.scene);
 
 
     }
@@ -38,9 +37,9 @@ export default class Level2 extends AbstractLevel{
 
             let mazeMesh = task.loadedMeshes[0];
             //let mazeMaterial = new BABYLON.StandardMaterial("mazeMaterial", this.scene);
-            // mazeMaterial.diffuseTexture = new BABYLON.Texture("assets/Labyrinthe_baked_DIFFUSE.jpg", this.scene);
-            mazeMesh.material.bumpTexture = new BABYLON.Texture("images/Maze_normal_4k.png");
-            // mazeMesh.material = mazeMaterial;
+            mazeMesh.material.diffuseTexture = new BABYLON.Texture("images/Maze_color_2.png", this.scene);
+            mazeMesh.material.bumpTexture = new BABYLON.Texture("images/Maze_Normal_4k_2_object.png");
+            //mazeMesh.material = mazeMaterial;
 
             mazeMesh.position = new BABYLON.Vector3.Zero();
             mazeMesh.scaling = new BABYLON.Vector3(100, 100, 100);
