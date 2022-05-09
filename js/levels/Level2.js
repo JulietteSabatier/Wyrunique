@@ -18,7 +18,7 @@ export default class Level2 extends AbstractLevel{
 
         // let ground = this.createGround();
         this.createLights();
-        this.buildWalls();
+        this.buildWalls(2);
         this.currentPlayer = 0;
         this.endPosition = new BABYLON.Vector3(0, 15, 250);
 
@@ -30,28 +30,5 @@ export default class Level2 extends AbstractLevel{
         this.activeCamera = this.cameras[0];
 
 
-    }
-
-    buildWalls() {
-        let labTask = this.assetsManager.addMeshTask("maze task", "", "assets/", "Level2.babylon");
-        labTask.onSuccess = function (task) {
-
-            let mazeMesh = task.loadedMeshes[0];
-            //let mazeMaterial = new BABYLON.StandardMaterial("mazeMaterial", this.scene);
-            mazeMesh.material.diffuseTexture = new BABYLON.Texture("images/Level2_color.png", this.scene);
-            mazeMesh.material.bumpTexture = new BABYLON.Texture("images/Level2_normal.png");
-            //mazeMesh.material = mazeMaterial;
-
-            mazeMesh.position = new BABYLON.Vector3.Zero();
-            mazeMesh.scaling = new BABYLON.Vector3(100, 100, 100);
-
-            mazeMesh.physicsImpostor = new BABYLON.PhysicsImpostor(mazeMesh,
-                BABYLON.PhysicsImpostor.MeshImpostor, {mass: 0});
-        }
-        labTask.onError = function (task, message, exception) {
-            console.log(message, exception);
-
-        }
-        this.assetsManager.load();
     }
 }
