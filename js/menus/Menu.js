@@ -26,7 +26,7 @@ export default class Menu extends BABYLON.Scene{
             this.bigBall.position.z = 0;
 
             this.bigBallMaterial = new BABYLON.StandardMaterial("ballMaterial", this);
-            this.bigBallMaterial.diffuseTexture = new BABYLON.Texture("IMG_test.jpg", this);
+            this.bigBallMaterial.diffuseTexture = new BABYLON.Texture("images/Ball.jpg", this);
             this.bigBall.material = this.bigBallMaterial;
         }
         else{
