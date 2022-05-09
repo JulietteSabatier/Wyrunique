@@ -1,11 +1,9 @@
 import GameState from "./GameState.js";
-import MainMenu from "./menus/MainMenu.js";
-import LevelMenu from "./menus/LevelMenu.js";
-import OptionMenu from "./menus/OptionMenu.js";
-import CommandMenu from "./menus/CommandMenu.js";
 import Level1 from "./levels/Level1.js";
 import Level2 from "./levels/Level2.js";
 import CongratulationMenu from "./menus/CongratulationMenu.js";
+import Menu from "./menus/Menu.js";
+import Options from "./Options.js";
 
 let canvas;
 let engine;
@@ -23,48 +21,93 @@ function startGame(){
     engine = new BABYLON.Engine(canvas, true);
     modifySetting();
 
-    scene = new MainMenu(engine, canvas);
+    scene = new Menu(engine, canvas);
+    scene.createGuiMainMenu().then(r => true);
 
     engine.runRenderLoop(function() {
         let deltaTime = engine.getDeltaTime();
 
         if (GameState.precGameState !== GameState.GameState){
-            scene.dispose();
-            scene.advancedTexture.dispose();
 
             switch (GameState.GameState){
                 case GameState.MainMenu:
-                    scene = new MainMenu(engine, canvas);
+                    if (GameState.precGameState === GameState.Level || GameState.precGameState === GameState.Congratulation){
+                        scene.dispose();
+                        scene = new Menu(engine, canvas);
+                    }
+                    else{
+                        scene.advancedTexture.dispose();
+                    }
+                    scene.createGuiMainMenu().then(r => true);
                     GameState.precGameState = GameState.MainMenu;
                 break;
                 case GameState.LevelMenu:
-                    scene = new LevelMenu(engine, canvas);
+                    if (GameState.precGameState === GameState.Level || GameState.precGameState === GameState.Congratulation){
+                        scene.dispose();
+                        scene = new Menu(engine, canvas);
+                    }
+                    else{
+                        scene.advancedTexture.dispose();
+                    }
+                    scene.createGuiLevelMenu().then(r => true);
                     GameState.precGameState = GameState.LevelMenu;
                 break;
                 case GameState.CommandMenu:
-                    scene = new CommandMenu(engine, canvas);
+                    if (GameState.precGameState === GameState.Level || GameState.precGameState === GameState.Congratulation){
+                        scene.dispose();
+                        scene = new Menu(engine, canvas);
+                    }
+                    else{
+                        scene.advancedTexture.dispose();
+                    }
+                    scene.createGuiCommandMenu().then(r => true);
                     GameState.precGameState = GameState.CommandMenu;
                 break;
                 case GameState.OptionMenu:
-                    scene = new OptionMenu(engine, canvas);
+                    if (GameState.precGameState === GameState.Level || GameState.precGameState === GameState.Congratulation){
+                        scene.dispose();
+                        scene = new Menu(engine, canvas);
+                    }
+                    else{
+                        scene.advancedTexture.dispose();
+                    }
+                     scene.createGuiOptionMenu().then(r => true);
                     GameState.precGameState = GameState.OptionMenu;
                 break;
                 case GameState.Congratulation:
+                    scene.dispose();
                     scene = new CongratulationMenu(engine, canvas);
                     GameState.precGameState = GameState.Congratulation;
                 break;
                 case GameState.Level:
                     switch (GameState.numLevel){
                         case 0:
+                            scene.dispose();
                             scene = new Level1(engine, canvas, 0);
                             GameState.precGameState = GameState.Level;
                         break;
                         case 1:
+                            scene.dispose();
                             scene = new Level2(engine, canvas, 1);
                             GameState.precGameState = GameState.Level;
                         break;
                     }
                 break;
+            }
+        }
+
+        if (GameState.GameState === GameState.OptionMenu){
+            scene.music.setVolume(Options.levelMusic);
+
+            if (Options.soundEffectChanged){
+                scene.soundEffect = new BABYLON.Sound("testSound", "musics/mixkit-retro-game-notification-212.wav", scene, null,
+                    {volume: Options.levelSoundEffect}
+                );
+                //scene.music.pause();
+                scene.soundEffect.play();
+                //soundEffect.stop(1);
+                //scene.music.play();
+                Options.soundEffectChanged = false;
             }
         }
 
