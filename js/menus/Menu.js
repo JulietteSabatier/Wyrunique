@@ -171,7 +171,7 @@ export default class Menu extends BABYLON.Scene{
         this.advancedTexture.startButton = this.advancedTexture.getControlByName("buttonStart");
 
         this.advancedTexture.startButton.onPointerUpObservable.add( function(){
-            GameState.GameState = GameState.CinematicMenu;
+            GameState.GameState = GameState.TextMenu;
             console.log("start to cinematic");
         })
     }
