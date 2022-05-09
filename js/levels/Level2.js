@@ -20,6 +20,7 @@ export default class Level2 extends AbstractLevel{
         this.createLights();
         this.buildWalls();
         this.currentPlayer = 0;
+        this.endPosition = new BABYLON.Vector3(0, 15, 250);
 
         this.createSphere("player6", 0, 5, 0, 0, new BABYLON.Color3(1, 0, 0)); // rouge
         // Sphere 2
@@ -37,8 +38,8 @@ export default class Level2 extends AbstractLevel{
 
             let mazeMesh = task.loadedMeshes[0];
             //let mazeMaterial = new BABYLON.StandardMaterial("mazeMaterial", this.scene);
-            mazeMesh.material.diffuseTexture = new BABYLON.Texture("images/Maze_color_2.png", this.scene);
-            mazeMesh.material.bumpTexture = new BABYLON.Texture("images/Maze_Normal_4k_2_object.png");
+            mazeMesh.material.diffuseTexture = new BABYLON.Texture("images/Level2_color.png", this.scene);
+            mazeMesh.material.bumpTexture = new BABYLON.Texture("images/Level2_normal.png");
             //mazeMesh.material = mazeMaterial;
 
             mazeMesh.position = new BABYLON.Vector3.Zero();

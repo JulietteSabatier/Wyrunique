@@ -17,6 +17,7 @@ export default class AbstractLevel extends BABYLON.Scene{
         this.cameras = [];
         this.currentPlayer = 0;
         this.canFinish = false;
+        this.endPosition = new BABYLON.Vector3(0, 15, 0);
 
         let finished = this.createAdvancedTexture("gui/guiTextureLevel.json", "guiLevel");
 
@@ -112,6 +113,7 @@ export default class AbstractLevel extends BABYLON.Scene{
     createLights() {
         // i.e sun light with all light rays parallels, the vector is the direction.
         let light0 = new BABYLON.HemisphericLight("dir0", new BABYLON.Vector3(1, 0, 0), this);
+        let light1 = new BABYLON.HemisphericLight("dir0", new BABYLON.Vector3(-1, 0, 0), this);
         // light0.position.y = 100;
 
     }
@@ -137,12 +139,12 @@ export default class AbstractLevel extends BABYLON.Scene{
         return camera;
     }
 
-    createEnd() {
+    createEnd(position) {
         if (!this.canFinish) {
 
             this.particleSystem = new BABYLON.ParticleSystem("particles", 500, this); // on construction
             this.particleSystem.particleTexture = new BABYLON.Texture("images/Particle.jpg", this);
-            this.particleSystem.emitter = new BABYLON.Vector3(0, 15, 300);
+            this.particleSystem.emitter = position;
             this.particleSystem.emitRate = 200;
 
             this.particleSystem.direction1 = new BABYLON.Vector3(-7, -5, 10);
