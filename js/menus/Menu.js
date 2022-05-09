@@ -9,11 +9,7 @@ export default class Menu extends BABYLON.Scene{
         // Background
         this.clearColor = new BABYLON.Color4(0.2, 0.2, 0.2, 1);
 
-        // Camera
-        //let camera = new BABYLON.FreeCamera("fixCamera", new BABYLON.Vector3(0,2,-20), this);
-        //this.activeCamera = camera;
-        //camera.attachControl(canvas);
-
+        // Ball or balls
         if (begin){
             this.bigBall = new BABYLON.MeshBuilder.CreateSphere("bigBall",
                 {
@@ -27,15 +23,13 @@ export default class Menu extends BABYLON.Scene{
 
             this.bigBallMaterial = new BABYLON.StandardMaterial("ballMaterial", this);
             this.bigBallMaterial.diffuseTexture = new BABYLON.Texture("images/Ball.jpg", this);
-            //this.bigBallMaterial.emisiveTexture = new BABYLON.Texture("images/Ball.jpg", this);
             this.bigBall.material = this.bigBallMaterial;
         }
         else{
             //this.fallingBalls();
         }
-        // Ball
 
-
+        // Camera
         this.rotateCamera = new BABYLON.ArcRotateCamera("rotateCamera", Math.PI/2,Math.PI/2,20, new BABYLON.Vector3(0,0,0),this)
         this.activeCamera = this.rotateCamera;
         this.rotateCamera.attachControl(canvas);
@@ -44,7 +38,6 @@ export default class Menu extends BABYLON.Scene{
         let light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(-1,1,0), this);
         light.diffuse = new BABYLON.Color4(256,256,256, 0);
 
-
         // Music
         this.music = new BABYLON.Sound("menuMusic", "musics/Papillon.mp3", this, null,
             {
@@ -52,9 +45,6 @@ export default class Menu extends BABYLON.Scene{
                 autoplay: true,
                 volume: Options.levelMusic
             });
-
-
-
     }
 
     /////// Animation ///////
@@ -137,6 +127,9 @@ export default class Menu extends BABYLON.Scene{
         this.advancedTexture.returnButton = this.advancedTexture.getControlByName("returnButton");
         this.advancedTexture.level1Button = this.advancedTexture.getControlByName("buttonLevel1");
         this.advancedTexture.level2Button = this.advancedTexture.getControlByName("buttonLevel2");
+        this.advancedTexture.level3Button = this.advancedTexture.getControlByName("buttonLevel3");
+        this.advancedTexture.level4Button = this.advancedTexture.getControlByName("buttonLevel4");
+        this.advancedTexture.level5Button = this.advancedTexture.getControlByName("buttonLevel5");
 
         this.advancedTexture.returnButton.onPointerUpObservable.add( function () {
             GameState.GameState = GameState.MainMenu;
@@ -151,6 +144,21 @@ export default class Menu extends BABYLON.Scene{
             GameState.GameState = GameState.Level;
             GameState.numLevel = 1;
             console.log("level to 2");
+        });
+        this.advancedTexture.level3Button.onPointerUpObservable.add( function (){
+            GameState.GameState = GameState.Level;
+            GameState.numLevel = 3;
+            console.log("level to 3");
+        });
+        this.advancedTexture.level4Button.onPointerUpObservable.add( function (){
+            GameState.GameState = GameState.Level;
+            GameState.numLevel = 4;
+            console.log("level to 4");
+        });
+        this.advancedTexture.level5Button.onPointerUpObservable.add( function (){
+            GameState.GameState = GameState.Level;
+            GameState.numLevel = 5;
+            console.log("level to 5");
         });
     }
 
