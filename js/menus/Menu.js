@@ -51,27 +51,36 @@ export default class Menu extends BABYLON.Scene{
 
     /////// Animation ///////
 
-    animationZoom(){
-        this.startFrame = 0;
-        this.endFrame = 100;
+    zoom(){
+        this.rotateCamera.radius = this.rotateCamera.radius - 0.02;
+    }
 
-        this.zoomSlide = new BABYLON.Animation("zoomSlide", "radius", frameRate,
-            BABYLON.Animation.ANIMATIONTYPE_FLOAT);
 
-        let keyFrameP = [];
+    createExplosion(){
+        BABYLON.ParticleHelper.CreateAsync("explosion", this).then((set) => {
+            set.systems.forEach(s => {
+                s.disposeOnStop = true;
+            });
+        });
+    }
+    explosion(){
 
-        keyFrameP.push({
-            frame:0,
-            value:0
+        BABYLON.ParticleHelper.CreateAsync("explosion", this).then((set) => {
+            set.systems.forEach(s => {
+                s.disposeOnStop = true;
+            });
+            BABYLON.setAndStartTimer({
+                timeout:5000,
+                contextObservable: this.onBeforeRenderObservable,
+                onTick: ()=>{
+                    set.start()
+                },
+                onEnded: () => {
+                    this.finishExplosion = true;
+                }
+            })
         });
 
-        keyFrameP.push({
-            frame:this.frameRate,
-            value:13
-        });
-
-        this.zoomSlide.setKeys(keyFrameP);
-        this.rotateCamera.animations.push(this.zoomSlide);
     }
 
     //////// GUI //////////
@@ -171,7 +180,7 @@ export default class Menu extends BABYLON.Scene{
         this.advancedTexture.startButton = this.advancedTexture.getControlByName("buttonStart");
 
         this.advancedTexture.startButton.onPointerUpObservable.add( function(){
-            GameState.GameState = GameState.TextMenu;
+            GameState.GameState = GameState.CinematicMenu;
             console.log("start to cinematic");
         })
     }

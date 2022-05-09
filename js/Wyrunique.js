@@ -24,6 +24,9 @@ function startGame(){
     scene = new Menu(engine, canvas);
     scene.createGuiStartMenu().then(r => true);
 
+    let hasExplode = false;
+    let finishExplode = false;
+
     engine.runRenderLoop(function() {
         let deltaTime = engine.getDeltaTime();
 
@@ -50,8 +53,7 @@ function startGame(){
                     else{
                         scene.advancedTexture.dispose();
                     }
-                    GameState.precGameState = GameState.TextMenu;
-                    scene.beginAnimation(scene.rotateCamera, 0, scene.frameRate, true);
+                    GameState.precGameState = GameState.CinematicMenu;
                 break;
                 case GameState.TextMenu:
                     if (GameState.precGameState === GameState.Level || GameState.precGameState === GameState.Congratulation){
@@ -138,6 +140,40 @@ function startGame(){
             || GameState.GameState === GameState.OptionMenu
             || GameState.GameState === GameState.CommandMenu){
             scene.rotateCamera.alpha = scene.rotateCamera.alpha + 0.02 %(Math.PI);
+        }
+
+        if (GameState.GameState === GameState.CinematicMenu){
+            if (scene.rotateCamera.radius >= 13){
+                scene.zoom();
+            }
+            if (scene.rotateCamera.radius < 13){
+                if (hasExplode === false){
+                    scene.explosion();
+                    hasExplode = true;
+                }
+                else{
+                    BABYLON.setAndStartTimer({
+                        timeout:1000,
+                        contextObservable: scene.onBeforeRenderObservable,
+                        onEnded: () => {
+                            scene.bigBall.dispose();
+                        }
+                    })
+                }
+            }
+            if (scene.finishExplosion === true){
+                // TODO make a lot of little balls falling
+
+
+                BABYLON.setAndStartTimer({
+                    timeout: 5000,
+                    contextObservable: scene.onBeforeRenderObservable,
+                    onEnded: () => {
+                        GameState.GameState = GameState.TextMenu;
+                    }
+                })
+            }
+
         }
 
 
