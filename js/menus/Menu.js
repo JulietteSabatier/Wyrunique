@@ -3,7 +3,7 @@ import Options from "../Options.js";
 
 export default class Menu extends BABYLON.Scene{
 
-    constructor(engine, canvas) {
+    constructor(engine, canvas, begin) {
         super(engine, canvas);
 
         // Background
@@ -14,20 +14,26 @@ export default class Menu extends BABYLON.Scene{
         //this.activeCamera = camera;
         //camera.attachControl(canvas);
 
-        // Ball
-        this.bigBall = new BABYLON.MeshBuilder.CreateSphere("bigBall",
-            {
-                segments:32,
-                diameter:10,
-                updatable:true
-            }, this);
-        this.bigBall.position.x = 0;
-        this.bigBall.position.y = 0;
-        this.bigBall.position.z = 0;
+        if (begin){
+            this.bigBall = new BABYLON.MeshBuilder.CreateSphere("bigBall",
+                {
+                    segments:32,
+                    diameter:10,
+                    updatable:true
+                }, this);
+            this.bigBall.position.x = 0;
+            this.bigBall.position.y = 0;
+            this.bigBall.position.z = 0;
 
-        this.bigBallMaterial = new BABYLON.StandardMaterial("ballMaterial", this);
-        this.bigBallMaterial.diffuseTexture = new BABYLON.Texture("IMG_test.jpg", this);
-        this.bigBall.material = this.bigBallMaterial;
+            this.bigBallMaterial = new BABYLON.StandardMaterial("ballMaterial", this);
+            this.bigBallMaterial.diffuseTexture = new BABYLON.Texture("IMG_test.jpg", this);
+            this.bigBall.material = this.bigBallMaterial;
+        }
+        else{
+            this.fallingBalls();
+        }
+        // Ball
+
 
         this.rotateCamera = new BABYLON.ArcRotateCamera("rotateCamera", Math.PI/2,Math.PI/2,20, new BABYLON.Vector3(0,0,0),this)
         this.activeCamera = this.rotateCamera;
@@ -55,14 +61,6 @@ export default class Menu extends BABYLON.Scene{
         this.rotateCamera.radius = this.rotateCamera.radius - 0.02;
     }
 
-
-    createExplosion(){
-        BABYLON.ParticleHelper.CreateAsync("explosion", this).then((set) => {
-            set.systems.forEach(s => {
-                s.disposeOnStop = true;
-            });
-        });
-    }
     explosion(){
 
         BABYLON.ParticleHelper.CreateAsync("explosion", this).then((set) => {
@@ -81,6 +79,24 @@ export default class Menu extends BABYLON.Scene{
             })
         });
 
+    }
+
+    fallingBalls(){
+        this.sphere1 = this.createSphere(10,5);
+
+        this.createSphere(10, -5);
+        this.createSphere(5, 20);
+    }
+
+    createSphere(x,y){
+        let sphere1 = BABYLON.MeshBuilder.CreateSphere( "sphere",
+            {
+                segments:32,
+                diameter: 1,
+                updatable:true
+            }, this);
+        sphere1.position.x = x;
+        sphere1.position.y = y;
     }
 
     //////// GUI //////////
