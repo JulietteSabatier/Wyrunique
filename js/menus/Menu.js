@@ -27,6 +27,7 @@ export default class Menu extends BABYLON.Scene{
 
             this.bigBallMaterial = new BABYLON.StandardMaterial("ballMaterial", this);
             this.bigBallMaterial.diffuseTexture = new BABYLON.Texture("images/Ball.jpg", this);
+            //this.bigBallMaterial.emisiveTexture = new BABYLON.Texture("images/Ball.jpg", this);
             this.bigBall.material = this.bigBallMaterial;
         }
         else{
@@ -40,8 +41,9 @@ export default class Menu extends BABYLON.Scene{
         this.rotateCamera.attachControl(canvas);
 
         // Light
-        let light = new BABYLON.DirectionalLight("light", new BABYLON.Vector3(-1,-1,0), this);
-        light.position.z = 2;
+        let light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(-1,1,0), this);
+        light.diffuse = new BABYLON.Color4(256,256,256, 0);
+
 
         // Music
         this.music = new BABYLON.Sound("menuMusic", "musics/Papillon.mp3", this, null,
@@ -59,6 +61,8 @@ export default class Menu extends BABYLON.Scene{
 
     zoom(){
         this.rotateCamera.radius = this.rotateCamera.radius - 0.02;
+        this.rotateCamera.alpha = this.rotateCamera.alpha + 0.01 % (Math.PI);
+
     }
 
     explosion(){
@@ -71,6 +75,7 @@ export default class Menu extends BABYLON.Scene{
                 timeout:4000,
                 contextObservable: this.onBeforeRenderObservable,
                 onTick: ()=>{
+                    this.rotateCamera.alpha = this.rotateCamera.alpha + 0.02 % (Math.PI);
                     set.start()
                 },
                 onEnded: () => {

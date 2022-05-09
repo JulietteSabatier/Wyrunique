@@ -133,7 +133,7 @@ function startGame(){
         }
 
         if (GameState.GameState === GameState.StartMenu){
-            scene.rotateCamera.alpha = scene.rotateCamera.alpha + 0.02 %(Math.PI);
+            scene.rotateCamera.alpha = scene.rotateCamera.alpha + 0.01 %(Math.PI);
         }
 
         if (GameState.GameState === GameState.CinematicMenu){
@@ -147,7 +147,7 @@ function startGame(){
                 }
                 else{
                     BABYLON.setAndStartTimer({
-                        timeout:1000,
+                        timeout:2000,
                         contextObservable: scene.onBeforeRenderObservable,
                         onEnded: () => {
                             scene.bigBall.dispose();
