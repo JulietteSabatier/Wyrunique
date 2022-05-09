@@ -216,7 +216,9 @@ function playerFinishLevel(){
     let player = scene.players[scene.currentPlayer];
     if (scene.canFinish){
         if (player){
-            if (player.playerMesh.intersectsPoint(scene.finishBox.position)){
+            let endZone = new BABYLON.Vector3(scene.particleSystem.emitter.x, 0, scene.particleSystem.emitter.z);
+
+            if (player.playerMesh.intersectsPoint(endZone)){
                 GameState.GameState = GameState.Congratulation;
             }
         }
@@ -252,13 +254,13 @@ function modifySetting(){
 
     //add the listener to the main, window object, and update the states
     window.addEventListener('keydown', (event) => {
-        if ((event.key === "ArrowLeft") || (event.key === "q")|| (event.key === "Q")) {
+        if ((event.key === "q")|| (event.key === "Q")) {
             inputStates.left = true;
-        } else if ((event.key === "ArrowUp") || (event.key === "z")|| (event.key === "Z")){
+        } else if ((event.key === "z")|| (event.key === "Z")){
             inputStates.up = true;
-        } else if ((event.key === "ArrowRight") || (event.key === "d")|| (event.key === "D")){
+        } else if ((event.key === "d")|| (event.key === "D")){
             inputStates.right = true;
-        } else if ((event.key === "ArrowDown")|| (event.key === "s")|| (event.key === "S")) {
+        } else if ((event.key === "s")|| (event.key === "S")) {
             inputStates.down = true;
         } else if (event.key === " ") {
             inputStates.space = true;
@@ -269,13 +271,13 @@ function modifySetting(){
 
     //if the key will be released, change the states object
     window.addEventListener('keyup', (event) => {
-        if ((event.key === "ArrowLeft") || (event.key === "q")|| (event.key === "Q")) {
+        if ((event.key === "q")|| (event.key === "Q")) {
             inputStates.left = false;
-        } else if ((event.key === "ArrowUp") || (event.key === "z")|| (event.key === "Z")){
+        } else if ((event.key === "z")|| (event.key === "Z")){
             inputStates.up = false;
-        } else if ((event.key === "ArrowRight") || (event.key === "d")|| (event.key === "D")){
+        } else if ((event.key === "d")|| (event.key === "D")){
             inputStates.right = false;
-        } else if ((event.key === "ArrowDown")|| (event.key === "s")|| (event.key === "S")) {
+        } else if ((event.key === "s")|| (event.key === "S")) {
             inputStates.down = false;
         }  else if (event.key === " ") {
             inputStates.space = false;
