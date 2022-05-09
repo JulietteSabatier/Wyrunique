@@ -107,8 +107,8 @@ export default class AbstractLevel extends BABYLON.Scene{
 
     createLights() {
         // i.e sun light with all light rays parallels, the vector is the direction.
-        let light0 = new BABYLON.DirectionalLight("dir0", new BABYLON.Vector3(-1, -1, 0), this);
-        light0.position.z = 2;
+        let light0 = new BABYLON.HemisphericLight("dir0", new BABYLON.Vector3(1, 0, 0), this);
+        // light0.position.y = 100;
 
     }
 
