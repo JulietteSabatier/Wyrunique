@@ -1,5 +1,5 @@
 import Level from "./level.js";
-import Menu from "./Menu.js";
+import Menu from "../menus/Menu.js";
 
 let canvas;
 let engine;

@@ -1,3 +1,4 @@
+import Options from "./Options.js";
 
 export default class Player {
 

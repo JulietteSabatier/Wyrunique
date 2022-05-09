@@ -5,4 +5,4 @@ Clone the repository.
 
 Install npm.
 
-In the directory install babylonjs: **npm install babylonjs**
+In the directory install the needed dependencies: **npm install --save**
