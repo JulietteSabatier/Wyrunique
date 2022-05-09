@@ -30,7 +30,7 @@ export default class Menu extends BABYLON.Scene{
             this.bigBall.material = this.bigBallMaterial;
         }
         else{
-            this.fallingBalls();
+            //this.fallingBalls();
         }
         // Ball
 
@@ -68,7 +68,7 @@ export default class Menu extends BABYLON.Scene{
                 s.disposeOnStop = true;
             });
             BABYLON.setAndStartTimer({
-                timeout:5000,
+                timeout:4000,
                 contextObservable: this.onBeforeRenderObservable,
                 onTick: ()=>{
                     set.start()

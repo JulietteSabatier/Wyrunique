@@ -132,13 +132,7 @@ function startGame(){
             }
         }
 
-        if (GameState.GameState === GameState.StartMenu
-            || GameState.GameState === GameState.TextMenu
-            || GameState.GameState === GameState.CinematicMenu
-            || GameState.GameState === GameState.MainMenu
-            || GameState.GameState === GameState.LevelMenu
-            || GameState.GameState === GameState.OptionMenu
-            || GameState.GameState === GameState.CommandMenu){
+        if (GameState.GameState === GameState.StartMenu){
             scene.rotateCamera.alpha = scene.rotateCamera.alpha + 0.02 %(Math.PI);
         }
 
@@ -163,10 +157,10 @@ function startGame(){
             }
             if (scene.finishExplosion === true){
                 // TODO make a lot of little balls falling
-                scene.fallingBalls();
+                //scene.fallingBalls();
 
                 BABYLON.setAndStartTimer({
-                    timeout: 5000,
+                    timeout: 1000,
                     contextObservable: scene.onBeforeRenderObservable,
                     onEnded: () => {
                         GameState.GameState = GameState.TextMenu;
