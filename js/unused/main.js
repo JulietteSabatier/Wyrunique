@@ -78,10 +78,15 @@ function startGame() {
                 restartLevel = false;
             }
 
+            levels[numLevelShow].scene.assetsManager.load();
             levels[numLevelShow].scene.render();
             movePlayer(levels[typeSceneShow].currentPlayer, levels[numLevelShow], inputStates)
             //movePlayer(scene.currentPlayer, scene, inputStates);
             mergePlayer();
+
+            if (levels[numLevelShow].canFinish) {
+                levels[numLevelShow].checkIfFinish();
+            }
         }
     })
 
@@ -185,28 +190,12 @@ function createMainMenu(){
 }
 
 
-function configureAssetManager(scene){
-    let assetsManager = new BABYLON.AssetsManager(scene);
-
-    assetsManager.onProgress = function(remainingCount, totalCount, lastFinishedTask){
-        engine.loadingUIText = " We are loading the scene. " + remainingCount + " out of " + totalCount + " items still need to be loaded";
-    };
-
-    assetsManager.onFinish = function(tasks) {
-        engine.runRenderLoop(function(){
-            scene.toRender();
-        });
-    };
-
-    return assetsManager;
-}
-
 
 /// Create environment
 function createScene(id, name) {
     let scene = new BABYLON.Scene(engine);
     modifySetting(scene);
-    //scene.assetManager = configureAssetManager(scene);
+    //scene.assetsManager = configureAssetManager(scene);
     // background
     if (id === 0){
         scene.clearColor = new BABYLON.Color3(1, 0, 1);
@@ -220,6 +209,7 @@ function createScene(id, name) {
     levels[id].scene.enablePhysics(gravityVector, physicsPlugin);
 
 
+    createLights(scene);
     let ground = createGround(scene);
     let freeCamera = createFreeCamera(scene);
 
@@ -252,6 +242,7 @@ function createGround(scene) {
     // for physic engine
     ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground,
         BABYLON.PhysicsImpostor.HeightmapImpostor, { mass: 0 }, scene);
+
     return ground;
 }
 
@@ -275,62 +266,12 @@ function mergePlayer(){
 }
 
 
-/*
-function createLabyrinthe(scene) {
-    const labyrintheOptions = { width:2000, height:2000, subdivisions:200, minHeight:0, maxHeight:100};
-    const labyrinthe = BABYLON.MeshBuilder.CreateGroundFromHeightMap("gdhm", 'images/Labyrinthe.bmp', labyrintheOptions, scene);
-    const labyrintheMaterial = new BABYLON.StandardMaterial("groundMaterial", scene);
-    labyrintheMaterial.diffuseTexture = new BABYLON.Texture("images/woodFloor.jpg");
-    labyrinthe.material = labyrintheMaterial;
-    labyrinthe.material.diffuseTexture.uScale = 10;
-    labyrinthe.material.diffuseTexture.vScale = 10;
 
-    // to be taken into account by collision detection
-    labyrinthe.checkCollisions = true;
-    //labyrintheMaterial.wireframe=true;
-    // for physic engine
-    labyrinthe.physicsImpostor = new BABYLON.PhysicsImpostor(labyrinthe,
-        BABYLON.PhysicsImpostor.MeshImpostor, { mass: 0 }, scene);
-    return labyrinthe;
-}*/
-
-/*
-function createMirror(scene, renderList) {
-    var mirror = BABYLON.MeshBuilder.CreatePlane("mirror", {height: 30, width: 12}, scene);
-    mirror.position.z = 10;
-    mirror.position.y = 15;
-
-    let mirrorMaterial = new BABYLON.StandardMaterial("mirrorMaterial", scene);
-
-    // 1024 = size of the dynamically generated mirror texture
-    mirrorMaterial.reflectionTexture = new BABYLON.MirrorTexture("mirrorTexture", 1024, scene, true);
-
-    //Following lines from https://playground.babylonjs.com/#1YAIO7#5
-    //Ensure working with new values for mirror by computing and obtaining its worldMatrix
-    mirror.computeWorldMatrix(true);
-    var mirror_worldMatrix = mirror.getWorldMatrix();
-
-    //Obtain normals for plane and assign one of them as the normal
-    var mirror_vertexData = mirror.getVerticesData("normal");
-    var mirrorNormal = new BABYLON.Vector3(mirror_vertexData[0], mirror_vertexData[1], mirror_vertexData[2]);
-    //Use worldMatrix to transform normal into its current value
-    mirrorNormal = new BABYLON.Vector3.TransformNormal(mirrorNormal, mirror_worldMatrix)
-
-    mirrorMaterial.reflectionTexture.mirrorPlane = new BABYLON.Plane.FromPositionAndNormal(mirror.position,
-                                                                                            mirrorNormal.scale(-1));
-	mirror.material = mirrorMaterial;
-
-    mirror.material.reflectionTexture.renderList = renderList;
-
-    return mirror;
-}
-*/
 
 function createLights(scene) {
     // i.e sun light with all light rays parallels, the vector is the direction.
-    let light0 = new BABYLON.DirectionalLight("dir0", new BABYLON.Vector3(-1, -1, 0), scene);
-    light0.position.z = 2;
-
+    let light = new BABYLON.DirectionalLight("dir0", new BABYLON.Vector3(-1, -1, 0), scene);
+    light.position.z = 2;
 }
 
 function createFreeCamera(scene) {
@@ -371,13 +312,13 @@ function modifySetting(scene){
 
     //add the listener to the main, window object, and update the states
     window.addEventListener('keydown', (event) => {
-        if ((event.key === "ArrowLeft") || (event.key === "q")|| (event.key === "Q")) {
+        if ((event.key === "q")|| (event.key === "Q")) {
             inputStates.left = true;
-        } else if ((event.key === "ArrowUp") || (event.key === "z")|| (event.key === "Z")){
+        } else if ((event.key === "z")|| (event.key === "Z")){
             inputStates.up = true;
-        } else if ((event.key === "ArrowRight") || (event.key === "d")|| (event.key === "D")){
+        } else if ((event.key === "d")|| (event.key === "D")){
             inputStates.right = true;
-        } else if ((event.key === "ArrowDown")|| (event.key === "s")|| (event.key === "S")) {
+        } else if ((event.key === "s")|| (event.key === "S")) {
             inputStates.down = true;
         } else if (event.key === " ") {
             inputStates.space = true;
@@ -388,13 +329,13 @@ function modifySetting(scene){
 
     //if the key will be released, change the states object
     window.addEventListener('keyup', (event) => {
-        if ((event.key === "ArrowLeft") || (event.key === "q")|| (event.key === "Q")) {
+        if ((event.key === "q")|| (event.key === "Q")) {
             inputStates.left = false;
-        } else if ((event.key === "ArrowUp") || (event.key === "z")|| (event.key === "Z")){
+        } else if ((event.key === "z")|| (event.key === "Z")){
             inputStates.up = false;
-        } else if ((event.key === "ArrowRight") || (event.key === "d")|| (event.key === "D")){
+        } else if ((event.key === "d")|| (event.key === "D")){
             inputStates.right = false;
-        } else if ((event.key === "ArrowDown")|| (event.key === "s")|| (event.key === "S")) {
+        } else if ((event.key === "s")|| (event.key === "S")) {
             inputStates.down = false;
         }  else if (event.key === " ") {
             inputStates.space = false;
