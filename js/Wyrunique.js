@@ -21,8 +21,11 @@ function startGame(){
     engine = new BABYLON.Engine(canvas, true);
     modifySetting();
 
-    scene = new Menu(engine, canvas);
-    scene.createGuiMainMenu().then(r => true);
+    scene = new Menu(engine, canvas, true);
+    scene.createGuiStartMenu().then(r => true);
+
+    let hasExplode = false;
+    let finishExplode = false;
 
     engine.runRenderLoop(function() {
         let deltaTime = engine.getDeltaTime();
@@ -30,10 +33,43 @@ function startGame(){
         if (GameState.precGameState !== GameState.GameState){
 
             switch (GameState.GameState){
+
+                case GameState.StartMenu:
+                    if (GameState.precGameState === GameState.Level || GameState.precGameState === GameState.Congratulation){
+                        scene.dispose();
+                        scene = new Menu(engine, canvas, false);
+                    }
+                    else{
+                        scene.advancedTexture.dispose();
+                    }
+                    scene.createGuiStartMenu().then(r => true);
+                    GameState.precGameState = GameState.StartMenu;
+                break;
+                case GameState.CinematicMenu:
+                    if (GameState.precGameState === GameState.Level || GameState.precGameState === GameState.Congratulation){
+                        scene.dispose();
+                        scene = new Menu(engine, canvas, false);
+                    }
+                    else{
+                        scene.advancedTexture.dispose();
+                    }
+                    GameState.precGameState = GameState.CinematicMenu;
+                break;
+                case GameState.TextMenu:
+                    if (GameState.precGameState === GameState.Level || GameState.precGameState === GameState.Congratulation){
+                        scene.dispose();
+                        scene = new Menu(engine, canvas, false);
+                    }
+                    else{
+                        scene.advancedTexture.dispose();
+                    }
+                    scene.createGuiExplicationMenu().then(r => true);
+                    GameState.precGameState = GameState.TextMenu;
+                break;
                 case GameState.MainMenu:
                     if (GameState.precGameState === GameState.Level || GameState.precGameState === GameState.Congratulation){
                         scene.dispose();
-                        scene = new Menu(engine, canvas);
+                        scene = new Menu(engine, canvas, false);
                     }
                     else{
                         scene.advancedTexture.dispose();
@@ -44,7 +80,7 @@ function startGame(){
                 case GameState.LevelMenu:
                     if (GameState.precGameState === GameState.Level || GameState.precGameState === GameState.Congratulation){
                         scene.dispose();
-                        scene = new Menu(engine, canvas);
+                        scene = new Menu(engine, canvas, false);
                     }
                     else{
                         scene.advancedTexture.dispose();
@@ -55,7 +91,7 @@ function startGame(){
                 case GameState.CommandMenu:
                     if (GameState.precGameState === GameState.Level || GameState.precGameState === GameState.Congratulation){
                         scene.dispose();
-                        scene = new Menu(engine, canvas);
+                        scene = new Menu(engine, canvas, false);
                     }
                     else{
                         scene.advancedTexture.dispose();
@@ -66,7 +102,7 @@ function startGame(){
                 case GameState.OptionMenu:
                     if (GameState.precGameState === GameState.Level || GameState.precGameState === GameState.Congratulation){
                         scene.dispose();
-                        scene = new Menu(engine, canvas);
+                        scene = new Menu(engine, canvas, false);
                     }
                     else{
                         scene.advancedTexture.dispose();
@@ -95,6 +131,45 @@ function startGame(){
                 break;
             }
         }
+
+        if (GameState.GameState === GameState.StartMenu){
+            scene.rotateCamera.alpha = scene.rotateCamera.alpha + 0.01 %(Math.PI);
+        }
+
+        if (GameState.GameState === GameState.CinematicMenu){
+            if (scene.rotateCamera.radius >= 13){
+                scene.zoom();
+            }
+            if (scene.rotateCamera.radius < 13){
+                if (hasExplode === false){
+                    scene.explosion();
+                    hasExplode = true;
+                }
+                else{
+                    BABYLON.setAndStartTimer({
+                        timeout:2000,
+                        contextObservable: scene.onBeforeRenderObservable,
+                        onEnded: () => {
+                            scene.bigBall.dispose();
+                        }
+                    })
+                }
+            }
+            if (scene.finishExplosion === true){
+                // TODO make a lot of little balls falling
+                //scene.fallingBalls();
+
+                BABYLON.setAndStartTimer({
+                    timeout: 1000,
+                    contextObservable: scene.onBeforeRenderObservable,
+                    onEnded: () => {
+                        GameState.GameState = GameState.TextMenu;
+                    }
+                })
+            }
+
+        }
+
 
         if (GameState.GameState === GameState.OptionMenu){
             scene.music.setVolume(Options.levelMusic);
