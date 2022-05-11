@@ -88,15 +88,13 @@ export default class AbstractLevel extends BABYLON.Scene{
             this.createSphere(playerSpawnMesh.name, 0, playerSpawnMesh.position.x, playerSpawnMesh.position.y, playerSpawnMesh.position.z);
 
             //Repeat this operation for every other sphere
-            console.log(task.loadedMeshes);
             for (let i = 1; i <= task.loadedMeshes.length-2; i++) {
-                console.log(i);
                 let partSpawnMesh = task.loadedMeshes.find(function (mesh) {
                     return mesh.name === "Part"+i;
                 });
 
                 if (partSpawnMesh !== undefined) {
-                    this.createSphere(partSpawnMesh.name, 0, partSpawnMesh.position.x, partSpawnMesh.position.y, partSpawnMesh.position.z);
+                    this.createSphere(partSpawnMesh.name, i, partSpawnMesh.position.x, partSpawnMesh.position.y, partSpawnMesh.position.z);
                 }
             }
 

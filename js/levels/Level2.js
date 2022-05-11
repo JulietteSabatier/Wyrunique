@@ -2,10 +2,10 @@ import AbstractLevel from "./AbstractLevel.js";
 
 export default class Level2 extends AbstractLevel{
 
-    constructor(engine, canvas) {
+    constructor(engine, canvas, id) {
         super(engine, canvas);
 
-        this.createScene();
+        this.createScene(id, engine);
     }
 
     createScene(id, engine) {
@@ -16,14 +16,9 @@ export default class Level2 extends AbstractLevel{
         this.enablePhysics(gravityVector, physicsPlugin);
         this.assetsManager = new BABYLON.AssetsManager(this);
 
-        // let ground = this.createGround();
         this.createLights();
-        this.buildWalls(2);
+        this.buildWalls(id);
         this.currentPlayer = 0;
         this.endPosition = new BABYLON.Vector3(0, 15, 250);
-
-        this.activeCamera = this.cameras[0];
-
-
     }
 }

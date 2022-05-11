@@ -119,12 +119,12 @@ function startGame(){
                     switch (GameState.numLevel){
                         case 0:
                             scene.dispose();
-                            scene = new Level1(engine, canvas, 0);
+                            scene = new Level1(engine, canvas, 1);
                             GameState.precGameState = GameState.Level;
                         break;
                         case 1:
                             scene.dispose();
-                            scene = new Level2(engine, canvas, 1);
+                            scene = new Level2(engine, canvas, 2);
                             GameState.precGameState = GameState.Level;
                         break;
                     }
@@ -205,10 +205,10 @@ function startGame(){
 
                 switch (GameState.numLevel){
                     case 0:
-                        scene = new Level1(engine, canvas, 0);
+                        scene = new Level1(engine, canvas, 1);
                     break;
                     case 1:
-                        scene = new Level2(engine, canvas, 1);
+                        scene = new Level2(engine, canvas, 2);
                     break;
                 }
 
