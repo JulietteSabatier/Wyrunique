@@ -169,6 +169,8 @@ function startGame(){
 
         }
 
+
+
         if (GameState.GameState === GameState.TextMenu ||
             GameState.GameState === GameState.MainMenu ||
             GameState.GameState === GameState.LevelMenu ||
@@ -304,6 +306,13 @@ function modifySetting(){
                     scene.changePlayer();
             }
             inputStates.one = false;
+        } else if (event.key === "Escape"){
+            if (GameState.GameState === GameState.CinematicMenu || GameState.GameState === GameState.TextMenu){
+                if (scene.bigBall){
+                    scene.bigBall.dispose();
+                }
+                GameState.GameState = GameState.MainMenu;
+            }
         }
     }, false);
 }

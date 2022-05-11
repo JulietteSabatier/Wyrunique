@@ -92,7 +92,7 @@ export default class Menu extends BABYLON.Scene{
                 let x = Math.random()* (18 + 18) - 18;
                 let z = Math.random()* (18 + 18) - 18;
                 let color = new BABYLON.Color3(Math.random(), Math.random(), Math.random());
-                this.sphere = this.createSphere(x, 20, z, color);
+                this.sphere = this.createSphere(x, 17, z, color);
             },
             onEnded: () => {
                 this.sphere.dispose();

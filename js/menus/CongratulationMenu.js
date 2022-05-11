@@ -22,6 +22,11 @@ export default class CongratulationMenu extends BABYLON.Scene{
         let light = new BABYLON.DirectionalLight("light", new BABYLON.Vector3(-1,-1,0), this);
         light.position.z = 2;
 
+        let gravityVector = new BABYLON.Vector3(0,-9.81, 0);
+        let physicsPlugin = new BABYLON.CannonJSPlugin();
+        this.enablePhysics(gravityVector, physicsPlugin);
+        this.assetsManager = new BABYLON.AssetsManager(this);
+
     }
 
     async createAdvancedTexture(path, name){
@@ -55,4 +60,50 @@ export default class CongratulationMenu extends BABYLON.Scene{
 
 
     }
+
+    // ne se dispose pas
+    fallingBalls(){
+        BABYLON.setAndStartTimer({
+            timeout:5,
+            contextObservable: this.onBeforeRenderObservable,
+            onTick: () => {
+                // y = 10
+                // -18 < x < 18
+                //  color
+                let x = Math.random()* (18 + 18) - 18;
+                let z = Math.random()* (18 + 18) - 18;
+                let color = new BABYLON.Color3(Math.random(), Math.random(), Math.random());
+                this.sphere = this.createSphere(x, 17, z, color);
+            },
+            onEnded: () => {
+                this.sphere.dispose();
+            }
+        });
+    }
+
+    createSphere(x,y,z, color){
+        let sphere = BABYLON.MeshBuilder.CreateSphere( "sphere",
+            {
+                segments:32,
+                diameter: 1,
+                updatable:true
+            }, this);
+        sphere.position.x = x;
+        sphere.position.y = y;
+        sphere.position.z = z;
+
+        let myMaterial = new BABYLON.StandardMaterial("sphereMaterial", this);
+        myMaterial.diffuseColor = color;
+
+        sphere.material = myMaterial;
+
+        sphere.physicsImpostor = new BABYLON.PhysicsImpostor(sphere,
+            BABYLON.PhysicsImpostor.SphereImpostor, {
+                mass: 1,
+                nativeOptions: {linearDamping: 0.35, angularDamping: 0.35}
+            }, this);
+
+        return sphere;
+    }
+
 }
