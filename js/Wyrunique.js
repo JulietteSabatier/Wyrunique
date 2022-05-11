@@ -156,8 +156,7 @@ function startGame(){
                 }
             }
             if (scene.finishExplosion === true){
-                // TODO make a lot of little balls falling
-                //scene.fallingBalls();
+                makeBallsFalling();
 
                 BABYLON.setAndStartTimer({
                     timeout: 1000,
@@ -168,6 +167,18 @@ function startGame(){
                 })
             }
 
+        }
+
+
+
+        if (GameState.GameState === GameState.TextMenu ||
+            GameState.GameState === GameState.MainMenu ||
+            GameState.GameState === GameState.LevelMenu ||
+            GameState.GameState === GameState.OptionMenu ||
+            GameState.GameState === GameState.CommandMenu ||
+            GameState.GameState === GameState.Congratulation){
+
+            makeBallsFalling();
         }
 
 
@@ -210,6 +221,15 @@ function startGame(){
         }
         scene.render();
     })
+}
+
+
+function makeBallsFalling(){
+    let date = Date.now();
+
+    if ((date % 500 > 0) && (date %500 < 50)){ // 50 ?
+        scene.fallingBalls();
+    }
 }
 
 function playerFinishLevel(){
@@ -286,6 +306,13 @@ function modifySetting(){
                     scene.changePlayer();
             }
             inputStates.one = false;
+        } else if (event.key === "Escape"){
+            if (GameState.GameState === GameState.CinematicMenu || GameState.GameState === GameState.TextMenu){
+                if (scene.bigBall){
+                    scene.bigBall.dispose();
+                }
+                GameState.GameState = GameState.MainMenu;
+            }
         }
     }, false);
 }

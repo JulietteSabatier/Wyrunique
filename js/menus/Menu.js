@@ -6,6 +6,10 @@ export default class Menu extends BABYLON.Scene{
     constructor(engine, canvas, begin) {
         super(engine, canvas);
 
+        let gravityVector = new BABYLON.Vector3(0,-9.81, 0);
+        let physicsPlugin = new BABYLON.CannonJSPlugin();
+        this.enablePhysics(gravityVector, physicsPlugin);
+        this.assetsManager = new BABYLON.AssetsManager(this);
         // Background
         this.clearColor = new BABYLON.Color4(0.2, 0.2, 0.2, 1);
 
@@ -26,7 +30,7 @@ export default class Menu extends BABYLON.Scene{
             this.bigBall.material = this.bigBallMaterial;
         }
         else{
-            //this.fallingBalls();
+            this.fallingBalls();
         }
 
         // Camera
@@ -36,7 +40,7 @@ export default class Menu extends BABYLON.Scene{
 
         // Light
         let light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(-1,1,0), this);
-        light.diffuse = new BABYLON.Color4(256,256,256, 0);
+        light.diffuse = new BABYLON.Color3(1,1,1);
 
         // Music
         this.music = new BABYLON.Sound("menuMusic", "musics/Papillon.mp3", this, null,
@@ -50,7 +54,7 @@ export default class Menu extends BABYLON.Scene{
     /////// Animation ///////
 
     zoom(){
-        this.rotateCamera.radius = this.rotateCamera.radius - 0.02;
+        this.rotateCamera.radius = this.rotateCamera.radius - 0.03;
         this.rotateCamera.alpha = this.rotateCamera.alpha + 0.01 % (Math.PI);
 
     }
@@ -76,22 +80,50 @@ export default class Menu extends BABYLON.Scene{
 
     }
 
+    // ne se dispose pas
     fallingBalls(){
-        this.sphere1 = this.createSphere(10,5);
-
-        this.createSphere(10, -5);
-        this.createSphere(5, 20);
+        BABYLON.setAndStartTimer({
+            timeout:5,
+            contextObservable: this.onBeforeRenderObservable,
+            onTick: () => {
+                // y = 10
+                // -18 < x < 18
+                //  color
+                let x = Math.random()* (18 + 18) - 18;
+                let z = Math.random()* (18 + 18) - 18;
+                let color = new BABYLON.Color3(Math.random(), Math.random(), Math.random());
+                this.sphere = this.createSphere(x, 17, z, color);
+            },
+            onEnded: () => {
+                this.sphere.dispose();
+            }
+        });
     }
 
-    createSphere(x,y){
-        let sphere1 = BABYLON.MeshBuilder.CreateSphere( "sphere",
+
+    createSphere(x,y,z, color){
+        let sphere = BABYLON.MeshBuilder.CreateSphere( "sphere",
             {
                 segments:32,
                 diameter: 1,
                 updatable:true
             }, this);
-        sphere1.position.x = x;
-        sphere1.position.y = y;
+        sphere.position.x = x;
+        sphere.position.y = y;
+        sphere.position.z = z;
+
+        let myMaterial = new BABYLON.StandardMaterial("sphereMaterial", this);
+        myMaterial.diffuseColor = color;
+
+        sphere.material = myMaterial;
+
+        sphere.physicsImpostor = new BABYLON.PhysicsImpostor(sphere,
+            BABYLON.PhysicsImpostor.SphereImpostor, {
+                mass: 1,
+                nativeOptions: {linearDamping: 0.35, angularDamping: 0.35}
+            }, this);
+
+        return sphere;
     }
 
     //////// GUI //////////
