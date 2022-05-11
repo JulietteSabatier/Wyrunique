@@ -17,6 +17,7 @@ export default class AbstractLevel extends BABYLON.Scene{
         this.cameras = [];
         this.currentPlayer = 0;
         this.canFinish = false;
+        this.endPosition = new BABYLON.Vector3(0, 15, 0);
 
         let finished = this.createAdvancedTexture("gui/guiTextureLevel.json", "guiLevel");
 
@@ -90,28 +91,33 @@ export default class AbstractLevel extends BABYLON.Scene{
         sphereMesh.showBoundingBox = false;
     }
 
-    createGround() {
-        const groundOptions = { width:2000, height:2000, subdivisions:20, minHeight:0, maxHeight:100};
-        //scene is optional and defaults to the current scene
-        let ground = BABYLON.MeshBuilder.CreateGround("ground", groundOptions, this);
-        let groundMaterial = new BABYLON.StandardMaterial("groundMaterial", this);
-        groundMaterial.diffuseTexture = new BABYLON.Texture("images/woodFloor.jpg", this);
-        groundMaterial.diffuseTexture.uScale = 10;
-        groundMaterial.diffuseTexture.vScale = 10;
-        ground.material = groundMaterial;
+    buildWalls(lvlID) {
+        let labTask = this.assetsManager.addMeshTask("maze task", "", "assets/", "Level" + lvlID + ".babylon");
+        labTask.onSuccess = function (task) {
 
-        // to be taken into account by collision detection
-        ground.checkCollisions = true;
-        //groundMaterial.wireframe=true;
-        // for physic engine
-        ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground,
-            BABYLON.PhysicsImpostor.HeightmapImpostor, { mass: 0 }, this);
-        return ground;
+            let mazeMesh = task.loadedMeshes[0];
+            //let mazeMaterial = new BABYLON.StandardMaterial("mazeMaterial", this.scene);
+            mazeMesh.material.diffuseTexture = new BABYLON.Texture("images/Level" + lvlID + "_color.png", this.scene);
+            mazeMesh.material.bumpTexture = new BABYLON.Texture("images/Level" + lvlID + "_normal.png");
+            //mazeMesh.material = mazeMaterial;
+
+            mazeMesh.position = new BABYLON.Vector3.Zero();
+            mazeMesh.scaling = new BABYLON.Vector3(100, 100, 100);
+
+            mazeMesh.physicsImpostor = new BABYLON.PhysicsImpostor(mazeMesh,
+                BABYLON.PhysicsImpostor.MeshImpostor, {mass: 0});
+        }
+        labTask.onError = function (task, message, exception) {
+            console.log(message, exception);
+
+        }
+        this.assetsManager.load();
     }
 
     createLights() {
         // i.e sun light with all light rays parallels, the vector is the direction.
         let light0 = new BABYLON.HemisphericLight("dir0", new BABYLON.Vector3(1, 0, 0), this);
+        let light1 = new BABYLON.HemisphericLight("dir0", new BABYLON.Vector3(-1, 0, 0), this);
         // light0.position.y = 100;
 
     }
@@ -137,12 +143,12 @@ export default class AbstractLevel extends BABYLON.Scene{
         return camera;
     }
 
-    createEnd() {
+    createEnd(position) {
         if (!this.canFinish) {
 
             this.particleSystem = new BABYLON.ParticleSystem("particles", 500, this); // on construction
             this.particleSystem.particleTexture = new BABYLON.Texture("images/Particle.jpg", this);
-            this.particleSystem.emitter = new BABYLON.Vector3(0, 15, 300);
+            this.particleSystem.emitter = position;
             this.particleSystem.emitRate = 200;
 
             this.particleSystem.direction1 = new BABYLON.Vector3(-7, -5, 10);
@@ -167,5 +173,4 @@ export default class AbstractLevel extends BABYLON.Scene{
         this.activeCamera = this.cameras[this.currentPlayer];
         return true;
     }
-
 }
