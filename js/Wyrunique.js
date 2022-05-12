@@ -30,6 +30,7 @@ function startGame(){
     engine.runRenderLoop(function() {
         let deltaTime = engine.getDeltaTime();
 
+        // change gameState
         if (GameState.precGameState !== GameState.GameState){
 
             switch (GameState.GameState){
@@ -132,10 +133,37 @@ function startGame(){
             }
         }
 
+        // change of level
+        if (GameState.GameState === GameState.Level){
+
+            if (GameState.restartLevel){
+                scene.dispose();
+                scene.advancedTexture.dispose();
+
+                switch (GameState.numLevel){
+                    case 0:
+                        scene = new Level1(engine, canvas, 1);
+                        break;
+                    case 1:
+                        scene = new Level2(engine, canvas, 2);
+                        break;
+                }
+
+                GameState.restartLevel = false;
+            }
+
+            movePlayer();
+            mergePlayer();
+            //playerPushButton();
+            playerFinishLevel();
+        }
+
+        // start menu animation
         if (GameState.GameState === GameState.StartMenu){
             scene.rotateCamera.alpha = scene.rotateCamera.alpha + 0.01 %(Math.PI);
         }
 
+        // cinematic animation
         if (GameState.GameState === GameState.CinematicMenu){
             if (scene.rotateCamera.radius >= 13){
                 scene.zoom();
@@ -170,7 +198,7 @@ function startGame(){
         }
 
 
-
+        // ball falling for the menus
         if (GameState.GameState === GameState.TextMenu ||
             GameState.GameState === GameState.MainMenu ||
             GameState.GameState === GameState.LevelMenu ||
@@ -181,7 +209,7 @@ function startGame(){
             makeBallsFalling();
         }
 
-
+        // option menu
         if (GameState.GameState === GameState.OptionMenu){
             scene.music.setVolume(Options.levelMusic);
 
@@ -197,28 +225,6 @@ function startGame(){
             }
         }
 
-        if (GameState.GameState === GameState.Level){
-
-            if (GameState.restartLevel){
-                scene.dispose();
-                scene.advancedTexture.dispose();
-
-                switch (GameState.numLevel){
-                    case 0:
-                        scene = new Level1(engine, canvas, 1);
-                    break;
-                    case 1:
-                        scene = new Level2(engine, canvas, 2);
-                    break;
-                }
-
-                GameState.restartLevel = false;
-            }
-
-            movePlayer();
-            mergePlayer();
-            playerFinishLevel();
-        }
         scene.render();
     })
 }
@@ -244,11 +250,16 @@ function playerFinishLevel(){
         }
     }
 }
-
 function movePlayer(){
     let player = scene.players[scene.currentPlayer];
     if (player){
         player.move(scene, inputStates);
+    }
+}
+function playerPushButton(){
+    let player = scene.players[scene.currentPlayer];
+    if (player){
+        player.pushButton();
     }
 }
 function mergePlayer(){

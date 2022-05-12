@@ -62,8 +62,25 @@ export default class Player {
                 }
             }
         }
-
     }
+
+    pushButton(){
+        for (let i=0; i<this.scene.doors.length; i++){
+            for (let j=0; j<this.scene.doors[i].buttons.length; j++){
+                if (this.scene.doors[i].buttons[j]["push"] === true){
+                    if (!this.playerMesh.intersectsMesh(this.scene.doors[i].buttons[j])){
+                        this.scene.doors[i].buttons[j]["push"] = false;
+                    }
+                }
+                if (this.scene.doors[i].buttons[j]["push"] === false){
+                    if (this.playerMesh.intersectsMesh(this.scene.doors[i].buttons[j])){
+                        this.scene.doors[i].buttons[j]["push"] = true;
+                    }
+                }
+            }
+        }
+    }
+
 
 
 }
