@@ -18,9 +18,12 @@ export default class Level1 extends AbstractLevel{
         let physicsPlugin = new BABYLON.CannonJSPlugin();
         this.enablePhysics(gravityVector, physicsPlugin);
         this.assetsManager = new BABYLON.AssetsManager(this);
+        //this.assetsManager.useDefaultLoadingScreen = false;
 
         this.createLights();
         this.buildWalls(id);
+
+
     }
 
     createDoors(nb){

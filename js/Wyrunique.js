@@ -23,6 +23,7 @@ function startGame(){
 
     scene = new Menu(engine, canvas, true);
     scene.createGuiStartMenu().then(r => true);
+    scene.assetsManager = configureAssetManager(scene);
 
     let hasExplode = false;
     let finishExplode = false;
@@ -39,6 +40,7 @@ function startGame(){
                     if (GameState.precGameState === GameState.Level || GameState.precGameState === GameState.Congratulation){
                         scene.dispose();
                         scene = new Menu(engine, canvas, false);
+                        scene.assetsManager = configureAssetManager(scene);
                     }
                     else{
                         scene.advancedTexture.dispose();
@@ -50,6 +52,7 @@ function startGame(){
                     if (GameState.precGameState === GameState.Level || GameState.precGameState === GameState.Congratulation){
                         scene.dispose();
                         scene = new Menu(engine, canvas, false);
+                        scene.assetsManager = configureAssetManager(scene);
                     }
                     else{
                         scene.advancedTexture.dispose();
@@ -60,6 +63,7 @@ function startGame(){
                     if (GameState.precGameState === GameState.Level || GameState.precGameState === GameState.Congratulation){
                         scene.dispose();
                         scene = new Menu(engine, canvas, false);
+                        scene.assetsManager = configureAssetManager(scene);
                     }
                     else{
                         scene.advancedTexture.dispose();
@@ -71,6 +75,7 @@ function startGame(){
                     if (GameState.precGameState === GameState.Level || GameState.precGameState === GameState.Congratulation){
                         scene.dispose();
                         scene = new Menu(engine, canvas, false);
+                        scene.assetsManager = configureAssetManager(scene);
                     }
                     else{
                         scene.advancedTexture.dispose();
@@ -82,6 +87,7 @@ function startGame(){
                     if (GameState.precGameState === GameState.Level || GameState.precGameState === GameState.Congratulation){
                         scene.dispose();
                         scene = new Menu(engine, canvas, false);
+                        scene.assetsManager = configureAssetManager(scene);
                     }
                     else{
                         scene.advancedTexture.dispose();
@@ -93,6 +99,7 @@ function startGame(){
                     if (GameState.precGameState === GameState.Level || GameState.precGameState === GameState.Congratulation){
                         scene.dispose();
                         scene = new Menu(engine, canvas, false);
+                        scene.assetsManager = configureAssetManager(scene);
                     }
                     else{
                         scene.advancedTexture.dispose();
@@ -104,6 +111,7 @@ function startGame(){
                     if (GameState.precGameState === GameState.Level || GameState.precGameState === GameState.Congratulation){
                         scene.dispose();
                         scene = new Menu(engine, canvas, false);
+                        scene.assetsManager = configureAssetManager(scene);
                     }
                     else{
                         scene.advancedTexture.dispose();
@@ -114,6 +122,7 @@ function startGame(){
                 case GameState.Congratulation:
                     scene.dispose();
                     scene = new CongratulationMenu(engine, canvas);
+                    scene.assetsManager = configureAssetManager(scene);
                     GameState.precGameState = GameState.Congratulation;
                 break;
                 case GameState.Level:
@@ -121,11 +130,13 @@ function startGame(){
                         case 0:
                             scene.dispose();
                             scene = new Level1(engine, canvas, 1);
+                            scene.assetsManager = configureAssetManager(scene);
                             GameState.precGameState = GameState.Level;
                         break;
                         case 1:
                             scene.dispose();
                             scene = new Level2(engine, canvas, 2);
+                            scene.assetsManager = configureAssetManager(scene);
                             GameState.precGameState = GameState.Level;
                         break;
                     }
@@ -145,7 +156,8 @@ function startGame(){
                         scene = new Level1(engine, canvas, 1);
                         break;
                     case 1:
-                        scene = new Level2(engine, canvas, 2);
+                        scene = new Level2(engine, canvas, 1);
+                        scene.assetsManager = configureAssetManager(scene);
                         break;
                 }
 
@@ -196,8 +208,6 @@ function startGame(){
             }
 
         }
-
-
         // ball falling for the menus
         if (GameState.GameState === GameState.TextMenu ||
             GameState.GameState === GameState.MainMenu ||
@@ -267,6 +277,41 @@ function mergePlayer(){
     if (player){
         player.merge(scene);
     }
+}
+
+function configureAssetManager(scene) {
+    // useful for storing references to assets as properties. i.e scene.assets.cannonsound, etc.
+    scene.assets = {};
+
+    let assetsManager = new BABYLON.AssetsManager(scene);
+
+    assetsManager.onProgress = function (
+        remainingCount,
+        totalCount,
+        lastFinishedTask
+    ) {
+        engine.loadingUIText =
+            "We are loading the scene. " +
+            remainingCount +
+            " out of " +
+            totalCount +
+            " items still need to be loaded.";
+        console.log(
+            "We are loading the scene. " +
+            remainingCount +
+            " out of " +
+            totalCount +
+            " items still need to be loaded."
+        );
+    };
+
+    assetsManager.onFinish = function (tasks) {
+        engine.runRenderLoop(function () {
+            scene.toRender();
+        });
+    };
+
+    return assetsManager;
 }
 
 function modifySetting(){

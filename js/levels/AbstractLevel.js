@@ -21,25 +21,33 @@ export default class AbstractLevel extends BABYLON.Scene{
 
         this.activeCamera = this.createFreeCamera(this); //Default camera until the rest of the scene is loaded with the cameras
 
-        let finished = this.createAdvancedTexture("gui/guiTextureLevel.json", "guiLevel");
+        //let finished = this.createAdvancedTexture("gui/guiTextureLevel.json", "guiLevel");
 
+
+        // Music
         this.effectSoundTrack = new BABYLON.SoundTrack(this);
+        this.addMusic();
+        this.addMergeSoundEffect();
+    }
 
-        let music = new BABYLON.Sound("menuMusic", "musics/Funambule1.mp3", this, null,
+
+    addMusic(){
+        this.music = new BABYLON.Sound("menuMusic", "musics/Funambule1.mp3", this, null,
             {
                 loop: true,
                 autoplay:true,
                 volume: Options.levelMusic
             });
-
+    }
+    addMergeSoundEffect(){
         this.mergeSound = new BABYLON.Sound("mergeSound",
             "musics/mixkit-fast-small-sweep-transition-166.wav",
             this,
-        null,
+            null,
             {
                 volume: Options.levelSoundEffect
             }
-            );
+        );
         this.effectSoundTrack.addSound(this.mergeSound);
     }
 
@@ -102,13 +110,14 @@ export default class AbstractLevel extends BABYLON.Scene{
             this.activeCamera = this.cameras[1];
             //And remove the free camera that was created to let the scene renders
             this.cameras.shift();
+
+            let finished = this.createAdvancedTexture("gui/guiTextureLevel.json", "guiLevel");
         }
 
         labTask.onError = function (task, message, exception) {
             console.log(message, exception);
         }
         this.assetsManager.load();
-
     }
 
 
