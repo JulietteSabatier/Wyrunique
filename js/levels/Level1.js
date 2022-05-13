@@ -9,7 +9,7 @@ export default class Level1 extends AbstractLevel{
     }
 
     createScene(id, engine) {
-        this.clearColor = new BABYLON.Color3(1, 0, 0);
+        this.clearColor = new BABYLON.Color3(0, 0, 0);
 
         let gravityVector = new BABYLON.Vector3(0,-9.81, 0);
         let physicsPlugin = new BABYLON.CannonJSPlugin();
