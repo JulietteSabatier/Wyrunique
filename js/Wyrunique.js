@@ -59,7 +59,9 @@ function startGame(){
                     else{
                         scene.advancedTexture.dispose();
                     }
+                    scene.createGuiCinematicMenu().then(r => true);
                     GameState.precGameState = GameState.CinematicMenu;
+                    console.log(scene)
                 break;
                 case GameState.TextMenu:
                     if (GameState.precGameState === GameState.Level || GameState.precGameState === GameState.Congratulation){
@@ -78,6 +80,9 @@ function startGame(){
                         scene = new Menu(engine, canvas, false);
                     }
                     else{
+                        if (GameState.precGameState === GameState.CinematicMenu){
+                            scene.bigBall.dispose();
+                        }
                         scene.advancedTexture.dispose();
                     }
                     scene.createGuiMainMenu().then(r => true);
