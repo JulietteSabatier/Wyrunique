@@ -21,7 +21,7 @@ export default class Level1 extends AbstractLevel{
         //this.assetsManager.useDefaultLoadingScreen = false;
 
         this.createLights();
-        this.buildWalls(id);
+        this.buildWalls(engine, id);
 
 
     }

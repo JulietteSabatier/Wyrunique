@@ -28,6 +28,7 @@ export default class AbstractLevel extends BABYLON.Scene{
         this.effectSoundTrack = new BABYLON.SoundTrack(this);
         this.addMusic();
         this.addMergeSoundEffect();
+
     }
 
 
@@ -75,10 +76,9 @@ export default class AbstractLevel extends BABYLON.Scene{
 
     }
 
-    buildWalls(lvlID) {
+    buildWalls(engine, lvlID) {
         let labTask = this.assetsManager.addMeshTask("maze task", "", "assets/", "Level" + lvlID + ".babylon");
         labTask.onSuccess = (task) => {
-
             //Load the maze itself with the texture
             let mazeMesh = task.loadedMeshes[0];
             mazeMesh.material.diffuseTexture = new BABYLON.Texture("images/Level" + lvlID + "_color.png", this.scene);
@@ -118,6 +118,7 @@ export default class AbstractLevel extends BABYLON.Scene{
             console.log(message, exception);
         }
         this.assetsManager.load();
+
     }
 
 
