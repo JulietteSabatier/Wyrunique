@@ -131,7 +131,8 @@ export default class AbstractLevel extends BABYLON.Scene{
 
                 let door = this.getMeshByName("Porte1");
                 let doorMaterial= new BABYLON.StandardMaterial("doorMaterial", this);
-                doorMaterial.diffuseColor = new BABYLON.Color3(0,0.5,1); // cyan
+                doorMaterial.ambientTexture= new BABYLON.Texture("images/doorTexture.jpg", this)
+                doorMaterial.diffuseColor = new BABYLON.Color3(0.9,0.7,0.3); // cyan
                 door.material = doorMaterial;
 
                 door.physicsImpostor = new BABYLON.PhysicsImpostor(door,
