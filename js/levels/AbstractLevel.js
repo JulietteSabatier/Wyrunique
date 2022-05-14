@@ -81,13 +81,13 @@ export default class AbstractLevel extends BABYLON.Scene{
         let labTask = this.assetsManager.addMeshTask("maze task", "", "assets/", "Level" + lvlID + ".babylon");
         labTask.onSuccess = (task) => {
             //Load the maze itself with the texture
-            let mazeMesh = task.loadedMeshes[0];
-            mazeMesh.material.diffuseTexture = new BABYLON.Texture("images/Level" + lvlID + "_color.png", this.scene);
-            mazeMesh.material.bumpTexture = new BABYLON.Texture("images/Level" + lvlID + "_normal.png");
+            this.mazeMesh = task.loadedMeshes[0];
+            this.mazeMesh.material.diffuseTexture = new BABYLON.Texture("images/Level" + lvlID + "_color.png", this.scene);
+            this.mazeMesh.material.bumpTexture = new BABYLON.Texture("images/Level" + lvlID + "_normal.png");
 
-            mazeMesh.position = new BABYLON.Vector3.Zero();
+            this.mazeMesh.position = new BABYLON.Vector3.Zero();
 
-            mazeMesh.physicsImpostor = new BABYLON.PhysicsImpostor(mazeMesh,
+            this.mazeMesh.physicsImpostor = new BABYLON.PhysicsImpostor(this.mazeMesh,
                 BABYLON.PhysicsImpostor.MeshImpostor, {mass: 0});
 
             //Create the player's mesh based on the position of an invisible mesh created in Blender
@@ -118,7 +118,9 @@ export default class AbstractLevel extends BABYLON.Scene{
 
             this.setButtonAndDoor(lvlID);
 
-
+            if (this.doors[0]){
+                this.doors[0].door.setParent(this.mazeMesh);
+            }
         }
 
         labTask.onError = function (task, message, exception) {
@@ -136,15 +138,19 @@ export default class AbstractLevel extends BABYLON.Scene{
                 let doorMaterial= new BABYLON.StandardMaterial("doorMaterial", this);
                 doorMaterial.diffuseColor = new BABYLON.Color3(0,0.5,1); // cyan
                 door.material = doorMaterial;
+                //door.setParent(this.mazeMesh);
 
-                /*
                 door.physicsImpostor = new BABYLON.PhysicsImpostor(door,
                     BABYLON.PhysicsImpostor.BoxImpostor, {
                         mass: 10,
                         restitution: 0,
                         ignoreParent: true
                     }, this);
-                */
+
+                if (this.mazeMesh){
+                    door.setParent(this.mazeMesh);
+                }
+
                 let posButton1 = this.getMeshByName("Button1").position;
                 let button1 = this.createButtonMesh(posButton1, "button1");
                 console.log(button1);
@@ -168,12 +174,11 @@ export default class AbstractLevel extends BABYLON.Scene{
         let buttonMaterial = new BABYLON.StandardMaterial(name+"Material", this);
         buttonMaterial.diffuseColor = new BABYLON.Color3(1,0.5,0);
         button.material = buttonMaterial;
-
+        button.setParent(this.mazeMesh);
         /*
         button.physicsImpostor = new BABYLON.PhysicsImpostor(button,
             BABYLON.PhysicsImpostor.BoxImpostor, {
                 mass: 10,
-                restitution: 0,
                 ignoreParent: true
             }, this);
         */
