@@ -107,20 +107,15 @@ export default class AbstractLevel extends BABYLON.Scene{
                 }
             }
 
-
-
             //Set the camera to the second created one which is the player's
             this.activeCamera = this.cameras[1];
             //And remove the free camera that was created to let the scene renders
             this.cameras.shift();
 
-            let finished = this.createAdvancedTexture("gui/guiTextureLevel.json", "guiLevel");
-
             this.setButtonAndDoor(lvlID);
 
-            if (this.doors[0]){
-                this.doors[0].door.setParent(this.mazeMesh);
-            }
+            let finished = this.createAdvancedTexture("gui/guiTextureLevel.json", "guiLevel");
+
         }
 
         labTask.onError = function (task, message, exception) {
@@ -138,22 +133,14 @@ export default class AbstractLevel extends BABYLON.Scene{
                 let doorMaterial= new BABYLON.StandardMaterial("doorMaterial", this);
                 doorMaterial.diffuseColor = new BABYLON.Color3(0,0.5,1); // cyan
                 door.material = doorMaterial;
-                //door.setParent(this.mazeMesh);
 
                 door.physicsImpostor = new BABYLON.PhysicsImpostor(door,
                     BABYLON.PhysicsImpostor.BoxImpostor, {
-                        mass: 10,
-                        restitution: 0,
                         ignoreParent: true
                     }, this);
 
-                if (this.mazeMesh){
-                    door.setParent(this.mazeMesh);
-                }
-
                 let posButton1 = this.getMeshByName("Button1").position;
                 let button1 = this.createButtonMesh(posButton1, "button1");
-                console.log(button1);
                 let posButton2 = this.getMeshByName("Button2").position;
                 let button2 = this.createButtonMesh(posButton2, "button2")
 
