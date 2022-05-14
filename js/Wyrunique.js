@@ -162,10 +162,10 @@ function startGame(){
                 GameState.restartLevel = false;
             }
 
-            movePlayer();
-            mergePlayer();
-            //playerPushButton();
-            playerFinishLevel();
+            movePlayer();   // move the player
+            mergePlayer();   // check if the player merge another
+            checkButtonsDoor()  // check if the player touch the buttons and open the door
+            playerFinishLevel();    // check if the player has finish the level
         }
 
         // start menu animation
@@ -237,6 +237,16 @@ function startGame(){
     })
 }
 
+
+function checkButtonsDoor(){
+    for (let i=0; i<scene.doors.length; i++){
+        if (scene.doors[i]){
+            scene.doors[i].buttonVerifyTouch(scene);
+            scene.doors[i].verifyDoorOpen(scene);
+        }
+    }
+
+}
 
 function modifyLoadingScreen(){
     BABYLON.DefaultLoadingScreen.prototype.displayLoadingUI = function () {

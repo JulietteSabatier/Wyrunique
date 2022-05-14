@@ -1,6 +1,7 @@
 import Player from "../Player.js";
 import GameState from "../GameState.js";
 import Options from "../Options.js";
+import Door from "./door/Door.js";
 
 export default class AbstractLevel extends BABYLON.Scene{
 
@@ -15,6 +16,7 @@ export default class AbstractLevel extends BABYLON.Scene{
         this.name = null;
         this.players = [];
         this.cameras = [];
+        this.doors = [];
         this.currentPlayer = 0;
         this.canFinish = false;
         this.endPosition = new BABYLON.Vector3(0, 15, 0);
@@ -73,7 +75,6 @@ export default class AbstractLevel extends BABYLON.Scene{
             GameState.restartLevel = true;
             console.log("restart level");
         })
-
     }
 
     buildWalls(engine, lvlID) {
@@ -106,12 +107,18 @@ export default class AbstractLevel extends BABYLON.Scene{
                 }
             }
 
+
+
             //Set the camera to the second created one which is the player's
             this.activeCamera = this.cameras[1];
             //And remove the free camera that was created to let the scene renders
             this.cameras.shift();
 
             let finished = this.createAdvancedTexture("gui/guiTextureLevel.json", "guiLevel");
+
+            this.setButtonAndDoor(lvlID);
+
+
         }
 
         labTask.onError = function (task, message, exception) {
@@ -121,6 +128,32 @@ export default class AbstractLevel extends BABYLON.Scene{
 
     }
 
+    setButtonAndDoor(lvlId){
+        switch (lvlId){
+            case 2:
+
+                let door = this.getMeshByName("Porte1");
+                let doorMaterial= new BABYLON.StandardMaterial("doorMaterial", this);
+                doorMaterial.diffuseColor = new BABYLON.Color3(0,0.5,1); // cyan
+                door.material = doorMaterial;
+
+                let posButton1 = this.getMeshByName("Button1").position;
+                let button1 = BABYLON.MeshBuilder.CreateBox("button1", {size:5});
+                button1.position = posButton1;
+                let button1Material = new BABYLON.StandardMaterial("button1Material", this);
+                button1Material.diffuseColor = new BABYLON.Color3(1,0.5,0);
+                button1.material = button1Material;
+
+                let posButton2 = this.getMeshByName("Button2").position;
+                let button2 = BABYLON.MeshBuilder.CreateBox("button2", {size:5});
+                button2.position = posButton2;
+                let button2Material = new BABYLON.StandardMaterial("button2Material", this);
+                button2Material.diffuseColor = new BABYLON.Color3(1,0.5,0);
+                button2.material = button2Material;
+
+                this.doors[0] = new Door(this, door,[button1,button2]);
+        }
+    }
 
     createSphere(name, nb, pos_x, pos_y, pos_z){
         let sphereMesh = new BABYLON.MeshBuilder.CreateSphere(name, {diameter: 5}, this);

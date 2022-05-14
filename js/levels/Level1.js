@@ -5,9 +5,6 @@ export default class Level1 extends AbstractLevel{
 
     constructor(engine, canvas, id) {
         super(engine, canvas);
-
-        this.doors = [];
-
         this.createScene(id, engine);
     }
 
