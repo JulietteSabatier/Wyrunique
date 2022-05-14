@@ -306,12 +306,6 @@ function movePlayer(){
         player.move(scene, inputStates);
     }
 }
-function playerPushButton(){
-    let player = scene.players[scene.currentPlayer];
-    if (player){
-        player.pushButton();
-    }
-}
 function mergePlayer(){
     let player = scene.players[scene.currentPlayer];
     if (player){

@@ -5,7 +5,6 @@ export default class Door{
         this.door = door;
         this.open = false;
         this.buttons = buttons;
-        console.log(buttons);
         for (let i=0; i<buttons.length; i++){
             this.buttons[i]["push"] =false;
         }
@@ -14,13 +13,25 @@ export default class Door{
     buttonVerifyTouch(scene){
         for (let i=0; i<this.buttons.length; i++){
             if (this.buttons[i].push === true){
-                if (!scene.players[scene.currentPlayer].playerMesh.intersectsMesh(this.buttons[i])){
+                let isPush = false;
+                for (let j=0; j<scene.players.length; j++){
+                    if (scene.players[j].playerMesh.intersectsMesh(this.buttons[i])){
+                        isPush = true;
+                        break;
+                    }
+                }
+                if (!isPush) {
+                    console.log("player quit button")
                     this.buttons[i].push = false;
                 }
+
             }
             else{
-                if (scene.players[scene.currentPlayer].playerMesh.intersectsMesh(this.buttons[i])){
-                    this.buttons[i].push = true;
+                for (let j=0; j<scene.players.length; j++){
+                    if (scene.players[j].playerMesh.intersectsMesh(this.buttons[i])){
+                        console.log("player touch button")
+                        this.buttons[i].push = true;
+                    }
                 }
             }
         }
@@ -36,18 +47,7 @@ export default class Door{
         this.door.dispose();
     }
 
-    verifyOpen(){
-        let open = true;
-        for (let i=0; i<this.buttons.length; i++){
-            if (this.buttons[i].push === false){
-                open = false;
-                break;
-            }
-        }
-        if (open){
-            this.open = true;
-        }
-    }
+
 
 
 

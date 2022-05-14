@@ -137,22 +137,47 @@ export default class AbstractLevel extends BABYLON.Scene{
                 doorMaterial.diffuseColor = new BABYLON.Color3(0,0.5,1); // cyan
                 door.material = doorMaterial;
 
+                /*
+                door.physicsImpostor = new BABYLON.PhysicsImpostor(door,
+                    BABYLON.PhysicsImpostor.BoxImpostor, {
+                        mass: 10,
+                        restitution: 0,
+                        ignoreParent: true
+                    }, this);
+                */
                 let posButton1 = this.getMeshByName("Button1").position;
-                let button1 = BABYLON.MeshBuilder.CreateBox("button1", {size:5});
-                button1.position = posButton1;
-                let button1Material = new BABYLON.StandardMaterial("button1Material", this);
-                button1Material.diffuseColor = new BABYLON.Color3(1,0.5,0);
-                button1.material = button1Material;
-
+                let button1 = this.createButtonMesh(posButton1, "button1");
+                console.log(button1);
                 let posButton2 = this.getMeshByName("Button2").position;
-                let button2 = BABYLON.MeshBuilder.CreateBox("button2", {size:5});
-                button2.position = posButton2;
-                let button2Material = new BABYLON.StandardMaterial("button2Material", this);
-                button2Material.diffuseColor = new BABYLON.Color3(1,0.5,0);
-                button2.material = button2Material;
+                let button2 = this.createButtonMesh(posButton2, "button2")
 
                 this.doors[0] = new Door(this, door,[button1,button2]);
         }
+    }
+
+    createButtonMesh(position, name){
+        let button = BABYLON.MeshBuilder.CreateBox(name,
+            {
+                height: 3,
+                width: 20,
+                depth: 20,
+                updatable: true
+            });
+
+        button.position = position;
+        let buttonMaterial = new BABYLON.StandardMaterial(name+"Material", this);
+        buttonMaterial.diffuseColor = new BABYLON.Color3(1,0.5,0);
+        button.material = buttonMaterial;
+
+        /*
+        button.physicsImpostor = new BABYLON.PhysicsImpostor(button,
+            BABYLON.PhysicsImpostor.BoxImpostor, {
+                mass: 10,
+                restitution: 0,
+                ignoreParent: true
+            }, this);
+        */
+        return button;
     }
 
     createSphere(name, nb, pos_x, pos_y, pos_z){
