@@ -131,8 +131,9 @@ export default class AbstractLevel extends BABYLON.Scene{
 
                 let door = this.getMeshByName("Porte1");
                 let doorMaterial= new BABYLON.StandardMaterial("doorMaterial", this);
-                doorMaterial.ambientTexture= new BABYLON.Texture("images/doorTexture.jpg", this)
-                doorMaterial.diffuseColor = new BABYLON.Color3(0.9,0.7,0.3); // cyan
+
+                doorMaterial.diffuseTexture = new BABYLON.Texture("images/buttonTexture.jpg", this)
+                doorMaterial.diffuseColor =  new BABYLON.Color3(1,0.5,0);
                 door.material = doorMaterial;
 
                 door.physicsImpostor = new BABYLON.PhysicsImpostor(door,
@@ -160,16 +161,17 @@ export default class AbstractLevel extends BABYLON.Scene{
 
         button.position = position;
         let buttonMaterial = new BABYLON.StandardMaterial(name+"Material", this);
+        buttonMaterial.diffuseTexture = new BABYLON.Texture("images/buttonTexture.jpg", this);
         buttonMaterial.diffuseColor = new BABYLON.Color3(1,0.5,0);
         button.material = buttonMaterial;
+
         button.setParent(this.mazeMesh);
-        /*
+
         button.physicsImpostor = new BABYLON.PhysicsImpostor(button,
             BABYLON.PhysicsImpostor.BoxImpostor, {
-                mass: 10,
                 ignoreParent: true
             }, this);
-        */
+
         return button;
     }
 
