@@ -60,7 +60,7 @@ export default class AbstractLevel extends BABYLON.Scene{
             this,
             null,
             {
-                volume: Options.levelSoundEffect
+                volume: Options.levelSoundEffect-0.5
             }
             );
         this.effectButtonSoundTrack.addSound(this.buttonSound);
@@ -70,7 +70,7 @@ export default class AbstractLevel extends BABYLON.Scene{
             this,
             null,
             {
-                volume: Options.levelSoundEffect
+                volume: Options.levelSoundEffect -0.8
             });
         this.effectDoorSoundTrack.addSound(this.doorSound);
     }
