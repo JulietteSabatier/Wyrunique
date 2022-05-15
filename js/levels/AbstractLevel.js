@@ -112,7 +112,7 @@ export default class AbstractLevel extends BABYLON.Scene{
 
             this.setButtonAndDoor(lvlID);
 
-            let finished = this.createAdvancedTexture("gui/guiTextureLevel.json", "guiLevel");
+           let finished = this.createAdvancedTexture("gui/guiTextureLevel.json", "guiLevel");
 
         }
 
@@ -154,6 +154,10 @@ export default class AbstractLevel extends BABYLON.Scene{
         this.quitButton = this.advancedTexture.getControlByName("quitButton");
         this.restartButton = this.advancedTexture.getControlByName("restartButton");
 
+        this.advancedTexture.getControlByName("globalGrid").isPointerBlocker = false;
+        this.advancedTexture.getControlByName("upGrid").isPointerBlocker = false;
+        this.advancedTexture.getControlByName("remainingBallGrid").isPointerBlocker = false;
+
         if (name === "guiLevel"){
             this.nbBallText = this.advancedTexture.getControlByName("textNbBall");
             this.nbBallText.text = this.players.length;
@@ -163,10 +167,13 @@ export default class AbstractLevel extends BABYLON.Scene{
             GameState.GameState = GameState.LevelMenu;
             console.log("level to level menu");
         })
+        this.quitButton.isPointerBlocker = false;
         this.restartButton.onPointerUpObservable.add(function (){
             GameState.restartLevel = true;
             console.log("restart level");
         })
+        this.quitButton.isPointerBlocker = false;
+        this.advancedTexture.isPointerBlocker = false;
     }
     createButtonMesh(position, name){
         let button = BABYLON.MeshBuilder.CreateBox(name,
