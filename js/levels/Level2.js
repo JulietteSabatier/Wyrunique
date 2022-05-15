@@ -30,7 +30,7 @@ export default class Level2 extends AbstractLevel{
         let door = this.getMeshByName("Porte1");
         let doorMaterial= new BABYLON.StandardMaterial("doorMaterial", this);
 
-        doorMaterial.diffuseTexture = new BABYLON.Texture("images/buttonTexture.jpg", this)
+        doorMaterial.diffuseTexture = new BABYLON.Texture("images/doorTexture.jpg", this)
         doorMaterial.diffuseColor =  new BABYLON.Color3(1,0.5,0);
         door.material = doorMaterial;
 
