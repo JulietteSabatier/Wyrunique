@@ -17,8 +17,11 @@ export default class Level2 extends AbstractLevel{
         this.assetsManager = new BABYLON.AssetsManager(this);
 
         this.createLights();
-        this.buildWalls(id);
+        this.buildWalls(engine, id);
+
         this.currentPlayer = 0;
         this.endPosition = new BABYLON.Vector3(0, 15, 250);
+        //let finished = this.createAdvancedTexture("gui/guiTextureLevel.json", "guiLevel");
     }
+
 }

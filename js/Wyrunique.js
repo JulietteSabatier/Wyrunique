@@ -21,6 +21,11 @@ function startGame(){
     engine = new BABYLON.Engine(canvas, true);
     modifySetting();
 
+    //modifyLoadingScreen();
+    //let loadingScreen = new CustomLoading();
+    //engine.loadingScreen = loadingScreen;
+
+    //engine.displayLoadingUI();
     scene = new Menu(engine, canvas, true);
     scene.createGuiStartMenu().then(r => true);
 
@@ -30,6 +35,7 @@ function startGame(){
     engine.runRenderLoop(function() {
         let deltaTime = engine.getDeltaTime();
 
+        // change gameState
         if (GameState.precGameState !== GameState.GameState){
 
             switch (GameState.GameState){
@@ -137,10 +143,37 @@ function startGame(){
             }
         }
 
+        // change of level
+        if (GameState.GameState === GameState.Level){
+
+            if (GameState.restartLevel){
+                scene.dispose();
+                scene.advancedTexture.dispose();
+
+                switch (GameState.numLevel){
+                    case 0:
+                        scene = new Level1(engine, canvas, 1);
+                        break;
+                    case 1:
+                        scene = new Level2(engine, canvas, 1);
+                        break;
+                }
+
+                GameState.restartLevel = false;
+            }
+
+            movePlayer();   // move the player
+            mergePlayer();   // check if the player merge another
+            checkButtonsDoor()  // check if the player touch the buttons and open the door
+            playerFinishLevel();    // check if the player has finish the level
+        }
+
+        // start menu animation
         if (GameState.GameState === GameState.StartMenu){
             scene.rotateCamera.alpha = scene.rotateCamera.alpha + 0.01 %(Math.PI);
         }
 
+        // cinematic animation
         if (GameState.GameState === GameState.CinematicMenu){
             if (scene.rotateCamera.radius >= 13){
                 scene.zoom();
@@ -173,9 +206,7 @@ function startGame(){
             }
 
         }
-
-
-
+        // ball falling for the menus
         if (GameState.GameState === GameState.TextMenu ||
             GameState.GameState === GameState.MainMenu ||
             GameState.GameState === GameState.LevelMenu ||
@@ -186,7 +217,7 @@ function startGame(){
             makeBallsFalling();
         }
 
-
+        // option menu
         if (GameState.GameState === GameState.OptionMenu){
             scene.music.setVolume(Options.levelMusic);
 
@@ -202,32 +233,52 @@ function startGame(){
             }
         }
 
-        if (GameState.GameState === GameState.Level){
-
-            if (GameState.restartLevel){
-                scene.dispose();
-                scene.advancedTexture.dispose();
-
-                switch (GameState.numLevel){
-                    case 0:
-                        scene = new Level1(engine, canvas, 1);
-                    break;
-                    case 1:
-                        scene = new Level2(engine, canvas, 2);
-                    break;
-                }
-
-                GameState.restartLevel = false;
-            }
-
-            movePlayer();
-            mergePlayer();
-            playerFinishLevel();
-        }
         scene.render();
     })
 }
 
+
+function checkButtonsDoor(){
+    for (let i=0; i<scene.doors.length; i++){
+        if (scene.doors[i]){
+            scene.doors[i].buttonVerifyTouch(scene);
+            scene.doors[i].verifyDoorOpen(scene);
+        }
+    }
+
+}
+
+function modifyLoadingScreen(){
+    BABYLON.DefaultLoadingScreen.prototype.displayLoadingUI = function () {
+        if (document.getElementById("customLoadingScreenDiv")) {
+            // Do not add a loading screen if there is already one
+            document.getElementById("customLoadingScreenDiv").style.display = "initial";
+            return;
+        }
+        this._loadingDiv = document.createElement("div");
+        this._loadingDiv.id = "customLoadingScreenDiv";
+        this._loadingDiv.innerHTML = "scene is currently loading";
+        let customLoadingScreenCss = document.createElement('style');
+        customLoadingScreenCss.type = 'text/css';
+        customLoadingScreenCss.innerHTML = `
+    #customLoadingScreenDiv{
+        background-color: #BB464Bcc;
+        color: white;
+        font-size:50px;
+        text-align:center;
+    }
+    `;
+        document.getElementsByTagName('head')[0].appendChild(customLoadingScreenCss);
+        this._resizeLoadingUI();
+        window.addEventListener("resize", this._resizeLoadingUI);
+        document.body.appendChild(this._loadingDiv);
+    };
+
+    BABYLON.DefaultLoadingScreen.prototype.hideLoadingUI = function(){
+        document.getElementById("customLoadingScreenDiv").style.display = "none";
+        console.log("scene is now loaded");
+    }
+}
 
 function makeBallsFalling(){
     let date = Date.now();
@@ -249,7 +300,6 @@ function playerFinishLevel(){
         }
     }
 }
-
 function movePlayer(){
     let player = scene.players[scene.currentPlayer];
     if (player){
@@ -262,6 +312,7 @@ function mergePlayer(){
         player.merge(scene);
     }
 }
+
 
 function modifySetting(){
 

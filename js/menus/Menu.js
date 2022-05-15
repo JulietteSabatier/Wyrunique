@@ -58,7 +58,6 @@ export default class Menu extends BABYLON.Scene{
         this.rotateCamera.alpha = this.rotateCamera.alpha + 0.01 % (Math.PI);
 
     }
-
     explosion(){
 
         BABYLON.ParticleHelper.CreateAsync("explosion", this).then((set) => {
@@ -79,8 +78,6 @@ export default class Menu extends BABYLON.Scene{
         });
 
     }
-
-    // ne se dispose pas
     fallingBalls(){
         BABYLON.setAndStartTimer({
             timeout:5,
@@ -99,8 +96,6 @@ export default class Menu extends BABYLON.Scene{
             }
         });
     }
-
-
     createSphere(x,y,z, color){
         let sphere = BABYLON.MeshBuilder.CreateSphere( "sphere",
             {
