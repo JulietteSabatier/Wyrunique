@@ -28,6 +28,8 @@ export default class AbstractLevel extends BABYLON.Scene{
 
         // Music
         this.effectSoundTrack = new BABYLON.SoundTrack(this);
+        this.effectButtonSoundTrack = new BABYLON.SoundTrack(this);
+        this.effectDoorSoundTrack = new BABYLON.SoundTrack(this);
         this.addMusic();
         this.addMergeSoundEffect();
 
@@ -52,6 +54,25 @@ export default class AbstractLevel extends BABYLON.Scene{
             }
         );
         this.effectSoundTrack.addSound(this.mergeSound);
+
+        this.buttonSound = new BABYLON.Sound("buttonSound",
+            "musics/buttonSound.mp3",
+            this,
+            null,
+            {
+                volume: Options.levelSoundEffect
+            }
+            );
+        this.effectButtonSoundTrack.addSound(this.buttonSound);
+
+        this.doorSound = new BABYLON.Sound("doorSound",
+            "musics/door/scary_wooden_door.wav",
+            this,
+            null,
+            {
+                volume: Options.levelSoundEffect
+            });
+        this.effectDoorSoundTrack.addSound(this.doorSound);
     }
 
     async createAdvancedTexture(path, name){
@@ -164,8 +185,6 @@ export default class AbstractLevel extends BABYLON.Scene{
         buttonMaterial.diffuseTexture = new BABYLON.Texture("images/buttonTexture.jpg", this);
         buttonMaterial.diffuseColor = new BABYLON.Color3(1,0.5,0);
         button.material = buttonMaterial;
-
-        button.setParent(this.mazeMesh);
 
         button.physicsImpostor = new BABYLON.PhysicsImpostor(button,
             BABYLON.PhysicsImpostor.BoxImpostor, {

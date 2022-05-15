@@ -25,6 +25,7 @@ export default class Door{
                 if (!isPush) {
                     console.log("player quit button")
                     this.buttons[i].push = false;
+                    scene.buttonSound.play();
                 }
 
             }
@@ -33,6 +34,7 @@ export default class Door{
                     if (scene.players[j].playerMesh.intersectsMesh(this.buttons[i])){
                         console.log("player touch button")
                         this.buttons[i].push = true;
+                        scene.buttonSound.play();
                     }
                 }
             }
@@ -45,6 +47,7 @@ export default class Door{
                 return false;
             }
         }
+        scene.doorSound.play();
         this.open = true;
         this.door.dispose();
         return true;
