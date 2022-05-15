@@ -33,8 +33,8 @@ export default class AbstractLevel extends BABYLON.Scene{
         this.addMusic();
         this.addMergeSoundEffect();
 
-    }
 
+    }
 
     addMusic(){
         this.music = new BABYLON.Sound("menuMusic", "musics/Funambule1.mp3", this, null,
@@ -73,29 +73,6 @@ export default class AbstractLevel extends BABYLON.Scene{
                 volume: Options.levelSoundEffect -0.8
             });
         this.effectDoorSoundTrack.addSound(this.doorSound);
-    }
-
-    async createAdvancedTexture(path, name){
-        this.advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI(name, true, this);
-        let loadedGui = await this.advancedTexture.parseFromURLAsync(path);
-
-
-        this.quitButton = this.advancedTexture.getControlByName("quitButton");
-        this.restartButton = this.advancedTexture.getControlByName("restartButton");
-
-        if (name === "guiLevel"){
-            this.nbBallText = this.advancedTexture.getControlByName("textNbBall");
-            this.nbBallText.text = this.players.length;
-        }
-
-        this.quitButton.onPointerUpObservable.add(function (){
-            GameState.GameState = GameState.LevelMenu;
-            console.log("level to level menu");
-        })
-        this.restartButton.onPointerUpObservable.add(function (){
-            GameState.restartLevel = true;
-            console.log("restart level");
-        })
     }
 
     buildWalls(engine, lvlID) {
@@ -145,7 +122,6 @@ export default class AbstractLevel extends BABYLON.Scene{
         this.assetsManager.load();
 
     }
-
     setButtonAndDoor(lvlId){
         switch (lvlId){
             case 2:
@@ -170,7 +146,28 @@ export default class AbstractLevel extends BABYLON.Scene{
                 this.doors[0] = new Door(this, door,[button1,button2]);
         }
     }
+    async createAdvancedTexture(path, name){
+        this.advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI(name, true, this);
+        let loadedGui = await this.advancedTexture.parseFromURLAsync(path);
 
+
+        this.quitButton = this.advancedTexture.getControlByName("quitButton");
+        this.restartButton = this.advancedTexture.getControlByName("restartButton");
+
+        if (name === "guiLevel"){
+            this.nbBallText = this.advancedTexture.getControlByName("textNbBall");
+            this.nbBallText.text = this.players.length;
+        }
+
+        this.quitButton.onPointerUpObservable.add(function (){
+            GameState.GameState = GameState.LevelMenu;
+            console.log("level to level menu");
+        })
+        this.restartButton.onPointerUpObservable.add(function (){
+            GameState.restartLevel = true;
+            console.log("restart level");
+        })
+    }
     createButtonMesh(position, name){
         let button = BABYLON.MeshBuilder.CreateBox(name,
             {
@@ -271,15 +268,23 @@ export default class AbstractLevel extends BABYLON.Scene{
             this);
 
         camera.checkCollisions = true;
-        camera.panningAxis = new BABYLON.Vector3(0, 0, 0);
-        camera.lockedTarget = target;
+        //camera.panningAxis = new BABYLON.Vector3(0, 0, 0);
+        camera.setTarget(target);
         camera.cameraAcceleration = 0.1; // how fast to move
         camera.maxCameraSpeed = 5; // speed limit
         camera.lowerRadiusLimit = 30;
         camera.upperRadiusLimit = 100;
         camera.upperBetaLimit = (Math.PI / 2);
-        camera.attachControl(this.canvas, false, false, 0);
 
+        // vitesse de déplacement de la caméra
+        camera.inertia = 0.3;
+        camera.inertialAlphaOffset = 10; // droite gauche
+        camera.inertialBetaOffset = 10; // haut bas
+        camera.inertialRadiusOffset = 10; // zoom
+
+        // imputs
+
+        camera.attachControl(this.canvas, true);
         return camera;
     }
 
