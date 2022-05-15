@@ -1,5 +1,4 @@
 import AbstractLevel from "./AbstractLevel.js";
-import Door from "./door/Door.js";
 
 export default class Level1 extends AbstractLevel{
 
@@ -19,11 +18,9 @@ export default class Level1 extends AbstractLevel{
 
         this.createLights();
         this.buildWalls(engine, id);
-
-
     }
 
-    createDoors(nb){
-        this.doors[nb] = new Door(this, "door", "button1", "button2");
+    setButtonAndDoor(lvlId) {
+
     }
 }

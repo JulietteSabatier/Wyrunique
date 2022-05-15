@@ -34,6 +34,7 @@ export default class AbstractLevel extends BABYLON.Scene{
         this.addMergeSoundEffect();
 
 
+
     }
 
     addMusic(){
@@ -122,30 +123,10 @@ export default class AbstractLevel extends BABYLON.Scene{
         this.assetsManager.load();
 
     }
-    setButtonAndDoor(lvlId){
-        switch (lvlId){
-            case 2:
 
-                let door = this.getMeshByName("Porte1");
-                let doorMaterial= new BABYLON.StandardMaterial("doorMaterial", this);
 
-                doorMaterial.diffuseTexture = new BABYLON.Texture("images/buttonTexture.jpg", this)
-                doorMaterial.diffuseColor =  new BABYLON.Color3(1,0.5,0);
-                door.material = doorMaterial;
 
-                door.physicsImpostor = new BABYLON.PhysicsImpostor(door,
-                    BABYLON.PhysicsImpostor.BoxImpostor, {
-                        ignoreParent: true
-                    }, this);
 
-                let posButton1 = this.getMeshByName("Button1").position;
-                let button1 = this.createButtonMesh(posButton1, "button1");
-                let posButton2 = this.getMeshByName("Button2").position;
-                let button2 = this.createButtonMesh(posButton2, "button2")
-
-                this.doors[0] = new Door(this, door,[button1,button2]);
-        }
-    }
     async createAdvancedTexture(path, name){
         this.advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI(name, true, this);
         let loadedGui = await this.advancedTexture.parseFromURLAsync(path);
@@ -172,9 +153,16 @@ export default class AbstractLevel extends BABYLON.Scene{
             GameState.restartLevel = true;
             console.log("restart level");
         })
-        this.quitButton.isPointerBlocker = false;
-        this.advancedTexture.isPointerBlocker = false;
+
+        this.blackRectangle = new BABYLON.GUI.Rectangle();
+        this.blackRectangle.width = "100%";
+        this.blackRectangle.height = "100%";
+        this.blackRectangle.background = "black";
+        this.blackRectangle.color = "black";
+//        this.advancedTexture.addControl(this.blackRectangle);
+
     }
+
     createButtonMesh(position, name){
         let button = BABYLON.MeshBuilder.CreateBox(name,
             {
@@ -347,5 +335,25 @@ export default class AbstractLevel extends BABYLON.Scene{
         return camera;
     }
 
+    createEllipse( width, height, thickness){
+        let ellipse = new BABYLON.GUI.Ellipse();
+        ellipse.width = width+"px";
+        ellipse.height = height+"px";
+        ellipse.color = "black";
+        ellipse.background = "transparent";
+        ellipse.thickness = thickness;
+        this.advancedTexture.addControl(ellipse);
+        return ellipse;
+    }
 
+    createAllEllipses(){
+        let perc = 0;
+        let ellipses=[];
+        for(let i=0; i < 200; i++) {
+            let r = this.createEllipse(perc, perc, 100);
+            ellipses.push(r);
+            perc+=30;
+        }
+        return ellipses;
+    }
 }
