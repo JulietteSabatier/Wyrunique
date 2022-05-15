@@ -245,9 +245,7 @@ function checkButtonsDoor(){
             scene.doors[i].verifyDoorOpen(scene);
         }
     }
-
 }
-
 function modifyLoadingScreen(){
     BABYLON.DefaultLoadingScreen.prototype.displayLoadingUI = function () {
         if (document.getElementById("customLoadingScreenDiv")) {
