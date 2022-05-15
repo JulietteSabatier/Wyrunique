@@ -179,15 +179,50 @@ export default class AbstractLevel extends BABYLON.Scene{
                 depth: 20,
                 updatable: true
             });
-
         button.position = position;
+
+        let outButton = BABYLON.MeshBuilder.CreateBox("ext"+name,
+            {
+                height: 2.9,
+                width: 23,
+                depth: 23,
+                updatable:true
+            });
+        outButton.position = position;
+
+        let csgButton = BABYLON.CSG.FromMesh(button);
+        let csgOutButton = BABYLON.CSG.FromMesh(outButton);
+        let csgExtButton = csgOutButton.subtract(csgButton)
+
+        let extButton = csgExtButton.toMesh("extButton"+name, null, this);
+        extButton.position = position;
+
+        outButton.dispose();
+        this.removeMesh(outButton);
+
+
+        //button.setParent(extButton);
+
+        //button.showBoundingBox = true;
+        //extButton.showBoundingBox = true;
+
         let buttonMaterial = new BABYLON.StandardMaterial(name+"Material", this);
         buttonMaterial.diffuseTexture = new BABYLON.Texture("images/buttonTexture.jpg", this);
         buttonMaterial.diffuseColor = new BABYLON.Color3(1,0.5,0);
         button.material = buttonMaterial;
 
+        let extButtonMaterial = new BABYLON.StandardMaterial("ext"+name+"Material", this);
+        extButtonMaterial.diffuseColor = new BABYLON.Color3(0.2,0.2,0.2);
+        extButton.material = extButtonMaterial;
+
+
         button.physicsImpostor = new BABYLON.PhysicsImpostor(button,
             BABYLON.PhysicsImpostor.BoxImpostor, {
+                ignoreParent: true
+            }, this);
+
+        extButton.physicsImpostor = new BABYLON.PhysicsImpostor(extButton,
+            BABYLON.PhysicsImpostor.MeshImpostor, {
                 ignoreParent: true
             }, this);
 

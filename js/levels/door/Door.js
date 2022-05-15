@@ -42,15 +42,17 @@ export default class Door{
     }
 
     verifyDoorOpen(scene){
-        for (let i=0; i<this.buttons.length; i++){
-            if (this.buttons[i].push === false){
-                return false;
+        if (this.open === false){
+            for (let i=0; i<this.buttons.length; i++){
+                if (this.buttons[i].push === false){
+                    return false;
+                }
             }
+            scene.doorSound.play();
+            this.open = true;
+            this.door.dispose();
+            return true;
         }
-        scene.doorSound.play();
-        this.open = true;
-        this.door.dispose();
-        return true;
     }
 
 
