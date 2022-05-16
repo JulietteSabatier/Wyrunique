@@ -112,16 +112,17 @@ Pour pouvoir jouer chez vous en local sur votre machine, il y a différentes ét
 
 > 1. Clonez le dépôt GitHub.
 
-> 2. Installer NodeJS et NPM.
+> 2. Installez NodeJS et NPM.
 
 > 3. Dans un terminal, ouvrez le dossier du dépôt.
 
-> 4. Déplacer vous dans le dossier public.
+> 4. Exécutez la commande ``` npm install```
 
-> 5. Exécuter la commande ``` npm install --save ```
+> 5. Exécutez ensuite la commande ```npm start```
 
-> 6. Si vous êtes dans un éditeur de texte type *Visual Studio Code*, vous pouvez à l'aide l'extension Live server lancer la page web *index.html*
->> Sinon si vous êtes dans un IDE type *Webstrom* il y a un système intégré permettant de lancer la page.
+> 6. Exécutez ensuite la commande ```node app.js```
+
+> 7. Dans votre navigateur, rendez vous à l'adresse ```http://localhost:3000/```
 
 ## Déploiement
 
@@ -142,7 +143,7 @@ Cette application a été déployé à l'aide de la plateforme de déploiement c
 
 > Les différentes textures nous viennet d'internet.
 
-## Authors
+## Auteurs
 
 - [@JulietteSabatier](https://github.com/JulietteSabatier)
 - [@Ninjabsent](https://github.com/Ninjabsent)
