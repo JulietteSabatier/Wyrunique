@@ -22,9 +22,7 @@ function startGame(){
     engine = new BABYLON.Engine(canvas, true);
     modifySetting();
 
-    //modifyLoadingScreen();
-    //let loadingScreen = new CustomLoading();
-    //engine.loadingScreen = loadingScreen;
+    modifyLoadingScreen();
 
     //engine.displayLoadingUI();
     scene = new Menu(engine, canvas, true);
@@ -233,14 +231,11 @@ function startGame(){
                 scene.soundEffect = new BABYLON.Sound("testSound", "musics/mixkit-retro-game-notification-212.wav", scene, null,
                     {volume: Options.levelSoundEffect}
                 );
-                //scene.music.pause();
+                // TODO make a sound when soundEffect changed
                 scene.soundEffect.play();
-                //soundEffect.stop(1);
-                //scene.music.play();
                 Options.soundEffectChanged = false;
             }
         }
-
         scene.render();
     })
 }
@@ -253,9 +248,7 @@ function checkButtonsDoor(){
             scene.doors[i].verifyDoorOpen(scene);
         }
     }
-
 }
-
 function modifyLoadingScreen(){
     BABYLON.DefaultLoadingScreen.prototype.displayLoadingUI = function () {
         if (document.getElementById("customLoadingScreenDiv")) {
@@ -265,14 +258,14 @@ function modifyLoadingScreen(){
         }
         this._loadingDiv = document.createElement("div");
         this._loadingDiv.id = "customLoadingScreenDiv";
-        this._loadingDiv.innerHTML = "scene is currently loading";
+        this._loadingDiv.innerHTML = "";
         let customLoadingScreenCss = document.createElement('style');
         customLoadingScreenCss.type = 'text/css';
         customLoadingScreenCss.innerHTML = `
     #customLoadingScreenDiv{
-        background-color: #BB464Bcc;
+        background-color: #00000000;
         color: white;
-        font-size:50px;
+        font-size:100px;
         text-align:center;
     }
     `;
@@ -308,12 +301,14 @@ function playerFinishLevel(){
         }
     }
 }
+
 function movePlayer(){
     let player = scene.players[scene.currentPlayer];
     if (player){
         player.move(scene, inputStates);
     }
 }
+
 function mergePlayer(){
     let player = scene.players[scene.currentPlayer];
     if (player){
@@ -321,13 +316,15 @@ function mergePlayer(){
     }
 }
 
-
 function modifySetting(){
 
     // resize
     window.addEventListener("resize", () => {
         engine.resize()
     })
+
+    // stop scrolling with the canvas
+    canvas.addEventListener("wheel", (evt) => evt.preventDefault());
 
     // key listener
     inputStates.left = false;
