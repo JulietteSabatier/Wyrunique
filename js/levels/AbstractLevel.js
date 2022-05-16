@@ -145,9 +145,9 @@ export default class AbstractLevel extends BABYLON.Scene{
 
         this.advancedTexture.getControlByName("globalGrid").isPointerBlocker = false;
         this.advancedTexture.getControlByName("upGrid").isPointerBlocker = false;
-        this.advancedTexture.getControlByName("remainingBallGrid").isPointerBlocker = false;
 
         if (name === "guiLevel"){
+            this.advancedTexture.getControlByName("remainingBallGrid").isPointerBlocker = false;
             this.nbBallText = this.advancedTexture.getControlByName("textNbBall");
             this.nbBallText.text = this.players.length;
         }

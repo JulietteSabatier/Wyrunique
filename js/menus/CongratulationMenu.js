@@ -61,7 +61,6 @@ export default class CongratulationMenu extends BABYLON.Scene{
 
     }
 
-    // ne se dispose pas
     fallingBalls(){
         BABYLON.setAndStartTimer({
             timeout:5,
