@@ -173,6 +173,10 @@ function startGame(){
             checkButtonsDoor();  // check if the player touch the buttons and open the door
             checkJumpPlateform();   // check if the player is on a jump plateform
             playerFinishLevel();    // check if the player has finish the level
+
+            if(scene.id === 3) {
+                scene.movePlateform();
+            }
         }
 
         // start menu animation
