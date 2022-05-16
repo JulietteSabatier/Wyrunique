@@ -321,6 +321,9 @@ function modifySetting(){
         engine.resize()
     })
 
+    // stop scrolling with the canvas
+    canvas.addEventListener("wheel", (evt) => evt.preventDefault());
+
     // key listener
     inputStates.left = false;
     inputStates.right = false;
