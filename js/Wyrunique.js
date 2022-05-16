@@ -1,6 +1,7 @@
 import GameState from "./GameState.js";
 import Level1 from "./levels/Level1.js";
 import Level2 from "./levels/Level2.js";
+import Level3 from "./levels/Level3.js";
 import CongratulationMenu from "./menus/CongratulationMenu.js";
 import Menu from "./menus/Menu.js";
 import Options from "./Options.js";
@@ -138,6 +139,10 @@ function startGame(){
                             scene = new Level2(engine, canvas, 2);
                             GameState.precGameState = GameState.Level;
                         break;
+                        case 3:
+                            scene.dispose();
+                            scene = new Level3(engine, canvas, 3);
+                            GameState.precGameState = GameState.Level;
                     }
                 break;
             }
@@ -155,7 +160,10 @@ function startGame(){
                         scene = new Level1(engine, canvas, 1);
                         break;
                     case 1:
-                        scene = new Level2(engine, canvas, 1);
+                        scene = new Level2(engine, canvas, 2);
+                        break;
+                    case 2:
+                        scene = new Level3(engine, canvas, 3);
                         break;
                 }
 

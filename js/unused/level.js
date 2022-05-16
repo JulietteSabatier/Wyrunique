@@ -123,7 +123,7 @@ export default class Level {
         sphereMesh.frontVector = new BABYLON.Vector3(0, 0, 1);
 
         let sphereMaterial = new BABYLON.StandardMaterial("sphereMaterial", this.scene);
-        sphereMaterial.diffuseTexture = new BABYLON.Texture("images/Ball.jpg", this.scene);
+        sphereMaterial.diffuseTexture = new BABYLON.Texture("images/Common/Ball.jpg", this.scene);
         sphereMesh.material = sphereMaterial;
 
         sphereMesh.physicsImpostor = new BABYLON.PhysicsImpostor(sphereMesh,
