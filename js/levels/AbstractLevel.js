@@ -212,7 +212,6 @@ export default class AbstractLevel extends BABYLON.Scene{
             sourcePlane:abstractPlane,
             sideOrientation:BABYLON.Mesh.DOUBLESIDE
         })
-        console.log(position);
         plane.position = position;
 
         return plane;

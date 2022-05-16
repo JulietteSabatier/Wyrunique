@@ -14,7 +14,6 @@ export default class Jump{
                     let impulseVector = new BABYLON.Vector3(0,1,0).scale(80);
                     let contactVector = scene.players[j].playerMesh.getAbsolutePosition();
                     scene.players[j].playerMesh.physicsImpostor.applyImpulse(impulseVector, contactVector)
-                    console.log("saut");
                 }
             }
         }
