@@ -170,7 +170,8 @@ function startGame(){
 
             movePlayer();   // move the player
             mergePlayer();   // check if the player merge another
-            checkButtonsDoor()  // check if the player touch the buttons and open the door
+            checkButtonsDoor();  // check if the player touch the buttons and open the door
+            checkJumpPlateform();   // check if the player is on a jump plateform
             playerFinishLevel();    // check if the player has finish the level
         }
 
@@ -249,6 +250,13 @@ function checkButtonsDoor(){
         }
     }
 }
+
+function checkJumpPlateform(){
+    if (scene.jumpPlateform){
+        scene.jumpPlateform.verifyTouchPlateform(scene);
+    }
+}
+
 function modifyLoadingScreen(){
     BABYLON.DefaultLoadingScreen.prototype.displayLoadingUI = function () {
         if (document.getElementById("customLoadingScreenDiv")) {
