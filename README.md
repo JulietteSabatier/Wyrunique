@@ -23,6 +23,19 @@ Serez-vous en mesure de venir à bout du labyrinthe et de ses épreuves
 sur la voie de la guérison afin de redevnir l'être que vous étiez ? 
 
 ```
+
+### Commandes de jeu 
+
+Afin de profiter pleinement de votre expérience de jeu voici les commandes:
+
+- ``` z, q, s, d ``` afin de déplacer la boule que vous contrôlez.
+
+- ``` & ``` afin de prendre le contrôle d'une autre boule.
+
+- Les flèches directionnelles ou bien la souris afin de contrôler les mouvements de la caméra.
+
+- La touche ```échap``` peut vous permettre de passer la cinématique de début.
+
 ### Idée du jeu
 
 Cette année le thème du concours est **You are Unique**.
