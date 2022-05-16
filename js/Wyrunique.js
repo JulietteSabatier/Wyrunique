@@ -127,12 +127,12 @@ function startGame(){
                 break;
                 case GameState.Level:
                     switch (GameState.numLevel){
-                        case 0:
+                        case 1:
                             scene.dispose();
                             scene = new Level1(engine, canvas, 1);
                             GameState.precGameState = GameState.Level;
                         break;
-                        case 1:
+                        case 2:
                             scene.dispose();
                             scene = new Level2(engine, canvas, 2);
                             GameState.precGameState = GameState.Level;
@@ -154,13 +154,13 @@ function startGame(){
                 scene.advancedTexture.dispose();
 
                 switch (GameState.numLevel){
-                    case 0:
+                    case 1:
                         scene = new Level1(engine, canvas, 1);
                         break;
-                    case 1:
+                    case 2:
                         scene = new Level2(engine, canvas, 2);
                         break;
-                    case 2:
+                    case 3:
                         scene = new Level3(engine, canvas, 3);
                         break;
                 }
@@ -172,6 +172,10 @@ function startGame(){
             mergePlayer();   // check if the player merge another
             checkButtonsDoor()  // check if the player touch the buttons and open the door
             playerFinishLevel();    // check if the player has finish the level
+
+            if(scene.id === 3) {
+                scene.movePlateform();
+            }
         }
 
         // start menu animation

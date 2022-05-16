@@ -4,7 +4,7 @@ import Door from "./door/Door.js";
 export default class Level3 extends AbstractLevel{
 
     constructor(engine, canvas, id) {
-        super(engine, canvas);
+        super(engine, canvas, id);
         this.createScene(id, engine);
     }
 
@@ -20,6 +20,9 @@ export default class Level3 extends AbstractLevel{
         this.buildWalls(engine, id);
 
         this.currentPlayer = 0;
+
+        this.plateformMoving = false;
+        this.movingDirection = BABYLON.Vector3.Zero();
     }
 
     loadSpecificObjects() {
@@ -38,13 +41,15 @@ export default class Level3 extends AbstractLevel{
             }, this);
 
         for (let i = 0; i < this.players.length; i++) {
-            spikesMesh.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
-                {trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger, parameter: this.players[i].playerMesh},
+            let currentPlayer = this.players[i];
+            let triggerAction = spikesMesh.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
+                {trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger, parameter: currentPlayer.playerMesh},
                 () => {
-                    console.log("Player " + this.players[i].id + " impaled himself");
-                    console.log(this.getMeshByName("PieceManquante").position);
+                    console.log("Player " + currentPlayer.id + " impaled himself");
                 }
             ));
+            this.players[i].linkedMeshes.push(spikesMesh);
+            this.players[i].linkedTriggers.push(triggerAction);
         }
     }
 
@@ -68,17 +73,32 @@ export default class Level3 extends AbstractLevel{
         let triggerPlateform = this.getMeshByName("TriggerPlateforme");
         let missingPiece = this.getMeshByName("PieceManquante");
 
-        // missingPiece.physicsImpostor = new BABYLON.PhysicsImpostor(missingPiece,
-        //     BABYLON.PhysicsImpostor.BoxImpostor, {}, this);
-        missingPiece.checkCollisions = true;
+        missingPiece.physicsImpostor = new BABYLON.PhysicsImpostor(missingPiece,
+            BABYLON.PhysicsImpostor.SphereImpostor, {
+                mass: 2,
+                nativeOptions: {linearDamping: 0.35, angularDamping: 0.35}
+            }, this);
 
         triggerPlateform.actionManager = new BABYLON.ActionManager(this);
         triggerPlateform.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
             {trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger, parameter: missingPiece},
             () => {
                 console.log("Plateforme débloquée");
+                this.plateformMoving = true;
             }
         ));
+    }
+
+    movePlateform() {
+        if (this.plateformMoving) {
+            let plateform = this.getMeshByName("PlateformePics");
+            if (plateform.position.x <= -37.4) {
+                this.movingDirection = new BABYLON.Vector3(0.25,0,0);
+            } else if (plateform.position.x >= 37.4) {
+                this.movingDirection = new BABYLON.Vector3(-0.25,0,0);
+            }
+            plateform.moveWithCollisions(this.movingDirection);
+        }
     }
 
     setButtonAndDoor() {
