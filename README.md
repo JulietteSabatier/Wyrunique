@@ -103,10 +103,14 @@ Pour pouvoir jouer chez vous en local sur votre machine, il y a différentes ét
 
 > 2. Installer NodeJS et NPM.
 
-> 3. Dans un terminal, ouvrez le dossier, et utilisez la commande 
-``` node app.js ```
+> 3. Dans un terminal, ouvrez le dossier du dépôt.
 
-> 4. Une fois cela fait rendez vous [ici](http://localhost:3000/)  
+> 4. Déplacer vous dans le dossier public.
+
+> 5. Exécuter la commande ``` npm install --save ```
+
+> 6. Si vous êtes dans un éditeur de texte type *Visual Studio Code*, vous pouvez à l'aide l'extension Live server lancer la page web *index.html*
+>> Sinon si vous êtes dans un IDE type *Webstrom* il y a un système intégré permettant de lancer la page.
 
 ## Déploiement
 
