@@ -3,7 +3,7 @@ import Door from "./door/Door.js";
 
 export default class Level2 extends AbstractLevel{
 
-    constructor(engine, canvas, id) {
+    constructor(engine, canvas) {
         super(engine, canvas, 2);
 
         this.endPosition = new BABYLON.Vector3(0, 15, 250);

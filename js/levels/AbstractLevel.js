@@ -29,6 +29,7 @@ export default class AbstractLevel extends BABYLON.Scene{
         this.effectSoundTrack = new BABYLON.SoundTrack(this);
         this.effectButtonSoundTrack = new BABYLON.SoundTrack(this);
         this.effectDoorSoundTrack = new BABYLON.SoundTrack(this);
+        this.effectHoleSoundTrack = new BABYLON.SoundTrack(this);
         this.addMusic();
         this.addSoundEffect();
 
@@ -70,7 +71,7 @@ export default class AbstractLevel extends BABYLON.Scene{
             this,
             null,
             {
-                volume: Options.levelSoundEffect-0.5
+                volume: (Options.levelSoundEffect-0.5)%2
             }
             );
         this.effectButtonSoundTrack.addSound(this.buttonSound);
@@ -80,9 +81,18 @@ export default class AbstractLevel extends BABYLON.Scene{
             this,
             null,
             {
-                volume: Options.levelSoundEffect -0.8
+                volume: (Options.levelSoundEffect -0.8)%2
             });
         this.effectDoorSoundTrack.addSound(this.doorSound);
+
+        this.holeSound = new BABYLON.Sound("holeSound",
+            "musics/ball_hole_sound.mp3",
+            this,
+            null,
+            {
+                volume: Options.levelSoundEffect
+            });
+        this.effectHoleSoundTrack.addSound(this.holeSound);
     }
 
     buildWalls(engine, lvlID) {

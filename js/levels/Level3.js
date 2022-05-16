@@ -5,7 +5,7 @@ import GameState from "../GameState.js";
 
 export default class Level3 extends AbstractLevel{
 
-    constructor(engine, canvas, id) {
+    constructor(engine, canvas) {
         super(engine, canvas, 3);
         this.endPosition = new BABYLON.Vector3(0,0,0);
         this.plateformMoving = false;
@@ -82,11 +82,16 @@ export default class Level3 extends AbstractLevel{
                 nativeOptions: {linearDamping: 0.35, angularDamping: 0.35}
             }, this);
 
+        let materialMissingPiece = new BABYLON.StandardMaterial("missingPieceMaterial", this);
+        materialMissingPiece.diffuseTexture = new BABYLON.Texture("images/Common/blue.png");
+        this.missingPiece.material = materialMissingPiece;
+
         this.triggerPlateform.actionManager = new BABYLON.ActionManager(this);
         this.triggerPlateform.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
             {trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger, parameter: this.missingPiece},
             () => {
                 console.log("Plateforme débloquée");
+                this.holeSound.play();
                 this.plateformMoving = true;
             }
         ));
