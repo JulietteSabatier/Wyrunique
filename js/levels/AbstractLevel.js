@@ -138,7 +138,6 @@ export default class AbstractLevel extends BABYLON.Scene{
             GameState.GameState = GameState.LevelMenu;
             console.log("level to level menu");
         })
-        this.quitButton.isPointerBlocker = false;
         this.restartButton.onPointerUpObservable.add(function (){
             GameState.restartLevel = true;
             console.log("restart level");
