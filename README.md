@@ -48,7 +48,6 @@ Le processus de réalisation du jeu a été composé de plusieurs étapes.
 
 - Donc, une fois le développement du jeu lancé il nous fallait établir une version très minimale de ce qu'on voulait.  
 C'est-à-dire, une boule sur un plateau qui peut évoluer entre des murs.  
-
 Il a donc fallu établir toute la *scene*, les différents *mesh*, assigner des *bindings* afin de pouvoir déplacer la boule et nous avons également utilisé le moteur physique *cannon.js* afin de gérer toutes les relations physiques et collisions entre la boule et les murs.  
 Voici un petit aperçu.  
 
@@ -77,7 +76,6 @@ Nous avons d'abord pensé à utiliser un algorithme pour générer de manière a
 ![mauvaise texture](/images/readme/floor-is-lava.png)  
 
 - En parallèle de la création des labyrinthes, une interface graphique a été développée afin de rendre plus agréable et intuitive l'expérience de jeu.  
-
 L'interface est sobre et simple, composée de boutons nous permettant de sélectionner des niveaux, connaître les commandes ou tout simplement de jouer.
 
 ![page de démarrage](/images/readme/d%C3%A9marrage.png)  
