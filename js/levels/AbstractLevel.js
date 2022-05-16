@@ -11,6 +11,8 @@ export default class AbstractLevel extends BABYLON.Scene{
             throw new TypeError('Abstract class "AbstractMenu" cannot be instanciated directly');
         }
 
+        this.createLoadingOpen()
+
         this.id = id;
         this.name = null;
         this.players = [];
@@ -18,9 +20,10 @@ export default class AbstractLevel extends BABYLON.Scene{
         this.doors = [];
         this.currentPlayer = 0;
         this.canFinish = false;
-        this.endPosition = new BABYLON.Vector3(0, 15, 0);
-
+        this.endPosition = new BABYLON.Vector3(0,0,0);
         this.activeCamera = this.createFreeCamera(this); //Default camera until the rest of the scene is loaded with the cameras
+
+        this.createScene(engine, id);
 
         // Music
         this.effectSoundTrack = new BABYLON.SoundTrack(this);
@@ -29,6 +32,18 @@ export default class AbstractLevel extends BABYLON.Scene{
         this.addMusic();
         this.addSoundEffect();
 
+    }
+
+    createScene(engine, id){
+        this.clearColor = new BABYLON.Color3(0, 0, 0);
+
+        let gravityVector = new BABYLON.Vector3(0,-29.81, 0);
+        let physicsPlugin = new BABYLON.CannonJSPlugin();
+        this.enablePhysics(gravityVector, physicsPlugin);
+        this.assetsManager = new BABYLON.AssetsManager(this);
+
+        this.createLights();
+        this.buildWalls(engine, id);
     }
 
     addMusic(){

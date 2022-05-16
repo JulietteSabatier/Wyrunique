@@ -127,19 +127,19 @@ function startGame(){
                 break;
                 case GameState.Level:
                     switch (GameState.numLevel){
-                        case 0:
-                            scene.dispose();
-                            scene = new Level1(engine, canvas, 1);
-                            GameState.precGameState = GameState.Level;
-                        break;
                         case 1:
                             scene.dispose();
-                            scene = new Level2(engine, canvas, 2);
+                            scene = new Level1(engine, canvas);
+                            GameState.precGameState = GameState.Level;
+                        break;
+                        case 2:
+                            scene.dispose();
+                            scene = new Level2(engine, canvas);
                             GameState.precGameState = GameState.Level;
                         break;
                         case 3:
                             scene.dispose();
-                            scene = new Level3(engine, canvas, 3);
+                            scene = new Level3(engine, canvas);
                             GameState.precGameState = GameState.Level;
                     }
                 break;
@@ -154,14 +154,14 @@ function startGame(){
                 scene.advancedTexture.dispose();
 
                 switch (GameState.numLevel){
-                    case 0:
-                        scene = new Level1(engine, canvas, 1);
-                        break;
                     case 1:
-                        scene = new Level2(engine, canvas, 2);
+                        scene = new Level1(engine, canvas);
                         break;
                     case 2:
-                        scene = new Level3(engine, canvas, 3);
+                        scene = new Level2(engine, canvas);
+                        break;
+                    case 3:
+                        scene = new Level3(engine, canvas);
                         break;
                 }
 

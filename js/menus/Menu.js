@@ -162,19 +162,18 @@ export default class Menu extends BABYLON.Scene{
         });
         this.advancedTexture.level1Button.onPointerUpObservable.add( function (){
             GameState.GameState = GameState.Level;
-            GameState.numLevel = 0;
+            GameState.numLevel = 1;
             console.log("level to 1");
         });
         this.advancedTexture.level2Button.onPointerUpObservable.add( function (){
             GameState.GameState = GameState.Level;
-            GameState.numLevel = 1;
+            GameState.numLevel = 2;
             console.log("level to 2");
         });
         this.advancedTexture.level3Button.onPointerUpObservable.add( function (){
             GameState.GameState = GameState.Level;
             GameState.numLevel = 3;
-            //alert("Bientôt disponible en précommande pour 40€ seulement, une affaire en or !\nSigné: Wyrunique Games");
-            //console.log("level to 3");
+            console.log("level to 3");
         });
         this.advancedTexture.level4Button.onPointerUpObservable.add( function (){
             //GameState.GameState = GameState.Level;
