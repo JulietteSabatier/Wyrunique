@@ -1,7 +1,6 @@
 import Player from "../Player.js";
 import GameState from "../GameState.js";
 import Options from "../Options.js";
-import Door from "./door/Door.js";
 
 export default class AbstractLevel extends BABYLON.Scene{
 
@@ -28,7 +27,7 @@ export default class AbstractLevel extends BABYLON.Scene{
         this.effectButtonSoundTrack = new BABYLON.SoundTrack(this);
         this.effectDoorSoundTrack = new BABYLON.SoundTrack(this);
         this.addMusic();
-        this.addMergeSoundEffect();
+        this.addSoundEffect();
 
     }
 
@@ -40,7 +39,7 @@ export default class AbstractLevel extends BABYLON.Scene{
                 volume: Options.levelMusic
             });
     }
-    addMergeSoundEffect(){
+    addSoundEffect(){
         this.mergeSound = new BABYLON.Sound("mergeSound",
             "musics/mixkit-fast-small-sweep-transition-166.wav",
             this,
@@ -75,9 +74,11 @@ export default class AbstractLevel extends BABYLON.Scene{
         let labTask = this.assetsManager.addMeshTask("maze task", "", "assets/", "Level" + lvlID + ".babylon");
         labTask.onSuccess = (task) => {
             //Load the maze itself with the texture
-            this.mazeMesh = task.loadedMeshes[0];
-            this.mazeMesh.material.diffuseTexture = new BABYLON.Texture("images/Level" + lvlID + "_color.png", this.scene);
-            this.mazeMesh.material.bumpTexture = new BABYLON.Texture("images/Level" + lvlID + "_normal.png");
+            this.mazeMesh = task.loadedMeshes.find(function (mesh) {
+                return mesh.name === "Labyrinthe";
+            });
+            this.mazeMesh.material.diffuseTexture = new BABYLON.Texture("images/Level"+ lvlID +"/Level" + lvlID + "_color.png", this.scene);
+            this.mazeMesh.material.bumpTexture = new BABYLON.Texture("images/Level"+ lvlID +"/Level" + lvlID + "_normal.png");
 
             this.mazeMesh.position = new BABYLON.Vector3.Zero();
 
@@ -106,7 +107,8 @@ export default class AbstractLevel extends BABYLON.Scene{
             //And remove the free camera that was created to let the scene renders
             this.cameras.shift();
 
-            this.setButtonAndDoor(lvlID);
+            this.setButtonAndDoor();
+            this.loadSpecificObjects();
 
             let finished = this.createAdvancedTexture("gui/guiTextureLevel.json", "guiLevel");
         }
@@ -116,6 +118,14 @@ export default class AbstractLevel extends BABYLON.Scene{
         }
         this.assetsManager.load();
 
+    }
+
+    loadSpecificObjects() {
+        console.log("Nothing to load.")
+    }
+
+    setButtonAndDoor(){
+        console.log("No door to load.");
     }
 
     async createAdvancedTexture(path, name){
@@ -175,7 +185,7 @@ export default class AbstractLevel extends BABYLON.Scene{
 
 
         let buttonMaterial = new BABYLON.StandardMaterial(name+"Material", this);
-        buttonMaterial.diffuseTexture = new BABYLON.Texture("images/buttonTexture.jpg", this);
+        buttonMaterial.diffuseTexture = new BABYLON.Texture("images/Common/buttonTexture.jpg", this);
         buttonMaterial.diffuseColor = new BABYLON.Color3(1,0.5,0);
         button.material = buttonMaterial;
 
@@ -195,6 +205,17 @@ export default class AbstractLevel extends BABYLON.Scene{
 
         return button;
     }
+    createPlateformJumpMesh(position, name){
+        let abstractPlane = BABYLON.Plane.FromPositionAndNormal(position, new BABYLON.Vector3(0,1,0));
+        let plane = BABYLON.MeshBuilder.CreatePlane("plane", {
+            size:15,
+            sourcePlane:abstractPlane,
+            sideOrientation:BABYLON.Mesh.DOUBLESIDE
+        })
+        plane.position = position;
+
+        return plane;
+    }
 
     createSphere(name, nb, pos_x, pos_y, pos_z){
         let sphereMesh = new BABYLON.MeshBuilder.CreateSphere(name, {diameter: 5}, this);
@@ -205,7 +226,7 @@ export default class AbstractLevel extends BABYLON.Scene{
         sphereMesh.frontVector = new BABYLON.Vector3(0, 0, 1);
 
         let sphereMaterial = new BABYLON.StandardMaterial("sphereMaterial", this);
-        sphereMaterial.diffuseTexture = new BABYLON.Texture("images/Ball.jpg", this);
+        sphereMaterial.diffuseTexture = new BABYLON.Texture("images/Common/Ball.jpg", this);
         sphereMesh.material = sphereMaterial;
 
         sphereMesh.physicsImpostor = new BABYLON.PhysicsImpostor(sphereMesh,
@@ -258,7 +279,7 @@ export default class AbstractLevel extends BABYLON.Scene{
         if (!this.canFinish) {
 
             this.particleSystem = new BABYLON.ParticleSystem("particles", 500, this); // on construction
-            this.particleSystem.particleTexture = new BABYLON.Texture("images/Particle.jpg", this);
+            this.particleSystem.particleTexture = new BABYLON.Texture("images/Common/Particle.jpg", this);
             this.particleSystem.emitter = position;
             this.particleSystem.emitRate = 200;
 

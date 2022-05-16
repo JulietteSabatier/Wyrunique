@@ -6,12 +6,12 @@ export default class Door{
         this.open = false;
         this.buttons = buttons;
         for (let i=0; i<buttons.length; i++){
-            this.buttons[i]["push"] =false;
+            this.buttons[i]["push"] = false;
         }
     }
 
     buttonVerifyTouch(scene){
-        for (let i=0; i<this.buttons.length; i++){
+        for (let i=0; i < this.buttons.length; i++){
             if (this.buttons[i].push === true){
                 let isPush = false;
                 for (let j=0; j<scene.players.length; j++){

@@ -26,7 +26,7 @@ export default class Menu extends BABYLON.Scene{
             this.bigBall.position.z = 0;
 
             this.bigBallMaterial = new BABYLON.StandardMaterial("ballMaterial", this);
-            this.bigBallMaterial.diffuseTexture = new BABYLON.Texture("images/Ball.jpg", this);
+            this.bigBallMaterial.diffuseTexture = new BABYLON.Texture("images/Common/Ball.jpg", this);
             this.bigBall.material = this.bigBallMaterial;
         }
         else{
@@ -171,10 +171,10 @@ export default class Menu extends BABYLON.Scene{
             console.log("level to 2");
         });
         this.advancedTexture.level3Button.onPointerUpObservable.add( function (){
-            //GameState.GameState = GameState.Level;
-            //GameState.numLevel = 3;
-            alert("Bientôt disponible en précommande pour 40€ seulement, une affaire en or !\nSigné: Wyrunique Games");
-            console.log("level to 3");
+            GameState.GameState = GameState.Level;
+            GameState.numLevel = 3;
+            //alert("Bientôt disponible en précommande pour 40€ seulement, une affaire en or !\nSigné: Wyrunique Games");
+            //console.log("level to 3");
         });
         this.advancedTexture.level4Button.onPointerUpObservable.add( function (){
             //GameState.GameState = GameState.Level;

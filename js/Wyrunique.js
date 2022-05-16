@@ -1,6 +1,7 @@
 import GameState from "./GameState.js";
 import Level1 from "./levels/Level1.js";
 import Level2 from "./levels/Level2.js";
+import Level3 from "./levels/Level3.js";
 import CongratulationMenu from "./menus/CongratulationMenu.js";
 import Menu from "./menus/Menu.js";
 import Options from "./Options.js";
@@ -136,6 +137,10 @@ function startGame(){
                             scene = new Level2(engine, canvas, 2);
                             GameState.precGameState = GameState.Level;
                         break;
+                        case 3:
+                            scene.dispose();
+                            scene = new Level3(engine, canvas, 3);
+                            GameState.precGameState = GameState.Level;
                     }
                 break;
             }
@@ -155,6 +160,9 @@ function startGame(){
                     case 1:
                         scene = new Level2(engine, canvas, 2);
                         break;
+                    case 2:
+                        scene = new Level3(engine, canvas, 3);
+                        break;
                 }
 
                 GameState.restartLevel = false;
@@ -162,7 +170,8 @@ function startGame(){
 
             movePlayer();   // move the player
             mergePlayer();   // check if the player merge another
-            checkButtonsDoor()  // check if the player touch the buttons and open the door
+            checkButtonsDoor();  // check if the player touch the buttons and open the door
+            checkJumpPlateform();   // check if the player is on a jump plateform
             playerFinishLevel();    // check if the player has finish the level
         }
 
@@ -241,6 +250,13 @@ function checkButtonsDoor(){
         }
     }
 }
+
+function checkJumpPlateform(){
+    if (scene.jumpPlateform){
+        scene.jumpPlateform.verifyTouchPlateform(scene);
+    }
+}
+
 function modifyLoadingScreen(){
     BABYLON.DefaultLoadingScreen.prototype.displayLoadingUI = function () {
         if (document.getElementById("customLoadingScreenDiv")) {
