@@ -21,9 +21,7 @@ function startGame(){
     engine = new BABYLON.Engine(canvas, true);
     modifySetting();
 
-    //modifyLoadingScreen();
-    //let loadingScreen = new CustomLoading();
-    //engine.loadingScreen = loadingScreen;
+    modifyLoadingScreen();
 
     //engine.displayLoadingUI();
     scene = new Menu(engine, canvas, true);
@@ -155,7 +153,7 @@ function startGame(){
                         scene = new Level1(engine, canvas, 1);
                         break;
                     case 1:
-                        scene = new Level2(engine, canvas, 1);
+                        scene = new Level2(engine, canvas, 2);
                         break;
                 }
 
@@ -245,9 +243,7 @@ function checkButtonsDoor(){
             scene.doors[i].verifyDoorOpen(scene);
         }
     }
-
 }
-
 function modifyLoadingScreen(){
     BABYLON.DefaultLoadingScreen.prototype.displayLoadingUI = function () {
         if (document.getElementById("customLoadingScreenDiv")) {
@@ -257,14 +253,14 @@ function modifyLoadingScreen(){
         }
         this._loadingDiv = document.createElement("div");
         this._loadingDiv.id = "customLoadingScreenDiv";
-        this._loadingDiv.innerHTML = "scene is currently loading";
+        this._loadingDiv.innerHTML = "";
         let customLoadingScreenCss = document.createElement('style');
         customLoadingScreenCss.type = 'text/css';
         customLoadingScreenCss.innerHTML = `
     #customLoadingScreenDiv{
-        background-color: #BB464Bcc;
+        background-color: #00000000;
         color: white;
-        font-size:50px;
+        font-size:100px;
         text-align:center;
     }
     `;

@@ -175,16 +175,19 @@ export default class Menu extends BABYLON.Scene{
         this.advancedTexture.level3Button.onPointerUpObservable.add( function (){
             GameState.GameState = GameState.Level;
             GameState.numLevel = 3;
+            //alert("Bientôt disponible en précommande pour 40€ seulement, une affaire en or !\nSigné: Wyrunique Games");
             console.log("level to 3");
         });
         this.advancedTexture.level4Button.onPointerUpObservable.add( function (){
-            GameState.GameState = GameState.Level;
-            GameState.numLevel = 4;
+            //GameState.GameState = GameState.Level;
+            //GameState.numLevel = 4;
+            alert("Bientôt disponible en précommande pour 40€ seulement, une affaire en or !\nSigné: Wyrunique Games");
             console.log("level to 4");
         });
         this.advancedTexture.level5Button.onPointerUpObservable.add( function (){
-            GameState.GameState = GameState.Level;
-            GameState.numLevel = 5;
+            //GameState.GameState = GameState.Level;
+            //GameState.numLevel = 5;
+            alert("Bientôt disponible en précommande pour 40€ seulement, une affaire en or !\n Signé: Wyrunique Games");
             console.log("level to 5");
         });
     }

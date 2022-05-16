@@ -34,6 +34,7 @@ export default class AbstractLevel extends BABYLON.Scene{
         this.addMergeSoundEffect();
 
 
+
     }
 
     addMusic(){
@@ -112,7 +113,15 @@ export default class AbstractLevel extends BABYLON.Scene{
 
             this.setButtonAndDoor(lvlID);
 
-           let finished = this.createAdvancedTexture("gui/guiTextureLevel.json", "guiLevel");
+            /*
+            BABYLON.setAndStartTimer({
+                timeout:1000,
+                contextObservable: this.onBeforeRenderObservable,
+                onEnded: () => {
+                    scene.bigBall.dispose();
+                }
+            })*/
+            let finished = this.createAdvancedTexture("gui/guiTextureLevel.json", "guiLevel");
 
         }
 
@@ -122,30 +131,10 @@ export default class AbstractLevel extends BABYLON.Scene{
         this.assetsManager.load();
 
     }
-    setButtonAndDoor(lvlId){
-        switch (lvlId){
-            case 2:
 
-                let door = this.getMeshByName("Porte1");
-                let doorMaterial= new BABYLON.StandardMaterial("doorMaterial", this);
 
-                doorMaterial.diffuseTexture = new BABYLON.Texture("images/buttonTexture.jpg", this)
-                doorMaterial.diffuseColor =  new BABYLON.Color3(1,0.5,0);
-                door.material = doorMaterial;
 
-                door.physicsImpostor = new BABYLON.PhysicsImpostor(door,
-                    BABYLON.PhysicsImpostor.BoxImpostor, {
-                        ignoreParent: true
-                    }, this);
 
-                let posButton1 = this.getMeshByName("Button1").position;
-                let button1 = this.createButtonMesh(posButton1, "button1");
-                let posButton2 = this.getMeshByName("Button2").position;
-                let button2 = this.createButtonMesh(posButton2, "button2")
-
-                this.doors[0] = new Door(this, door,[button1,button2]);
-        }
-    }
     async createAdvancedTexture(path, name){
         this.advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI(name, true, this);
         let loadedGui = await this.advancedTexture.parseFromURLAsync(path);
@@ -172,9 +161,8 @@ export default class AbstractLevel extends BABYLON.Scene{
             GameState.restartLevel = true;
             console.log("restart level");
         })
-        this.quitButton.isPointerBlocker = false;
-        this.advancedTexture.isPointerBlocker = false;
     }
+
     createButtonMesh(position, name){
         let button = BABYLON.MeshBuilder.CreateBox(name,
             {
@@ -348,4 +336,38 @@ export default class AbstractLevel extends BABYLON.Scene{
     }
 
 
+    createLoadingOpen(){
+        this.loadingAdvancedTexture = new BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("loadingTexture", this);
+
+        let perc = 0;
+
+        this.loadingAdvancedTexture.ellipses = [];
+        for (let i=0; i< 35; i++){
+            let r = this.createEllipse(perc, perc, 100, this.loadingAdvancedTexture);
+            this.loadingAdvancedTexture.ellipses.push(r);
+            perc += 30+i*2;
+        }
+
+        let i= 0;
+        this.interval = setInterval( () => {
+            this.loadingAdvancedTexture.ellipses[i].alpha = 0;
+            i++;
+            if (i === 35){
+                this.loadingAdvancedTexture.dispose();
+                clearInterval(this.interval);
+            }
+        }, 10);
+
+    }
+
+    createEllipse( width, height, thickness, advancedTexture){
+        let ellipse = new BABYLON.GUI.Ellipse();
+        ellipse.width = width+"px";
+        ellipse.height = height+"px";
+        ellipse.color = "black";
+        ellipse.background = "transparent";
+        ellipse.thickness = thickness;
+        advancedTexture.addControl(ellipse);
+        return ellipse;
+    }
 }
