@@ -1,6 +1,7 @@
 import AbstractLevel from "./AbstractLevel.js";
 import Door from "./door/Door.js";
 import Jump from "./door/Jump.js";
+import GameState from "../GameState.js";
 
 export default class Level3 extends AbstractLevel{
 
@@ -50,6 +51,7 @@ export default class Level3 extends AbstractLevel{
                 {trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger, parameter: currentPlayer.playerMesh},
                 () => {
                     console.log("Player " + currentPlayer.id + " impaled himself");
+                    GameState.restartLevel = true;
                 }
             ));
             this.players[i].linkedMeshes.push(this.spikesMesh);
