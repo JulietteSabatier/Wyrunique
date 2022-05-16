@@ -23,17 +23,12 @@ export default class AbstractLevel extends BABYLON.Scene{
 
         this.activeCamera = this.createFreeCamera(this); //Default camera until the rest of the scene is loaded with the cameras
 
-        //let finished = this.createAdvancedTexture("gui/guiTextureLevel.json", "guiLevel");
-
-
         // Music
         this.effectSoundTrack = new BABYLON.SoundTrack(this);
         this.effectButtonSoundTrack = new BABYLON.SoundTrack(this);
         this.effectDoorSoundTrack = new BABYLON.SoundTrack(this);
         this.addMusic();
         this.addMergeSoundEffect();
-
-
 
     }
 
@@ -113,16 +108,7 @@ export default class AbstractLevel extends BABYLON.Scene{
 
             this.setButtonAndDoor(lvlID);
 
-            /*
-            BABYLON.setAndStartTimer({
-                timeout:1000,
-                contextObservable: this.onBeforeRenderObservable,
-                onEnded: () => {
-                    scene.bigBall.dispose();
-                }
-            })*/
             let finished = this.createAdvancedTexture("gui/guiTextureLevel.json", "guiLevel");
-
         }
 
         labTask.onError = function (task, message, exception) {
@@ -132,22 +118,18 @@ export default class AbstractLevel extends BABYLON.Scene{
 
     }
 
-
-
-
     async createAdvancedTexture(path, name){
         this.advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI(name, true, this);
         let loadedGui = await this.advancedTexture.parseFromURLAsync(path);
-
 
         this.quitButton = this.advancedTexture.getControlByName("quitButton");
         this.restartButton = this.advancedTexture.getControlByName("restartButton");
 
         this.advancedTexture.getControlByName("globalGrid").isPointerBlocker = false;
         this.advancedTexture.getControlByName("upGrid").isPointerBlocker = false;
-        this.advancedTexture.getControlByName("remainingBallGrid").isPointerBlocker = false;
 
         if (name === "guiLevel"){
+            this.advancedTexture.getControlByName("remainingBallGrid").isPointerBlocker = false;
             this.nbBallText = this.advancedTexture.getControlByName("textNbBall");
             this.nbBallText.text = this.players.length;
         }
@@ -156,7 +138,6 @@ export default class AbstractLevel extends BABYLON.Scene{
             GameState.GameState = GameState.LevelMenu;
             console.log("level to level menu");
         })
-        this.quitButton.isPointerBlocker = false;
         this.restartButton.onPointerUpObservable.add(function (){
             GameState.restartLevel = true;
             console.log("restart level");
@@ -193,11 +174,6 @@ export default class AbstractLevel extends BABYLON.Scene{
         this.removeMesh(outButton);
 
 
-        //button.setParent(extButton);
-
-        //button.showBoundingBox = true;
-        //extButton.showBoundingBox = true;
-
         let buttonMaterial = new BABYLON.StandardMaterial(name+"Material", this);
         buttonMaterial.diffuseTexture = new BABYLON.Texture("images/buttonTexture.jpg", this);
         buttonMaterial.diffuseColor = new BABYLON.Color3(1,0.5,0);
@@ -206,7 +182,6 @@ export default class AbstractLevel extends BABYLON.Scene{
         let extButtonMaterial = new BABYLON.StandardMaterial("ext"+name+"Material", this);
         extButtonMaterial.diffuseColor = new BABYLON.Color3(0.2,0.2,0.2);
         extButton.material = extButtonMaterial;
-
 
         button.physicsImpostor = new BABYLON.PhysicsImpostor(button,
             BABYLON.PhysicsImpostor.BoxImpostor, {
@@ -250,8 +225,6 @@ export default class AbstractLevel extends BABYLON.Scene{
         // i.e sun light with all light rays parallels, the vector is the direction.
         let light0 = new BABYLON.HemisphericLight("dir0", new BABYLON.Vector3(1, 0, 0), this);
         let light1 = new BABYLON.HemisphericLight("dir0", new BABYLON.Vector3(-1, 0, 0), this);
-        // light0.position.y = 100;
-
     }
 
     createFollowCamera(scene, target) {
@@ -263,7 +236,7 @@ export default class AbstractLevel extends BABYLON.Scene{
             this);
 
         camera.checkCollisions = true;
-        //camera.panningAxis = new BABYLON.Vector3(0, 0, 0);
+        camera.panningAxis = new BABYLON.Vector3(0, 0, 0);
         camera.setTarget(target);
         camera.cameraAcceleration = 0.1; // how fast to move
         camera.maxCameraSpeed = 5; // speed limit
@@ -276,8 +249,6 @@ export default class AbstractLevel extends BABYLON.Scene{
         camera.inertialAlphaOffset = 10; // droite gauche
         camera.inertialBetaOffset = 10; // haut bas
         camera.inertialRadiusOffset = 10; // zoom
-
-        // imputs
 
         camera.attachControl(this.canvas, true);
         return camera;
@@ -340,7 +311,6 @@ export default class AbstractLevel extends BABYLON.Scene{
         this.loadingAdvancedTexture = new BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("loadingTexture", this);
 
         let perc = 0;
-
         this.loadingAdvancedTexture.ellipses = [];
         for (let i=0; i< 35; i++){
             let r = this.createEllipse(perc, perc, 100, this.loadingAdvancedTexture);
@@ -357,7 +327,6 @@ export default class AbstractLevel extends BABYLON.Scene{
                 clearInterval(this.interval);
             }
         }, 10);
-
     }
 
     createEllipse( width, height, thickness, advancedTexture){

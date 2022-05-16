@@ -25,7 +25,6 @@ export default class Level2 extends AbstractLevel{
 
         this.currentPlayer = 0;
         this.endPosition = new BABYLON.Vector3(0, 15, 250);
-
     }
 
     setButtonAndDoor(lvlId){
