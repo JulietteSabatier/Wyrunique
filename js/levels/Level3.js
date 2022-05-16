@@ -82,6 +82,10 @@ export default class Level3 extends AbstractLevel{
                 nativeOptions: {linearDamping: 0.35, angularDamping: 0.35}
             }, this);
 
+        let materialMissingPiece = new BABYLON.StandardMaterial("missingPieceMaterial", this);
+        materialMissingPiece.diffuseTexture = new BABYLON.Texture("images/Common/blue.png");
+        this.missingPiece.material = materialMissingPiece;
+
         this.triggerPlateform.actionManager = new BABYLON.ActionManager(this);
         this.triggerPlateform.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
             {trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger, parameter: this.missingPiece},
