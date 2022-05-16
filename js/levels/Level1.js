@@ -8,16 +8,19 @@ export default class Level1 extends AbstractLevel{
     }
 
     createScene(id, engine) {
+
+        //this.createLoadingOpen()
+
         this.clearColor = new BABYLON.Color3(0, 0, 0);
 
         let gravityVector = new BABYLON.Vector3(0,-9.81, 0);
         let physicsPlugin = new BABYLON.CannonJSPlugin();
         this.enablePhysics(gravityVector, physicsPlugin);
         this.assetsManager = new BABYLON.AssetsManager(this);
-        //this.assetsManager.useDefaultLoadingScreen = false;
 
         this.createLights();
         this.buildWalls(engine, id);
+
     }
 
     setButtonAndDoor(lvlId) {

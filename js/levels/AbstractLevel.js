@@ -113,7 +113,15 @@ export default class AbstractLevel extends BABYLON.Scene{
 
             this.setButtonAndDoor(lvlID);
 
-           let finished = this.createAdvancedTexture("gui/guiTextureLevel.json", "guiLevel");
+            /*
+            BABYLON.setAndStartTimer({
+                timeout:1000,
+                contextObservable: this.onBeforeRenderObservable,
+                onEnded: () => {
+                    scene.bigBall.dispose();
+                }
+            })*/
+            let finished = this.createAdvancedTexture("gui/guiTextureLevel.json", "guiLevel");
 
         }
 
@@ -153,14 +161,6 @@ export default class AbstractLevel extends BABYLON.Scene{
             GameState.restartLevel = true;
             console.log("restart level");
         })
-
-        this.blackRectangle = new BABYLON.GUI.Rectangle();
-        this.blackRectangle.width = "100%";
-        this.blackRectangle.height = "100%";
-        this.blackRectangle.background = "black";
-        this.blackRectangle.color = "black";
-//        this.advancedTexture.addControl(this.blackRectangle);
-
     }
 
     createButtonMesh(position, name){
@@ -335,25 +335,39 @@ export default class AbstractLevel extends BABYLON.Scene{
         return camera;
     }
 
-    createEllipse( width, height, thickness){
+
+    createLoadingOpen(){
+        this.loadingAdvancedTexture = new BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("loadingTexture", this);
+
+        let perc = 0;
+
+        this.loadingAdvancedTexture.ellipses = [];
+        for (let i=0; i< 200; i++){
+            let r = this.createEllipse(perc, perc, 100, this.loadingAdvancedTexture);
+            this.loadingAdvancedTexture.ellipses.push(r);
+            perc += i*20;
+        }
+
+        let i= 0;
+        let interval = setInterval( () => {
+            this.loadingAdvancedTexture.ellipses[i].alpha = 0;
+            i++;
+            if (i === 200){
+                this.loadingAdvancedTexture.dispose();
+                clearInterval(interval);
+                console.log(this.loadingAdvancedTexture);
+            }
+        }, 10);
+    }
+
+    createEllipse( width, height, thickness, advancedTexture){
         let ellipse = new BABYLON.GUI.Ellipse();
         ellipse.width = width+"px";
         ellipse.height = height+"px";
         ellipse.color = "black";
         ellipse.background = "transparent";
         ellipse.thickness = thickness;
-        this.advancedTexture.addControl(ellipse);
+        advancedTexture.addControl(ellipse);
         return ellipse;
-    }
-
-    createAllEllipses(){
-        let perc = 0;
-        let ellipses=[];
-        for(let i=0; i < 200; i++) {
-            let r = this.createEllipse(perc, perc, 100);
-            ellipses.push(r);
-            perc+=30;
-        }
-        return ellipses;
     }
 }

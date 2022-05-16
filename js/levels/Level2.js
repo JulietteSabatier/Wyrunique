@@ -10,6 +10,9 @@ export default class Level2 extends AbstractLevel{
     }
 
     createScene(id, engine) {
+
+        //this.createLoadingOpen()
+
         this.clearColor = new BABYLON.Color3(0, 0, 0);
 
         let gravityVector = new BABYLON.Vector3(0,-9.81, 0);
