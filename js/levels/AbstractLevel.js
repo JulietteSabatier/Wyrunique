@@ -342,22 +342,22 @@ export default class AbstractLevel extends BABYLON.Scene{
         let perc = 0;
 
         this.loadingAdvancedTexture.ellipses = [];
-        for (let i=0; i< 200; i++){
+        for (let i=0; i< 35; i++){
             let r = this.createEllipse(perc, perc, 100, this.loadingAdvancedTexture);
             this.loadingAdvancedTexture.ellipses.push(r);
-            perc += i*20;
+            perc += 30+i*2;
         }
 
         let i= 0;
-        let interval = setInterval( () => {
+        this.interval = setInterval( () => {
             this.loadingAdvancedTexture.ellipses[i].alpha = 0;
             i++;
-            if (i === 200){
+            if (i === 35){
                 this.loadingAdvancedTexture.dispose();
-                clearInterval(interval);
-                console.log(this.loadingAdvancedTexture);
+                clearInterval(this.interval);
             }
         }, 10);
+
     }
 
     createEllipse( width, height, thickness, advancedTexture){

@@ -253,7 +253,7 @@ function modifyLoadingScreen(){
         }
         this._loadingDiv = document.createElement("div");
         this._loadingDiv.id = "customLoadingScreenDiv";
-        this._loadingDiv.innerHTML = "Loading ...";
+        this._loadingDiv.innerHTML = "";
         let customLoadingScreenCss = document.createElement('style');
         customLoadingScreenCss.type = 'text/css';
         customLoadingScreenCss.innerHTML = `
