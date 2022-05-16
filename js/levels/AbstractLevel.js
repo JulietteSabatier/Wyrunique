@@ -27,7 +27,7 @@ export default class AbstractLevel extends BABYLON.Scene{
         this.effectButtonSoundTrack = new BABYLON.SoundTrack(this);
         this.effectDoorSoundTrack = new BABYLON.SoundTrack(this);
         this.addMusic();
-        this.addMergeSoundEffect();
+        this.addSoundEffect();
 
     }
 
@@ -39,7 +39,7 @@ export default class AbstractLevel extends BABYLON.Scene{
                 volume: Options.levelMusic
             });
     }
-    addMergeSoundEffect(){
+    addSoundEffect(){
         this.mergeSound = new BABYLON.Sound("mergeSound",
             "musics/mixkit-fast-small-sweep-transition-166.wav",
             this,
@@ -204,6 +204,17 @@ export default class AbstractLevel extends BABYLON.Scene{
             }, this);
 
         return button;
+    }
+    createPlateformJumpMesh(position, name){
+        let abstractPlane = BABYLON.Plane.FromPositionAndNormal(position, new BABYLON.Vector3(0,1,0));
+        let plane = BABYLON.MeshBuilder.CreatePlane("plane", {
+            size:15,
+            sourcePlane:abstractPlane,
+            sideOrientation:BABYLON.Mesh.DOUBLESIDE
+        })
+        plane.position = position;
+
+        return plane;
     }
 
     createSphere(name, nb, pos_x, pos_y, pos_z){

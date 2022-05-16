@@ -68,4 +68,9 @@ export default class Player {
             }
         }
     }
+
+    jump(scene, inputStates){
+
+    }
+
 }

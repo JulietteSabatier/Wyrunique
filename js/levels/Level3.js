@@ -1,5 +1,6 @@
 import AbstractLevel from "./AbstractLevel.js";
 import Door from "./door/Door.js";
+import Jump from "./door/Jump.js";
 
 export default class Level3 extends AbstractLevel{
 
@@ -9,6 +10,9 @@ export default class Level3 extends AbstractLevel{
     }
 
     createScene(id, engine) {
+
+        this.createLoadingOpen()
+
         this.clearColor = new BABYLON.Color3(0, 0, 0);
 
         let gravityVector = new BABYLON.Vector3(0,-9.81, 0);
@@ -32,17 +36,17 @@ export default class Level3 extends AbstractLevel{
     }
 
     loadSpikes() {
-        let spikesMesh = this.getMeshByName("PiegePics");
-        spikesMesh.actionManager = new BABYLON.ActionManager(this);
+        this.spikesMesh = this.getMeshByName("PiegePics");
+        this.spikesMesh.actionManager = new BABYLON.ActionManager(this);
 
-        spikesMesh.physicsImpostor =  new BABYLON.PhysicsImpostor(spikesMesh,
+        this.spikesMesh.physicsImpostor =  new BABYLON.PhysicsImpostor(this.spikesMesh,
             BABYLON.PhysicsImpostor.MeshImpostor, {
                 ignoreParent: true
             }, this);
 
         for (let i = 0; i < this.players.length; i++) {
             let currentPlayer = this.players[i];
-            let triggerAction = spikesMesh.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
+            let triggerAction = this.spikesMesh.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
                 {trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger, parameter: currentPlayer.playerMesh},
                 () => {
                     console.log("Player " + currentPlayer.id + " impaled himself");
@@ -54,34 +58,49 @@ export default class Level3 extends AbstractLevel{
     }
 
     loadPlateforms() {
-        let spikePlateform = this.getMeshByName("PlateformePics");
-        spikePlateform.physicsImpostor = new BABYLON.PhysicsImpostor(spikePlateform,
+        this.spikePlateform = this.getMeshByName("PlateformePics");
+        this.spikePlateform.physicsImpostor = new BABYLON.PhysicsImpostor(this.spikePlateform,
             BABYLON.PhysicsImpostor.BoxImpostor, {
                 ignoreParent: true
             }, this);
 
-        for (let i = 1; i <= 3; i++) {
-            let jumpPlateform = this.getMeshByName("PlateformeSaut"+i);
+
+        //loadPlateform
+        for (let i = 0; i < 3; i++) {
+            let jumpPlateform = this.getMeshByName("PlateformeSaut"+(i+1));
             jumpPlateform.physicsImpostor = new BABYLON.PhysicsImpostor(jumpPlateform,
                 BABYLON.PhysicsImpostor.BoxImpostor, {
                     ignoreParent: true
                 }, this);
         }
+
+        // load jump plateform
+        let jumpPlateformPositions = [];
+        let jumpPlateformArray = [];
+        for (let i = 0; i < 3; i++) {
+            jumpPlateformPositions[i] = this.getMeshByName("Jump"+(i+1)).position;
+            jumpPlateformArray[i] = this.createPlateformJumpMesh(jumpPlateformPositions[i], "plateform"+(i+1));
+            let jumpMaterial = new BABYLON.StandardMaterial("jumpMaterial", this);
+            jumpMaterial.diffuseTexture = new BABYLON.Texture("images/Common/jump.png", this);
+            jumpPlateformArray[i].material = jumpMaterial;
+        }
+
+        this.jumpPlateform = new Jump(jumpPlateformArray, this);
     }
 
     loadTriggers() {
-        let triggerPlateform = this.getMeshByName("TriggerPlateforme");
-        let missingPiece = this.getMeshByName("PieceManquante");
+        this.triggerPlateform = this.getMeshByName("TriggerPlateforme");
+        this.missingPiece = this.getMeshByName("PieceManquante");
 
-        missingPiece.physicsImpostor = new BABYLON.PhysicsImpostor(missingPiece,
+        this.missingPiece.physicsImpostor = new BABYLON.PhysicsImpostor(missingPiece,
             BABYLON.PhysicsImpostor.SphereImpostor, {
                 mass: 2,
                 nativeOptions: {linearDamping: 0.35, angularDamping: 0.35}
             }, this);
 
-        triggerPlateform.actionManager = new BABYLON.ActionManager(this);
-        triggerPlateform.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
-            {trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger, parameter: missingPiece},
+        this.triggerPlateform.actionManager = new BABYLON.ActionManager(this);
+        this.triggerPlateform.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
+            {trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger, parameter: this.missingPiece},
             () => {
                 console.log("Plateforme débloquée");
                 this.plateformMoving = true;
@@ -115,6 +134,9 @@ export default class Level3 extends AbstractLevel{
             }, this);
 
         let posButton = this.getMeshByName("Button1").position;
+        posButton.x = posButton.x + 5;
+        posButton.z = posButton.z + 7;
+
         let button = this.createButtonMesh(posButton, "button1");
 
         this.doors[0] = new Door(this, door,[button]);
