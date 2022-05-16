@@ -52,7 +52,7 @@ export default class Level3 extends AbstractLevel{
                     console.log("Player " + currentPlayer.id + " impaled himself");
                 }
             ));
-            this.players[i].linkedMeshes.push(spikesMesh);
+            this.players[i].linkedMeshes.push(this.spikesMesh);
             this.players[i].linkedTriggers.push(triggerAction);
         }
     }
@@ -92,7 +92,7 @@ export default class Level3 extends AbstractLevel{
         this.triggerPlateform = this.getMeshByName("TriggerPlateforme");
         this.missingPiece = this.getMeshByName("PieceManquante");
 
-        this.missingPiece.physicsImpostor = new BABYLON.PhysicsImpostor(missingPiece,
+        this.missingPiece.physicsImpostor = new BABYLON.PhysicsImpostor(this.missingPiece,
             BABYLON.PhysicsImpostor.SphereImpostor, {
                 mass: 2,
                 nativeOptions: {linearDamping: 0.35, angularDamping: 0.35}
