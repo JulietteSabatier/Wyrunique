@@ -8,8 +8,6 @@ export default class Door{
         for (let i=0; i<buttons.length; i++){
             this.buttons[i]["push"] =false;
         }
-
-
     }
 
     buttonVerifyTouch(scene){

@@ -223,14 +223,11 @@ function startGame(){
                 scene.soundEffect = new BABYLON.Sound("testSound", "musics/mixkit-retro-game-notification-212.wav", scene, null,
                     {volume: Options.levelSoundEffect}
                 );
-                //scene.music.pause();
+                // TODO make a sound when soundEffect changed
                 scene.soundEffect.play();
-                //soundEffect.stop(1);
-                //scene.music.play();
                 Options.soundEffectChanged = false;
             }
         }
-
         scene.render();
     })
 }
@@ -296,19 +293,20 @@ function playerFinishLevel(){
         }
     }
 }
+
 function movePlayer(){
     let player = scene.players[scene.currentPlayer];
     if (player){
         player.move(scene, inputStates);
     }
 }
+
 function mergePlayer(){
     let player = scene.players[scene.currentPlayer];
     if (player){
         player.merge(scene);
     }
 }
-
 
 function modifySetting(){
 

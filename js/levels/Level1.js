@@ -20,10 +20,8 @@ export default class Level1 extends AbstractLevel{
 
         this.createLights();
         this.buildWalls(engine, id);
-
     }
 
     setButtonAndDoor(lvlId) {
-
     }
 }
