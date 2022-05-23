@@ -226,7 +226,9 @@ export default class AbstractLevel extends BABYLON.Scene{
         sphereMesh.frontVector = new BABYLON.Vector3(0, 0, 1);
 
         let sphereMaterial = new BABYLON.StandardMaterial("sphereMaterial", this);
-        sphereMaterial.diffuseTexture = new BABYLON.Texture("images/Common/Ball.jpg", this);
+        sphereMaterial.diffuseTexture = new BABYLON.Texture("images/Common/Scifi_Panels_09_basecolor.jpg", this);
+        sphereMaterial.bumpTexture = new BABYLON.Texture("images/Common/Scifi_Panels_09_normal.jpg", this);
+        sphereMaterial.diffuseColor = new BABYLON.Color3(1, 0.4, 0);
         sphereMesh.material = sphereMaterial;
 
         sphereMesh.physicsImpostor = new BABYLON.PhysicsImpostor(sphereMesh,
