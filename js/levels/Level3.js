@@ -27,13 +27,21 @@ export default class Level3 extends AbstractLevel{
         this.currentPlayer = 0;
 
         this.plateformMoving = false;
-        this.movingDirection = BABYLON.Vector3.Zero();
+        this.platformMovingDirection = BABYLON.Vector3.Zero();
+        this.arrowIsLoaded = false;
+        this.arrowMovingDirection = new BABYLON.Vector3(0, 0.1, 0);
     }
 
     loadSpecificObjects() {
         this.loadSpikes();
         this.loadPlateforms();
         this.loadTriggers();
+        this.loadArrow();
+    }
+
+    moveMeshes() {
+        this.movePlateform();
+        this.moveArrow();
     }
 
     loadSpikes() {
@@ -110,15 +118,48 @@ export default class Level3 extends AbstractLevel{
         ));
     }
 
+    loadArrow() {
+        this.arrow = this.getMeshByName("Arrow");
+        let arrowMaterial = new BABYLON.StandardMaterial("arrowMaterial", this);
+        arrowMaterial.diffuseColor = new BABYLON.Color3(0,1,0);
+        this.arrow.material = arrowMaterial;
+        this.arrow.visibility = 0.5;
+
+        let glow = new BABYLON.GlowLayer("arrowGlow", this);
+        glow.intensity = 0.5;
+        glow.referenceMeshToUseItsOwnMaterial(this.arrow);
+        this.arrowIsLoaded = true;
+    }
+
+    moveArrow() {
+        if(this.arrowIsLoaded) {
+            this.arrow.rotation.y += 0.05;
+
+            /*if (this.arrow.position.y <= 25) {
+                this.arrowMovingDirection = new BABYLON.Vector3(0, Math.min(Math.abs(Math.min(35 - this.arrow.position.y, this.arrow.position.y - 25)), 0.5), 0);
+            } else if (this.arrow.position.y >= 35) {
+                this.arrowMovingDirection = new BABYLON.Vector3(0, -Math.min(Math.abs(Math.min(35 - this.arrow.position.y, this.arrow.position.y - 25)), 0.5), 0);
+            }
+            // console.log("Math.max print: " + Math.max(Math.abs(Math.min(35 - this.arrow.position.y, this.arrow.position.y - 25)), 0.5));
+            // console.log("Math.max retenu: " + this.arrowMovingDirection.y);
+            // console.log("Deuxième appel: " + Math.abs(Math.min(35 - this.arrow.position.y, this.arrow.position.y - 25)));
+            this.arrow.position = new BABYLON.Vector3(
+                this.arrow.position.x,
+                this.arrow.position.y + this.arrowMovingDirection.y,
+                this.arrow.position.z
+            );*/
+        }
+    }
+
     movePlateform() {
         if (this.plateformMoving) {
             let plateform = this.getMeshByName("PlateformePics");
             if (plateform.position.x <= -37.4) {
-                this.movingDirection = new BABYLON.Vector3(0.25,0,0);
+                this.platformMovingDirection = new BABYLON.Vector3(0.25,0,0);
             } else if (plateform.position.x >= 37.4) {
-                this.movingDirection = new BABYLON.Vector3(-0.25,0,0);
+                this.platformMovingDirection = new BABYLON.Vector3(-0.25,0,0);
             }
-            plateform.moveWithCollisions(this.movingDirection);
+            plateform.moveWithCollisions(this.platformMovingDirection);
         }
     }
 
