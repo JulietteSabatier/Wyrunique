@@ -26,9 +26,7 @@ export default class Menu extends BABYLON.Scene{
             this.bigBall.position.z = 0;
 
             this.bigBallMaterial = new BABYLON.StandardMaterial("ballMaterial", this);
-            this.bigBallMaterial.diffuseTexture = new BABYLON.Texture("images/Common/Scifi_Panels_09_basecolor.jpg", this);
-            this.bigBallMaterial.bumpTexture = new BABYLON.Texture("images/Common/Scifi_Panels_09_normal.jpg", this);
-            this.bigBallMaterial.diffuseColor = new BABYLON.Color3(1, 0.4, 0);
+            this.bigBallMaterial.diffuseTexture = new BABYLON.Texture("images/Common/Ball.jpg", this);
             this.bigBall.material = this.bigBallMaterial;
         }
         else{
