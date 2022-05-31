@@ -29,7 +29,7 @@ export default class Level3 extends AbstractLevel{
         this.plateformMoving = false;
         this.platformMovingDirection = BABYLON.Vector3.Zero();
         this.arrowIsLoaded = false;
-        this.arrowMovingDirection = new BABYLON.Vector3(0, 0.1, 0);
+        //this.arrowMovingDirection = new BABYLON.Vector3(0, 0.1, 0);
     }
 
     loadSpecificObjects() {
