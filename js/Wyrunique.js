@@ -175,7 +175,7 @@ function startGame(){
             playerFinishLevel();    // check if the player has finish the level
 
             if(scene.id === 3) {
-                scene.movePlateform();
+                scene.moveMeshes();
             }
         }
 

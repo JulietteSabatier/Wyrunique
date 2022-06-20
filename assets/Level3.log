@@ -15,7 +15,7 @@ Exporter version: 2.93.5, Blender version: 2.93.9
 	processing begun of mesh:  Labyrinthe
 		processing begun of material:  Material.002
 			WARNING: unsupported node type(ShaderNodeGroup) will trigger baking
-			bake time:  0 min, 0.0793 secs
+			bake time:  0 min, 0.0125 secs
 		num positions      :  1442
 		num normals        :  1442
 		num tangents       :  0
@@ -53,7 +53,7 @@ Exporter version: 2.93.5, Blender version: 2.93.9
 			processing texture PlateformeSaut1_baked_DIFFUSE
 				texture type:  diffuseTexture, mapped using: "UVMap"
 			Diffuse / albeto channel baked
-			bake time:  0 min, 1.6183 secs
+			bake time:  0 min, 2.2506 secs
 		num positions      :  29
 		num normals        :  29
 		num tangents       :  0
@@ -72,7 +72,7 @@ Exporter version: 2.93.5, Blender version: 2.93.9
 			processing texture PlateformeSaut2_baked_DIFFUSE
 				texture type:  diffuseTexture, mapped using: "UVMap"
 			Diffuse / albeto channel baked
-			bake time:  0 min, 1.2488 secs
+			bake time:  0 min, 1.4349 secs
 		num positions      :  29
 		num normals        :  29
 		num tangents       :  0
@@ -91,7 +91,7 @@ Exporter version: 2.93.5, Blender version: 2.93.9
 			processing texture PlateformeSaut3_baked_DIFFUSE
 				texture type:  diffuseTexture, mapped using: "UVMap"
 			Diffuse / albeto channel baked
-			bake time:  0 min, 1.8697 secs
+			bake time:  0 min, 2.1414 secs
 		num positions      :  29
 		num normals        :  29
 		num tangents       :  0
@@ -109,7 +109,7 @@ Exporter version: 2.93.5, Blender version: 2.93.9
 	processing begun of mesh:  PiegePics
 		processing begun of material:  Material.003
 			WARNING: unsupported node type(ShaderNodeGroup) will trigger baking
-			bake time:  0 min, 0.032 secs
+			bake time:  0 min, 0.026 secs
 		num positions      :  17898
 		num normals        :  17898
 		num tangents       :  0
@@ -128,7 +128,7 @@ Exporter version: 2.93.5, Blender version: 2.93.9
 			processing texture PlateformePics_baked_DIFFUSE
 				texture type:  diffuseTexture, mapped using: "UVMap"
 			Diffuse / albeto channel baked
-			bake time:  0 min, 1.874 secs
+			bake time:  0 min, 2.03 secs
 		num positions      :  29
 		num normals        :  29
 		num tangents       :  0
@@ -146,6 +146,15 @@ Exporter version: 2.93.5, Blender version: 2.93.9
 		num uvs2           :  0
 		num colors         :  0
 		num triangles      :  960
+	processing begun of mesh:  Arrow
+		WARNING: No materials have been assigned: 
+		num positions      :  80
+		num normals        :  80
+		num tangents       :  0
+		num uvs            :  160
+		num uvs2           :  0
+		num colors         :  0
+		num triangles      :  38
 ========= Writing of JSON file started =========
 	writing mesh:  Labyrinthe
 	writing mesh:  Porte1
@@ -156,6 +165,7 @@ Exporter version: 2.93.5, Blender version: 2.93.9
 	writing mesh:  PiegePics
 	writing mesh:  PlateformePics
 	writing mesh:  PieceManquante
+	writing mesh:  Arrow
 ========= Writing of JSON file completed =========
 ========= end of processing =========
-elapsed time:  0 min, 7.9614 secs
+elapsed time:  0 min, 9.4527 secs
